@@ -1,0 +1,8 @@
+# js
+bower_components/
+node_modules/
+classes/
+lib/
+
+# mac
+.DS_Store
