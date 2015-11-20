@@ -19,6 +19,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.6",
+    "config-file": "^0.3.1",
     "main-bower-files": "^2.7.0"
   },
   "engines": {
@@ -31,6 +32,6 @@
     "lico"
   ],
   "license": "MIT",
-  "debug": true,
+  "debug": false,
   "version": "1.0.1"
 }

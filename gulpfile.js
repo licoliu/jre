@@ -1,5 +1,6 @@
 var gulp = require('gulp'),
   gutil = require('gulp-util'),
+  config = require('config-file'),
   jeditor = require("gulp-json-editor"),
   minifyCss = require('gulp-minify-css'),
   concat = require('gulp-concat'),
@@ -22,25 +23,25 @@ var testunit = {
 
 var src = {
   jre: [
-    './jre/src/main/js/js/lang/Class.js',
-    './jre/src/main/js/js/lang/Object.js',
-    './jre/src/main/js/js/lang/Array.js',
-    './jre/src/main/js/js/lang/Boolean.js',
-    './jre/src/main/js/js/lang/Function.js',
-    './jre/src/main/js/js/lang/Number.js',
-    './jre/src/main/js/js/lang/RegExp.js',
-    './jre/src/main/js/js/lang/String.js',
-    './jre/src/main/js/js/lang/Throwable.js',
-    './jre/src/main/js/js/lang/Exception.js',
-    './jre/src/main/js/js/lang/Error.js',
-    './jre/src/main/js/js/lang/ClassNotFoundException.js',
-    './jre/src/main/js/js/lang/NoSuchMethodException.js',
-    './jre/src/main/js/js/lang/NoSuchFieldException.js',
-    './jre/src/main/js/js/lang/InternalError.js',
-    './jre/src/main/js/js/lang/ClassLoader.js',
-    './jre/src/main/js/js/net/URLClassLoader.js',
-    './jre/src/main/js/js/dom/Document.js',
-    './jre/src/main/js/atom/misc/Launcher.js'
+    './src/main/js/js/lang/Class.js',
+    './src/main/js/js/lang/Object.js',
+    './src/main/js/js/lang/Array.js',
+    './src/main/js/js/lang/Boolean.js',
+    './src/main/js/js/lang/Function.js',
+    './src/main/js/js/lang/Number.js',
+    './src/main/js/js/lang/RegExp.js',
+    './src/main/js/js/lang/String.js',
+    './src/main/js/js/lang/Throwable.js',
+    './src/main/js/js/lang/Exception.js',
+    './src/main/js/js/lang/Error.js',
+    './src/main/js/js/lang/ClassNotFoundException.js',
+    './src/main/js/js/lang/NoSuchMethodException.js',
+    './src/main/js/js/lang/NoSuchFieldException.js',
+    './src/main/js/js/lang/InternalError.js',
+    './src/main/js/js/lang/ClassLoader.js',
+    './src/main/js/js/net/URLClassLoader.js',
+    './src/main/js/js/dom/Document.js',
+    './src/main/js/atom/misc/Launcher.js'
   ],
   jsrt: './src/main/js'
 };
@@ -51,18 +52,7 @@ var dest = {
   lib: './lib/'
 };
 
-settings = {
-  "group": "js",
-  "artifact": "jre",
-  "name": "jre",
-  "description": "关于javascript的继承框架，类定义，类加载器，集合框架，反射机制，注解，AOP, 单元测试框架，常用包等。",
-  "authors": [
-    "lico"
-  ],
-  "license": "MIT",
-  "private": false,
-  "debug": true
-};
+var settings = config("./pom.json");
 
 /****************tasks***************/
 gulp.task('pom', function() {

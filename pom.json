@@ -8,6 +8,6 @@
 	],
 	"license": "MIT",
 	"private": false,
-	"debug": true,
+	"debug": false,
 	"version": "1.0.1"
 }
