@@ -1829,20 +1829,32 @@ Class.forName({
     }
 
     if (scriptCount === 0) {
-      doCallback(true);
+      if (callback) {
+        callback.call($scope, true);
+      }
       return true;
     }
 
     for (var i = 0; i < scriptCount; i++) {
-
       var url = scriptUrl[i];
 
-      this.loadClassInternal(url, synchronous, notModify, callback, $scope, showBusy);
+      this.loadClassInternal(url, synchronous, notModify, function(url, success) {
+        (success ? completed : failed).push(url);
+        if (i === scriptCount - 1) {
+          if (callback) {
+            callback.call($scope, completed, failed);
+          }
+          if (failed.length > 0) {
+            throw new js.lang.ClassNotFoundException("Can't find Class named (" + failed.join(",") + ")");
+          }
+        }
+      }, $scope, showBusy);
     }
   },
+
   "protected loadClassInternal": function(scriptUrl, synchronous, notModify, callback, $scope, showBusy) {
 
-    var isString = (Object.isString(scriptUrl));
+    var isString = Object.isString(scriptUrl);
 
     if (!isString) {
       return false;
@@ -1850,8 +1862,6 @@ Class.forName({
 
     var loadedScripts = this.loadedScripts,
       waitingList = this.waitingList,
-      completed = [],
-      failed = [],
       scope = this;
 
     if (showBusy) {
@@ -1862,26 +1872,13 @@ Class.forName({
       $scope = this;
     }
 
-    var doCallback = function(success) {
-      if (callback) {
-        if (isString)
-          callback.call($scope, success);
-        else
-          callback.call($scope, completed, failed);
-      }
-      if (failed.length > 0) {
-        throw new js.lang.ClassNotFoundException("Can't find Class named (" + failed.join(",") + ")");
-      }
-    };
-
     var checkLoaded = function(url, success) {
-      (success ? completed : failed).push(url);
-
       if (showBusy) {
         document.getDocumentElement().removeStyle('cursor');
       }
-      doCallback(success);
-
+      if (callback) {
+        callback.call($scope, url, success);
+      }
     };
 
     var onLoad = function(url, success) {
@@ -2006,16 +2003,16 @@ Class.forName({
 
     // 2.判断当前ClassLoader是否加载过。
     if (loadedScripts[url]) {
-      checkLoaded(url, true);
       return;
     }
 
     var waitingInfo = waitingList[url] || (waitingList[url] = []);
-    waitingInfo.push(checkLoaded);
 
     // 3.Load it only for the first request.
-    if (waitingInfo.length > 1) {
+    if (waitingInfo.length > 0) {
       return;
+    } else {
+      waitingInfo.push(checkLoaded);
     }
 
     var classes = this.findClass(url, notModify);
@@ -2027,7 +2024,6 @@ Class.forName({
     }
 
     // 4.委托父加载器加载
-
   }
 });
 
@@ -2054,7 +2050,6 @@ window.$import = function(name, classloader, async, callback) {
   // 1判断内存中是否存在 ， 2判断当前ClassLoader是否加载过。classloader.getDebug()
   return classloader.loadClass(name, async, false, callback);
 };
-
 
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
