@@ -39,7 +39,12 @@ var src = {
     './src/main/js/js/lang/NoSuchFieldException.js',
     './src/main/js/js/lang/InternalError.js',
     './src/main/js/js/lang/ClassLoader.js',
+    './src/main/js/js/io/Writer.js',
+    './src/main/js/js/io/PrintWriter.js',
+    './src/main/js/js/io/Console.js',
+    './src/main/js/js/lang/System.js',
     './src/main/js/js/net/URLClassLoader.js',
+    './src/main/js/org/seajs/SeaClassLoader.js',
     './src/main/js/js/dom/Document.js',
     './src/main/js/atom/misc/Launcher.js'
   ],

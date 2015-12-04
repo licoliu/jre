@@ -12,44 +12,16 @@ Class.forName({
   '@Setter @Getter loadedScripts': {},
   '@Setter @Getter waitingList': {},
   '@Setter @Getter path': [],
-  '@Setter @Getter root': "",
-  '@Setter @Getter version': null,
-  '@Setter @Getter debug': false,
 
   URLClassLoader: function(parent) {
     this.parent = parent;
-
-    var root = [window.location.origin],
-      version = null,
-      isDebug = false,
-      scripts = document.getElementsByTagName("script");
-
-    for (var i = 0, len = scripts.length; i < len; i++) {
-      var script = scripts[i],
-        jsvm = script.getAttribute("jsvm"),
-        servletpath = script.getAttribute("servletpath"),
-        hasDebug = script.hasAttribute("debug"),
-        debug = script.getAttribute("debug"),
-        v = script.getAttribute("version");
-
-      if (jsvm && jsvm === 'true') {
-        if (servletpath) {
-          root.push(servletpath);
-        }
-
-        if (hasDebug && debug.toLowerCase() !== 'false') {
-          isDebug = true;
-        }
-
-        version = v;
-        break;
-      }
-    }
-
-    this.debug = isDebug;
-    this.version = version;
-    this.root = root.join("/");
   },
+
+  getVersion: function() {
+    return js.lang.System.getProperty("skin");
+  },
+
+  "public abstract getRelative": function() {},
 
   findClass: function(scriptUrl, notModify) {
     var isString = (Object.isString(scriptUrl));
@@ -78,8 +50,9 @@ Class.forName({
       }
       src = src.replace(/[.]/g, "/") + ".js";
 
-      if (this.version) {
-        querys.push("v=" + this.version);
+
+      if (this.getVersion()) {
+        querys.push("v=" + this.getVersion());
       }
 
       if (notModify) {
@@ -90,7 +63,7 @@ Class.forName({
         src += "?" + querys.join("&");
       }
 
-      classes[url] = this.root + src;
+      classes[url] = this.getRelative() + src;
     }
     return classes;
   },
@@ -126,79 +99,19 @@ Class.forName({
    *          alert( 'Number of scripts loaded: ' + completed.length );
    *          alert( 'Number of failures: ' + failed.length ); });
    */
-  loadClass: function(scriptUrl, synchronous, notModify, callback, $scope, showBusy) {
+  loadClass: (function(global) {
 
-    var isString = (Object.isString(scriptUrl));
+    var checkLoaded = function(url, success, asynchronous, notModify, callback, $scope, completed, failed, last) {
 
-    if (isString)
-      scriptUrl = [scriptUrl];
-
-    if (!Object.isArray(scriptUrl)) {
-      return false;
-    }
-
-    var scriptCount = scriptUrl.length,
-      completed = [],
-      failed = [];
-
-    if (!$scope) {
-      $scope = this;
-    }
-
-    if (scriptCount === 0) {
-      if (callback) {
-        callback.call($scope, true);
-      }
-      return true;
-    }
-
-    for (var i = 0; i < scriptCount; i++) {
-      var url = scriptUrl[i];
-
-      this.loadClassInternal(url, synchronous, notModify, function(url, success) {
-        (success ? completed : failed).push(url);
-        if (i === scriptCount - 1) {
-          if (callback) {
-            callback.call($scope, completed, failed);
-          }
-          if (failed.length > 0) {
-            throw new js.lang.ClassNotFoundException("Can't find Class named (" + failed.join(",") + ")");
-          }
+      (success ? completed : failed).push(url);
+      if (last) {
+        if (callback) {
+          callback.call($scope, completed, failed);
         }
-      }, $scope, showBusy);
-    }
-  },
-
-  "protected loadClassInternal": function(scriptUrl, synchronous, notModify, callback, $scope, showBusy) {
-
-    var isString = Object.isString(scriptUrl);
-
-    if (!isString) {
-      return false;
-    }
-
-    var loadedScripts = this.loadedScripts,
-      waitingList = this.waitingList,
-      scope = this;
-
-    if (showBusy) {
-      document.setStyle('cursor', 'wait');
-    }
-
-    if (!$scope) {
-      $scope = this;
-    }
-
-    var checkLoaded = function(url, success) {
-      if (showBusy) {
-        document.getDocumentElement().removeStyle('cursor');
-      }
-      if (callback) {
-        callback.call($scope, url, success);
       }
     };
 
-    var onLoad = function(url, success) {
+    var onLoad = function(url, success, asynchronous, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last) {
       // Mark this script as loaded.
 
       if (success) {
@@ -212,15 +125,17 @@ Class.forName({
 
           // Check all callbacks waiting for this file.
           for (var i = 0; i < waitingInfo.length; i++) {
-            waitingInfo[i](url, success);
+            waitingInfo[i](url, success, asynchronous, notModify, callback, $scope, completed, failed, last);
           }
         }
+      } else if (scope.parent) {
+        scope.parent.loadClass(url, callback, $scope, asynchronous, notModify);
       } else {
-        scope.parent.loadClassInternal(url, synchronous, notModify, callback, $scope, showBusy);
+        throw new js.lang.ClassNotFoundException("Can't find Class named (" + url + ")");
       }
     };
 
-    var loadScript = function(url, src) {
+    var loadScript = function(url, src, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last) {
 
       // Create the <script> element.
       var script = document.createElement('script');
@@ -230,14 +145,14 @@ Class.forName({
       if (script) {
         if ('addEventListener' in script) {
           script.onload = function() {
-            onLoad(url, true);
+            onLoad(url, true, true, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
           };
         } else if ('readyState' in script) { // for <IE9
           // Compatability
           script.onreadystatechange = function() {
             if (script.readyState === 'loaded' || script.readyState === 'complete') {
               script.onreadystatechange = null;
-              onLoad(url, true);
+              onLoad(url, true, true, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
             }
           };
         } else {
@@ -248,14 +163,14 @@ Class.forName({
             // immediately. Which will break the loading
             // sequence. (#3661)
             setTimeout(function() {
-              onLoad(url, true);
+              onLoad(url, true, true, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
             }, 0);
           };
 
           // FIXME: Opera and Safari will not fire onerror.
           /** @ignore */
           script.onerror = function() {
-            onLoad(url, false);
+            onLoad(url, false, true, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
           };
         }
         // }
@@ -266,7 +181,7 @@ Class.forName({
 
     };
 
-    var synchronousScript = function(url, src) {
+    var synchronousScript = function(url, src, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last) {
       var isCrossOriginRestricted = false,
         xhr, status, isIE = /msie/.test(navigator.userAgent.toLowerCase()),
         debugSourceURL = isIE ? "" : ("\n//@ sourceURL=" + src);
@@ -289,81 +204,102 @@ Class.forName({
       isCrossOriginRestricted = isCrossOriginRestricted || (status === 0);
 
       if (isCrossOriginRestricted) {
-        onLoad(url, false);
+        onLoad(url, false, false, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
       } else if ((status >= 200 && status < 300) || (status === 304)) {
-
         //eval(xhr.responseText + debugSourceURL);
-        new Function(xhr.responseText + debugSourceURL)();
+        new Function(xhr.responseText + debugSourceURL)(url);
 
-        onLoad(url, true);
+        onLoad(url, true, false, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
       } else {
-        onLoad(url, false);
+        onLoad(url, false, false, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
       }
       xhr = null;
     };
 
-    var url = scriptUrl;
+    return function(scriptUrl, callback, $scope, asynchronous, notModify) {
 
-    // 1.判断内存中是否存在
-    var u = url.split("."),
-      ref = window;
-    for (var j = 0, len = u.length; j < len; j++) {
-      if (ref) {
-        ref = ref[u[j]];
-      } else {
-        break;
+      var isString = (Object.isString(scriptUrl));
+
+      if (isString)
+        scriptUrl = [scriptUrl];
+
+      if (!Object.isArray(scriptUrl)) {
+        return false;
       }
-    }
-    if (ref && !ref.equals(window)) {
-      return;
-    }
 
-    // 2.判断当前ClassLoader是否加载过。
-    if (loadedScripts[url]) {
-      return;
-    }
+      var scriptCount = scriptUrl.length,
+        completed = [],
+        failed = [];
 
-    var waitingInfo = waitingList[url] || (waitingList[url] = []);
+      if (!$scope) {
+        $scope = this;
+      }
 
-    // 3.Load it only for the first request.
-    if (waitingInfo.length > 0) {
-      return;
-    } else {
-      waitingInfo.push(checkLoaded);
-    }
+      if (scriptCount === 0) {
+        if (callback) {
+          callback.call($scope, true);
+        }
+        return true;
+      }
 
-    var classes = this.findClass(url, notModify);
+      for (var i = 0; i < scriptCount; i++) {
+        var url = scriptUrl[i];
 
-    if (synchronous) {
-      loadScript(url, classes[url]);
-    } else {
-      synchronousScript(url, classes[url]);
-    }
+        var last = i === scriptCount - 1;
 
-    // 4.委托父加载器加载
-  }
+        isString = Object.isString(url);
+
+        if (!isString) {
+          continue;
+        }
+
+        var loadedScripts = this.loadedScripts,
+          waitingList = this.waitingList,
+          scope = this;
+
+        if (!$scope) {
+          $scope = this;
+        }
+
+        // 1.判断内存中是否存在
+        var u = url.split("."),
+          ref = global;
+        for (var j = 0, len = u.length; j < len; j++) {
+          if (ref) {
+            ref = ref[u[j]];
+          } else {
+            break;
+          }
+        }
+        if (ref && !ref.equals(global)) {
+          return;
+        }
+
+        // 2.判断当前ClassLoader是否加载过。
+        if (loadedScripts[url]) {
+          return;
+        }
+
+        var waitingInfo = waitingList[url] || (waitingList[url] = []);
+
+        // 3.Load it only for the first request. // 4.委托父加载器加载
+        if (waitingInfo.length > 0) {
+          return;
+        } else {
+          waitingInfo.push(checkLoaded);
+        }
+
+        var classes = this.findClass(url, notModify);
+
+        if (asynchronous) {
+          loadScript(url, classes[url], notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
+        } else {
+          synchronousScript(url, classes[url], notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
+        }
+
+      }
+    };
+  })(this)
+
 });
 
-
-window.$import = function(name, classloader, async, callback) {
-  if (Object.isNull(classloader)) {
-    classloader = js.lang.ClassLoader.getSystemClassLoader();
-  } else if (!Object.isInstanceof(classloader, js.lang.ClassLoader)) {
-    switch (classloader) {
-      case 'BootstrapClassLoader':
-        classloader = atom.misc.Launcher.BootstrapClassLoader.getBootstrapClassLoader();
-        break;
-      case 'ExtClassLoader':
-        classloader = atom.misc.Launcher.ExtClassLoader.getExtClassLoader();
-        break;
-      case 'CSSClassLoader':
-        classloader = atom.misc.Launcher.CSSClassLoader.getCSSClassLoader();
-        break;
-      default:
-        classloader = js.lang.ClassLoader.getSystemClassLoader();
-        break;
-    }
-  }
-  // 1判断内存中是否存在 ， 2判断当前ClassLoader是否加载过。classloader.getDebug()
-  return classloader.loadClass(name, async, false, callback);
-};

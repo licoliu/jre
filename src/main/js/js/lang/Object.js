@@ -6,11 +6,11 @@
  * Date: Feb 10, 2014
  */
 "use strict";
-(function() {
+(function(global) {
   var currentTimeMillis = function() {
     return new Date().getTime();
   };
-  var $class = Class.forName({
+  var $class = global.Class.forName({
     name: "class Object",
     alias: "js.lang.Object",
     Object: function() {
@@ -91,7 +91,7 @@
     },
 
     "toJson": (function() {
-      var NATIVE_JSON_STRINGIFY_SUPPORT = window.JSON && typeof JSON.stringify === "function" && JSON.stringify(0) === "0" && typeof JSON.stringify(function() {}) === "undefined";
+      var NATIVE_JSON_STRINGIFY_SUPPORT = typeof JSON !== 'undefined' && JSON && typeof JSON.stringify === "function" && JSON.stringify(0) === "0" && typeof JSON.stringify(function() {}) === "undefined";
       return function() {
         if (NATIVE_JSON_STRINGIFY_SUPPORT) {
           // TODO 只取public属性
@@ -124,5 +124,5 @@
   } else {
     Object.$class = $class;
   }
-})();
+})(this);
 

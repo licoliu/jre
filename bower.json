@@ -14,7 +14,10 @@
     "tests"
   ],
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "seajs": "~3.0.0",
+    "requirejs": "~2.1.22"
+  },
   "overrides": {},
   "group": "js",
   "artifact": "jre",

@@ -5,7 +5,6 @@
  * 
  * Date: Feb 14, 2014
  */
-$import("js.io.Writer", "BootstrapClassLoader");
 Class.forName({
   name: "class js.io.PrintWriter extends js.io.Writer",
   PrintWriter: function() {},

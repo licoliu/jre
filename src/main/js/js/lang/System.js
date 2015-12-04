@@ -6,13 +6,11 @@
  * Date: Feb 13, 2014
  */
 
-$import("js.io.Console", "BootstrapClassLoader");
-
 Class.forName({
   name: "class js.lang.System extends Object",
   "static err": null, // 错误流
-  "static out": new js.io.Console(window.console), // 输出流
-  "static properties": null,
+  "static out": null, // 输出流
+  "static properties": {},
   "private static _env": (function() {
     var userAgent = navigator.userAgent,
       ua = userAgent.toLowerCase(),
@@ -41,7 +39,7 @@ Class.forName({
       isMac = check(/macintosh|mac os x/),
       isAir = check(/adobeair/),
       isLinux = check(/linux/),
-      isSecure = /^https/i.test(window.location.protocol),
+      isSecure = /^https/i.test(location.protocol),
       isIE9 = isIE && (check(/msie 9/) || docMode === 7),
       isIE10 = isIE && (check(/msie 10/) || docMode === 7),
       isIETrident = /(msie\s|trident.*rv:)([\w.]+)/.exec(ua);
@@ -78,6 +76,14 @@ Class.forName({
     return (env) ? this._env[env] : this._env;
   },
 
+  "static setOut": function(out) {
+    return js.lang.System.out = out;
+  },
+
+  "static setError": function(e) {
+    return js.lang.System.err = e;
+  },
+
   "public static currentTimeMillis": function() {
     return new Date().getTime();
   },
@@ -89,11 +95,11 @@ Class.forName({
   },
 
   "public static setProperty": function(name, value) {
-    return js.lang.System.properties.setProperty(name, value);
+    return js.lang.System.properties[name] = value;
   },
 
   "public static getProperty": function(name) {
-    return js.lang.System.properties.getProperty(name);
+    return js.lang.System.properties[name];
   },
 
   "public static setProperties": function(props) {

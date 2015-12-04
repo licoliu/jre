@@ -13,7 +13,7 @@ Class.forName({
 
   '@Setter @Getter private classes': [],
 
-  "abstract loadClass": function(scriptUrl, callback, scope, showBusy) {},
+  "abstract loadClass": function(scriptUrl, callback, scope) {},
   'static getSystemClassLoader': function(scriptUrl) {
     return atom.misc.Launcher.getLauncher().getClassLoader();
   }
