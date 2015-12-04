@@ -6,7 +6,7 @@
  * Date: Feb 10, 2014
  */
 
-(function() {
+(function(global) {
   var USEECMA = !!Object.defineProperties;
 
   var extend = (function() {
@@ -91,7 +91,7 @@
     return function(d, s, k, m, pros) {
 
 
-      if (d === null || s === null || d === undefined || s === undefined || typeof d === "number" || typeof s === "number" || typeof d === "string" || typeof s === "string" || typeof d === "boolean" || typeof s === "boolean") {
+      if (typeof d === 'undefined' || d === null || typeof s === 'undefined' || s === null || typeof d === "number" || typeof s === "number" || typeof d === "string" || typeof s === "string" || typeof d === "boolean" || typeof s === "boolean") {
         return d;
       }
       if (Object.prototype.toString.apply(s) !== "[object Array]") {
@@ -125,7 +125,7 @@
     Object.extend = extend;
     Object.USEECMA = USEECMA;
   }
-})();
+})(this);
 
 Object
   .extend(
@@ -134,11 +134,11 @@ Object
       return {
         // TODO 增加isNull和isEmpty的区分
         isNull: function(v) {
-          return v === null || v === undefined;
+          return typeof v === 'undefined' || v === null;
         },
 
         isEmpty: function(v) {
-          return v === null || v === undefined || ((Object.isArray(v) && !v.length)) || (Object.isString(v) && !(v.trim ? v.trim() : v.replace(/^\s+|\s+$/g, "")));
+          return typeof v === 'undefined' || v === null || ((Object.isArray(v) && !v.length)) || (Object.isString(v) && !(v.trim ? v.trim() : v.replace(/^\s+|\s+$/g, "")));
         },
 
         isArray: function(v) {
@@ -217,7 +217,7 @@ Object
       configurable: false
     });
 
-(function() {
+(function(global) {
 
   var fetch = function(name, callback, scope) {
     if (Object.isEmpty(name)) {
@@ -225,7 +225,8 @@ Object
     }
     var emp = name.split("."),
       length = emp.length,
-      temp = window;
+      temp = global;
+
     for (var j = 0; j < length - 1; j++) {
       if (!temp[emp[j]]) {
         temp[emp[j]] = {};
@@ -1002,7 +1003,7 @@ Object
   $class.prototype = {
     getClassLoader: function() {
 
-      return heap.get(this, "classloader") || (window.js.lang.ClassLoader ? js.lang.ClassLoader
+      return heap.get(this, "classloader") || (js.lang.ClassLoader ? js.lang.ClassLoader
         .getSystemClassLoader() : null);
     },
 
@@ -1089,8 +1090,8 @@ Object
         m.setValue(proxy(m));
         m.setDeclaringClass(this);
 
-        if (window.js && window.js.lang && window.js.lang.reflect && window.js.lang.reflect.Method && window.js.lang.reflect.Method.loaded) {
-          m = new window.js.lang.reflect.Method(n, m.getValue(),
+        if (typeof js !== 'undefined' && !Object.isNull(js) && !Object.isNull(js.lang) && !Object.isNull(js.lang.reflect) && !Object.isNull(js.lang.reflect.Method) && js.lang.reflect.Method.loaded) {
+          m = new js.lang.reflect.Method(n, m.getValue(),
             this, m.getModifiers(), m.getAnnotations());
         }
         var modifiers = m.getModifiers(),
@@ -1136,8 +1137,8 @@ Object
           doAnnotations(this, m);
         }
         m.setDeclaringClass(this);
-        if (window.js && window.js.lang && window.js.lang.reflect && window.js.lang.reflect.Field && window.js.lang.reflect.Field.loaded) {
-          m = new window.js.lang.reflect.Field(m.getName(), m
+        if (typeof js !== 'undefined' && !Object.isNull(js) && !Object.isNull(js.lang) && !Object.isNull(js.lang.reflect) && !Object.isNull(js.lang.reflect.Field) && js.lang.reflect.Field.loaded) {
+          m = new js.lang.reflect.Field(m.getName(), m
             .getValue(), this, m.getModifiers(), m
             .getAnnotations());
         }
@@ -1201,7 +1202,7 @@ Object
   Class.forName = function(cls, classloader) {
     return new $class(cls, classloader);
   };
-})();
+})(this);
 
 // TODO
 // Function,Array,String,Boolean,Number,Date,RegExp,Error,EvalError,RangeError,ReferenceError,SyntaxError,TypeError,URIError对象的$class属性

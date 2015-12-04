@@ -1,7 +1,77 @@
+define(function(require, exports, module) {
+
+
+  require("js.test.TestCase");
+  console.log("***********1*************");
+  //require("js.lang.StringBuffer");
+  //console.log("***********2*************");
+  //require("js.test.Assert");
+  //console.log("***********3*************");
+});
+
+
+
+/*
+$import("js.test.TestCase", "BootstrapClassLoader", false, function() {
+  console.log("***********1*************");
+  $import("js.lang.StringBuffer", "BootstrapClassLoader", false, function() {
+    console.log("***********2*************");
+    $import("js.test.Assert", "BootstrapClassLoader", false, function() {
+      console.log("***********3*************");
+    });
+  });
+});
+//define(function(require, exports, module) {
+
+require("http://10.32.22.143:8000/static/jre/src/main/js/js/net/Http.js");
+
+define(function(require, exports, module) {
+
+  require("./TestOOP");
+
+  define(function(require, exports, module) {
+    require("/static/jre/src/main/js/js/net/Rest");
+  });
+
+});
+console.log("***********test*************");
+
+//});
+
+
+
+
+
+
+*/
+
+
+/*
 $import("js.test.TestCase", "BootstrapClassLoader");
 $import("js.lang.StringBuffer", "BootstrapClassLoader");
 $import("js.lang.System", "BootstrapClassLoader");
 $import("js.test.Assert", "BootstrapClassLoader");
+
+
+
+$import("js.test.TestCase", "BootstrapClassLoader");
+$import("js.lang.StringBuffer", "BootstrapClassLoader");
+$import("js.lang.System", "BootstrapClassLoader");
+$import("js.test.Assert", "BootstrapClassLoader");
+
+
+$import("js.test.TestCase", "BootstrapClassLoader");
+$import("js.lang.StringBuffer", "BootstrapClassLoader");
+$import("js.lang.System", "BootstrapClassLoader");
+$import("js.test.Assert", "BootstrapClassLoader");
+
+
+$import("js.test.TestCase", "BootstrapClassLoader");
+$import("js.lang.StringBuffer", "BootstrapClassLoader");
+$import("js.lang.System", "BootstrapClassLoader");
+$import("js.test.Assert", "BootstrapClassLoader");
+
+
 
 Class.forName({
   name: "class test.lang.TestStringBuffer extends js.test.TestCase",
@@ -91,4 +161,6 @@ Class.forName({
 });
 
 new test.lang.TestStringBuffer();
+
+*/
 

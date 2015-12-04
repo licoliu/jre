@@ -52,8 +52,11 @@ Class.forName({
   "private static bootstrapClassLoader": null,
 
   "private BootstrapClassLoader": function() {
-    //System.getProperty("atom.boot.class.path")
-    this.setRoot(this.getRoot() + (this.debug ? '/jre/src/main/js/' : "/jre/classes/js/"));
+
+  },
+
+  "public getRelative": function() {
+    return js.lang.System.getProperty("atom.bootstrap.class.path");
   },
 
   "public static getBootstrapClassLoader": function() {
@@ -73,8 +76,10 @@ Class.forName({
 
   "private ExtClassLoader": function(parent) {
     this.parent = parent;
-    //System.getProperty("js.ext.dirs")
-    this.setRoot(this.getRoot() + "/lib/");
+  },
+
+  "public getRelative": function() {
+    return js.lang.System.getProperty("js.ext.dirs");
   },
 
   "public static getExtClassLoader": function(cl) {
@@ -91,27 +96,13 @@ Class.forName({
   name: "class atom.misc.Launcher.CSSClassLoader extends js.net.URLClassLoader",
 
   "private static cssClassLoader": null,
-  "public static final BOOT": "BOOT",
+  "public static final BOOTSTRAP": "BOOTSTRAP",
   "public static final EXT": "EXT",
   "public static final APP": "APP",
   "public static final SKIN": "SKIN",
   "@Setter @Getter private skin": null,
 
-  "private CSSClassLoader": function() {
-    var skin = null,
-      scripts = document.getElementsByTagName("script");
-    for (var i = 0, len = scripts.length; i < len; i++) {
-      var script = scripts[i],
-        jsvm = script.getAttribute("jsvm"),
-        s = script.getAttribute("skin");
-
-      if (jsvm && jsvm === 'true') {
-        skin = s;
-        break;
-      }
-    }
-    this.skin = skin;
-  },
+  "private CSSClassLoader": function() {},
 
   "public static getCSSClassLoader": function() {
     var loader = atom.misc.Launcher.CSSClassLoader.cssClassLoader;
@@ -120,6 +111,10 @@ Class.forName({
       atom.misc.Launcher.CSSClassLoader.cssClassLoader = loader;
     }
     return loader;
+  },
+
+  "public getRelative": function() {
+    return js.lang.System.getProperty("atom.root.dirs");
   },
 
   findClass: function(linkUrl, notModify, type) {
@@ -154,8 +149,11 @@ Class.forName({
         querys.push("t=" + new Date().getTime());
       }
 
-      if (this.version) {
-        querys.push("v=" + this.version);
+      var version = js.lang.System.getProperty("version");
+      var debug = js.lang.System.getProperty("debug");
+
+      if (version) {
+        querys.push("v=" + version);
       }
 
       if (querys.length > 0) {
@@ -167,31 +165,57 @@ Class.forName({
           relative = '/lib/';
           break;
         case atom.misc.Launcher.CSSClassLoader.SKIN:
-          relative = (this.debug ? '/src/main/skin/' : "/classes/skin/") + this.skin + "/css/";
+          relative = (debug ? '/src/main/skin/' : "/classes/skin/") + this.skin + "/css/";
           break;
-        case atom.misc.Launcher.CSSClassLoader.BOOT:
+        case atom.misc.Launcher.CSSClassLoader.BOOTSTRAP:
           relative = "";
           break;
         case atom.misc.Launcher.CSSClassLoader.APP:
         default:
-          relative = (this.debug ? '/src/main/css/' : "/classes/css/");
+          relative = (debug ? '/src/main/css/' : "/classes/css/");
           break;
       }
 
-      classes[url] = this.root + relative + src;
+      classes[url] = this.getRelative() + relative + src;
     }
     return classes;
   },
 
-  "protected loadClassInternal": function(linkUrl, type, notModify) {
-    if (!Object.isString(linkUrl)) {
+  "protected loadClass": function(url, callback, $scope, type, notModify) {
+
+    var isString = (Object.isString(url));
+
+    if (isString)
+      url = [url];
+
+    if (!Object.isArray(url)) {
       return false;
     }
-    var link = document.createElement('link');
-    link.type = 'text/css';
-    link.rel = 'stylesheet';
-    link.href = this.findClass(linkUrl, notModify, type)[linkUrl];
-    (document.head || document.getElementsByTagName("head")[0]).appendChild(link);
+
+    var linkCount = url.length,
+      completed = [],
+      failed = [];
+
+    if (linkCount === 0) {
+      if (callback) {
+        callback.call($scope, true);
+      }
+      return true;
+    }
+
+    for (var i = 0; i < linkCount; i++) {
+      var linkUrl = url[i];
+
+      if (!Object.isString(linkUrl)) {
+        return false;
+      }
+      var link = document.createElement('link');
+      link.type = 'text/css';
+      link.rel = 'stylesheet';
+      link.href = this.findClass(linkUrl, notModify, type)[linkUrl];
+      (document.head || document.getElementsByTagName("head")[0]).appendChild(link);
+
+    }
   }
 });
 
@@ -199,32 +223,16 @@ Class.forName({
   name: "class atom.misc.Launcher.AppClassLoader extends js.net.URLClassLoader",
 
   "private static appClassLoader": null,
-  '@Setter @Getter mainClass': null,
 
   "private AppClassLoader": function(parent) {
     this.parent = parent;
-
-    var mainClass = null,
-      scripts = document.getElementsByTagName("script");
-
-    for (var i = 0, len = scripts.length; i < len; i++) {
-      var script = scripts[i],
-        jsvm = script.getAttribute("jsvm"),
-        main = script.getAttribute("main");
-
-      if (jsvm && jsvm === 'true') {
-        if (main) {
-          mainClass = main;
-        }
-        break;
-      }
-    }
-
-    this.mainClass = mainClass;
-
-    //System.getProperty("js.class.path")
-    this.setRoot(this.getRoot() + (this.debug ? '/src/main/js/' : "/classes/js/"));
   },
+
+
+  "public getRelative": function() {
+    return js.lang.System.getProperty("js.class.path");
+  },
+
 
   "public static getAppClassLoader": function(cl) {
     var loader = atom.misc.Launcher.AppClassLoader.appClassLoader;
@@ -236,17 +244,196 @@ Class.forName({
   },
 
   "public main": function() {
-    if (this.mainClass) {
-      this.loadClass(this.mainClass);
+    var mainClass = js.lang.System.getProperty("main");
+    if (mainClass) {
+      if (typeof seajs !== 'undefined') {
+        seajs.config({
+          // base: js.lang.System.getProperty("js.class.path")
+        })
+        seajs.use(mainClass);
+      } else {
+        this.loadClass(mainClass);
+      }
     }
   }
 });
-/*
-$import([
-    "js.lang.ClassNotFoundException",
-    "js.lang.reflect.Field",
-    "js.lang.reflect.Method"
-], "BootstrapClassLoader");
-*/
-js.dom.Document.ready(atom.misc.Launcher.getLauncher().getLoader().main, atom.misc.Launcher.getLauncher().getLoader());
+(function(global) {
+  global.$import = function(name, classloader, async, callback) {
+    if (Object.isNull(classloader)) {
+      var index = name.indexOf("!");
+      var prefix = "";
+      if (index !== -1) {
+        prefix = name.substring(0, index);
+        name = name.substring(index + 1);
+      }
 
+      switch (prefix) {
+        //css,css-ext,skin
+        case 'skin':
+          classloader = 'CSSClassLoader';
+          async = atom.misc.Launcher.CSSClassLoader.SKIN;
+          break;
+        case 'css':
+        case 'css:app':
+          classloader = 'CSSClassLoader';
+          async = null;
+          break;
+        case 'css:ext':
+          classloader = 'CSSClassLoader';
+          async = atom.misc.Launcher.CSSClassLoader.EXT;
+          break;
+        case 'css:bootstrap':
+          classloader = 'CSSClassLoader';
+          async = atom.misc.Launcher.CSSClassLoader.BOOTSTRAP;
+          break;
+
+          //4.bootstrap,ext,app
+        case 'js:ext':
+        case 'ext':
+          classloader = 'ExtClassLoader';
+          break;
+        case 'js:bootstrap':
+        case 'bootstrap':
+          classloader = 'BootstrapClassLoader';
+          break;
+        case 'js:app':
+        case 'app':
+        default:
+          classloader = null;
+          break;
+      }
+
+      if (Object.isNull(classloader)) {
+        classloader = js.lang.ClassLoader.getSystemClassLoader();
+      }
+    } else if (!Object.isInstanceof(classloader, js.lang.ClassLoader)) {
+      switch (classloader) {
+        case 'BootstrapClassLoader':
+          classloader = atom.misc.Launcher.BootstrapClassLoader.getBootstrapClassLoader();
+          break;
+        case 'ExtClassLoader':
+          classloader = atom.misc.Launcher.ExtClassLoader.getExtClassLoader();
+          break;
+        case 'CSSClassLoader':
+          classloader = atom.misc.Launcher.CSSClassLoader.getCSSClassLoader();
+          break;
+        default:
+          classloader = js.lang.ClassLoader.getSystemClassLoader();
+          break;
+      }
+    }
+    // 1判断内存中是否存在 ， 2判断当前ClassLoader是否加载过。classloader.getDebug()
+    return classloader.loadClass(name, callback, null, async, false);
+  };
+
+  if (!global.define) {
+    global.define = function(factory) {
+      if (Object.isFunction(factory)) {
+        factory.call(global, global.$import, global);
+      } else {
+        var name = arguments.callee.caller.arguments[0];
+        if (name && !"".equals(name = name.trim())) {
+          var names = name.split("."),
+            len = names.length,
+            g = global;
+          for (var i = 0; i < len; i++) {
+            g = g[i];
+            if (!g) {
+              g = {};
+            }
+          }
+          g = factory;
+        }
+      }
+    };
+  }
+
+  js.lang.System.setOut(new js.io.Console(console));
+
+  var root = [location.origin],
+    version = null,
+    isDebug = false,
+    scripts = document.getElementsByTagName("script"),
+    path = null,
+    mainClass = null,
+    skin = null;
+
+  for (var i = 0, len = scripts.length; i < len; i++) {
+    var script = scripts[i],
+      jsvm = script.getAttribute("jsvm"),
+      servletpath = script.getAttribute("servletpath"),
+      hasDebug = script.hasAttribute("debug"),
+      debug = script.getAttribute("debug"),
+      v = script.getAttribute("version"),
+      main = script.getAttribute("main"),
+      s = script.getAttribute("skin");
+
+    if (jsvm && jsvm === 'true') {
+      if (servletpath) {
+        servletpath = servletpath.trim();
+
+        if (!"/".equals(servletpath)) {
+          if (servletpath.indexOf("/") === 0) {
+            servletpath = servletpath.substring(1);
+          }
+          if (servletpath.lastIndexOf("/") === servletpath.length - 1) {
+            servletpath = servletpath.substring(0, servletpath.length - 1);
+          }
+          root.push(servletpath);
+        }
+      }
+
+      if (hasDebug && debug.toLowerCase() !== 'false') {
+        isDebug = true;
+      }
+
+      if (main) {
+        mainClass = main;
+      }
+      skin = s;
+      version = v;
+      break;
+    }
+  }
+
+  path = root.join("/");
+
+  var loader = atom.misc.Launcher.getLauncher().getLoader();
+
+  var refPath = isDebug ? '/src/main/' : "/classes/";
+
+  var bootstrapPath = path + "/jre" + refPath;
+  var extPath = path + '/lib/';
+  var appPath = path + refPath;
+
+  js.lang.System.setProperty("atom.root.dirs", path);
+
+  js.lang.System.setProperty("atom.bootstrap.class.path", bootstrapPath + 'js/');
+  js.lang.System.setProperty("js.ext.dirs", extPath);
+  js.lang.System.setProperty("js.class.path", appPath + 'js/');
+
+  js.lang.System.setProperty("css.bootstrap.dirs", bootstrapPath + 'css/');
+  js.lang.System.setProperty("css.ext.dirs", extPath);
+  js.lang.System.setProperty("css.class.path", appPath + 'css/');
+  js.lang.System.setProperty("css.skin.path", appPath + 'skin/');
+
+  js.lang.System.setProperty("template.bootstrap.dirs", bootstrapPath + 'template/');
+  js.lang.System.setProperty("template.ext.dirs", extPath);
+  js.lang.System.setProperty("template.class.path", appPath + 'template/');
+
+  js.lang.System.setProperty("main", mainClass);
+  js.lang.System.setProperty("debug", isDebug);
+  js.lang.System.setProperty("version", version);
+  js.lang.System.setProperty("servletpath", servletpath);
+  js.lang.System.setProperty("skin", skin);
+  /*
+  $import([
+      "js.lang.ClassNotFoundException",
+      "js.lang.reflect.Field",
+      "js.lang.reflect.Method"
+  ], "BootstrapClassLoader");
+  */
+  js.dom.Document.ready(loader.main, loader);
+
+
+})(this);

@@ -6,7 +6,7 @@
  * Date: Feb 10, 2014
  */
 
-(function() {
+(function(global) {
   var USEECMA = !!Object.defineProperties;
 
   var extend = (function() {
@@ -91,7 +91,7 @@
     return function(d, s, k, m, pros) {
 
 
-      if (d === null || s === null || d === undefined || s === undefined || typeof d === "number" || typeof s === "number" || typeof d === "string" || typeof s === "string" || typeof d === "boolean" || typeof s === "boolean") {
+      if (typeof d === 'undefined' || d === null || typeof s === 'undefined' || s === null || typeof d === "number" || typeof s === "number" || typeof d === "string" || typeof s === "string" || typeof d === "boolean" || typeof s === "boolean") {
         return d;
       }
       if (Object.prototype.toString.apply(s) !== "[object Array]") {
@@ -125,7 +125,7 @@
     Object.extend = extend;
     Object.USEECMA = USEECMA;
   }
-})();
+})(this);
 
 Object
   .extend(
@@ -134,11 +134,11 @@ Object
       return {
         // TODO 增加isNull和isEmpty的区分
         isNull: function(v) {
-          return v === null || v === undefined;
+          return typeof v === 'undefined' || v === null;
         },
 
         isEmpty: function(v) {
-          return v === null || v === undefined || ((Object.isArray(v) && !v.length)) || (Object.isString(v) && !(v.trim ? v.trim() : v.replace(/^\s+|\s+$/g, "")));
+          return typeof v === 'undefined' || v === null || ((Object.isArray(v) && !v.length)) || (Object.isString(v) && !(v.trim ? v.trim() : v.replace(/^\s+|\s+$/g, "")));
         },
 
         isArray: function(v) {
@@ -217,7 +217,7 @@ Object
       configurable: false
     });
 
-(function() {
+(function(global) {
 
   var fetch = function(name, callback, scope) {
     if (Object.isEmpty(name)) {
@@ -225,7 +225,8 @@ Object
     }
     var emp = name.split("."),
       length = emp.length,
-      temp = window;
+      temp = global;
+
     for (var j = 0; j < length - 1; j++) {
       if (!temp[emp[j]]) {
         temp[emp[j]] = {};
@@ -1002,7 +1003,7 @@ Object
   $class.prototype = {
     getClassLoader: function() {
 
-      return heap.get(this, "classloader") || (window.js.lang.ClassLoader ? js.lang.ClassLoader
+      return heap.get(this, "classloader") || (js.lang.ClassLoader ? js.lang.ClassLoader
         .getSystemClassLoader() : null);
     },
 
@@ -1089,8 +1090,8 @@ Object
         m.setValue(proxy(m));
         m.setDeclaringClass(this);
 
-        if (window.js && window.js.lang && window.js.lang.reflect && window.js.lang.reflect.Method && window.js.lang.reflect.Method.loaded) {
-          m = new window.js.lang.reflect.Method(n, m.getValue(),
+        if (typeof js !== 'undefined' && !Object.isNull(js) && !Object.isNull(js.lang) && !Object.isNull(js.lang.reflect) && !Object.isNull(js.lang.reflect.Method) && js.lang.reflect.Method.loaded) {
+          m = new js.lang.reflect.Method(n, m.getValue(),
             this, m.getModifiers(), m.getAnnotations());
         }
         var modifiers = m.getModifiers(),
@@ -1136,8 +1137,8 @@ Object
           doAnnotations(this, m);
         }
         m.setDeclaringClass(this);
-        if (window.js && window.js.lang && window.js.lang.reflect && window.js.lang.reflect.Field && window.js.lang.reflect.Field.loaded) {
-          m = new window.js.lang.reflect.Field(m.getName(), m
+        if (typeof js !== 'undefined' && !Object.isNull(js) && !Object.isNull(js.lang) && !Object.isNull(js.lang.reflect) && !Object.isNull(js.lang.reflect.Field) && js.lang.reflect.Field.loaded) {
+          m = new js.lang.reflect.Field(m.getName(), m
             .getValue(), this, m.getModifiers(), m
             .getAnnotations());
         }
@@ -1201,7 +1202,7 @@ Object
   Class.forName = function(cls, classloader) {
     return new $class(cls, classloader);
   };
-})();
+})(this);
 
 // TODO
 // Function,Array,String,Boolean,Number,Date,RegExp,Error,EvalError,RangeError,ReferenceError,SyntaxError,TypeError,URIError对象的$class属性
@@ -1215,11 +1216,11 @@ Object
  * Date: Feb 10, 2014
  */
 "use strict";
-(function() {
+(function(global) {
   var currentTimeMillis = function() {
     return new Date().getTime();
   };
-  var $class = Class.forName({
+  var $class = global.Class.forName({
     name: "class Object",
     alias: "js.lang.Object",
     Object: function() {
@@ -1300,7 +1301,7 @@ Object
     },
 
     "toJson": (function() {
-      var NATIVE_JSON_STRINGIFY_SUPPORT = window.JSON && typeof JSON.stringify === "function" && JSON.stringify(0) === "0" && typeof JSON.stringify(function() {}) === "undefined";
+      var NATIVE_JSON_STRINGIFY_SUPPORT = typeof JSON !== 'undefined' && JSON && typeof JSON.stringify === "function" && JSON.stringify(0) === "0" && typeof JSON.stringify(function() {}) === "undefined";
       return function() {
         if (NATIVE_JSON_STRINGIFY_SUPPORT) {
           // TODO 只取public属性
@@ -1333,7 +1334,7 @@ Object
   } else {
     Object.$class = $class;
   }
-})();
+})(this);
 
 
 /*
@@ -1674,9 +1675,436 @@ Class.forName({
 
   '@Setter @Getter private classes': [],
 
-  "abstract loadClass": function(scriptUrl, callback, scope, showBusy) {},
+  "abstract loadClass": function(scriptUrl, callback, scope) {},
   'static getSystemClassLoader': function(scriptUrl) {
     return atom.misc.Launcher.getLauncher().getClassLoader();
+  }
+});
+
+
+/*
+ * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
+ * 
+ * Copyright 2008, 2014 Atom Union, Inc. Released under the MIT license
+ * 
+ * Date: Feb 14, 2014
+ */
+
+Class.forName({
+  name: "abstract class js.io.Writer extends Object",
+  "protected _writer": null,
+  Writer: function(writer) {
+    this._writer = writer;
+  },
+
+  /** 将指定字符追加到此 writer。 */
+  append: function(c) {
+    return this;
+  },
+  /** 写入字符数组,字符,字符串或某一部分 */
+  write: function(cbuf, off, len) {}
+});
+
+
+/*
+ * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
+ * 
+ * Copyright 2008, 2014 Atom Union, Inc. Released under the MIT license
+ * 
+ * Date: Feb 14, 2014
+ */
+Class.forName({
+  name: "class js.io.PrintWriter extends js.io.Writer",
+  PrintWriter: function() {},
+  print: function(cbuf, off, len, ln) {},
+  println: function(cbuf, off, len) {
+    this.print(cbuf, off, len, true);
+  }
+});
+
+
+/*
+ * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
+ * 
+ * Copyright 2008, 2014 Atom Union, Inc. Released under the MIT license
+ * 
+ * Date: Feb 14, 2014
+ */
+Class
+  .forName({
+    name: "class js.io.Console extends js.io.PrintWriter",
+    Console: function(writer) {
+      if (writer && writer.log && typeof writer.log != 'function') {
+        this._ie = true;
+      }
+      this._writer = writer;
+    },
+    "private unsupport": function() {
+      var msg = null;
+      if (arguments.length <= 0) {
+        msg = "Your browser console don\'t support the output instruction. Please check your browser version:\"" + js.lang.System.getEnv("userAgent") + "\"";
+      } else {
+        msg = Array.prototype.slice.call(arguments).join(' ; ');
+      }
+      alert(msg);
+    },
+    print: function(buf, off, len, ln) {
+      var cbuf = buf;
+      if (!Object.isEmpty(cbuf)) {
+        if (!Object.isString(cbuf) && !Object.isArray(cbuf)) {
+          cbuf = cbuf.toString();
+        }
+        var str = null;
+        if (!off || off < 0)
+          off = 0;
+        if (!len) {
+          len = cbuf.length - off;
+        } else if (off + len > cbuf.length)
+          len = cbuf.length - off;
+
+        if (Object.isString(cbuf)) {
+          str = cbuf.substring(off, len + off);
+        } else {
+          str = cbuf.slice(off, len + off);
+        }
+        this.log("%s", ln ? str + "\n" : str);
+
+      }
+    },
+    /** 判断一个表达式或变量是否为真。如果结果为否，则在控制台输出一条相应信息，并且抛出一个异常 */
+    assert: function() {
+      return (this._writer.assert || this.unsupport).apply(
+        this._writer, arguments);
+    },
+
+    /**
+     * 打印日志信息，支持printf风格的占位符。只支持字符（%s）、整数（%d或%i）、浮点数（%f）和对象（%o）四种。 比如，
+     * log("%d年%d月%d日",2011,3,26); log("圆周率是%f",3.1415926);
+     */
+    log: function() {
+
+      if (this._ie && this._writer.log) {
+        if (arguments.length === 1) {
+          this._writer.log(arguments[0]);
+        } else if (arguments.length > 1) {
+          this._writer.log(arguments[0], arguments[1]);
+        }
+        return;
+      }
+
+      return (this._writer.log || this.unsupport).apply(this._writer,
+        arguments);
+
+    },
+
+    /**
+     * 打印一般信息，支持printf风格的占位符。
+     */
+    info: function() {
+
+      if (this._ie && this._writer.info) {
+        if (arguments.length === 1) {
+          this._writer.info(arguments[0]);
+        } else if (arguments.length > 1) {
+          this._writer.info(arguments[0], arguments[1]);
+        }
+        return;
+      }
+
+      return (this._writer.info || this.unsupport).apply(
+        this._writer, arguments);
+    },
+
+    /**
+     * 打印警告提示，支持printf风格的占位符。
+     */
+    warn: function() {
+
+      if (this._ie && this._writer.warn) {
+        if (arguments.length === 1) {
+          this._writer.warn(arguments[0]);
+        } else if (arguments.length > 1) {
+          this._writer.warn(arguments[0], arguments[1]);
+        }
+        return;
+      }
+
+      return (this._writer.warn || this.unsupport).apply(
+        this._writer, arguments);
+    },
+
+    /**
+     * 打印误提示，支持printf风格的占位符。
+     */
+    error: function() {
+
+      if (this._ie && this._writer.error) {
+        if (arguments.length === 1) {
+          this._writer.error(arguments[0]);
+        } else if (arguments.length > 1) {
+          this._writer.error(arguments[0], arguments[1]);
+        }
+        return;
+      }
+
+      return (this._writer.error || this.unsupport).apply(
+        this._writer, arguments);
+    },
+
+    /**
+     * 可以显示一个对象所有的属性和方法。
+     */
+    dir: function() {
+      return (this._writer.dir || this.unsupport).apply(this._writer,
+        arguments);
+    },
+
+    /**
+     * profile()和profileEnd()，用来显示代码的性能分析。
+     * 
+     * profile("性能分析器一"); ----待检测的代码---- profileEnd();
+     */
+    profile: function() {
+      return (this._writer.profile || this.unsupport).apply(
+        this._writer, arguments);
+    },
+
+    profileEnd: function() {
+      return (this._writer.profileEnd || this.unsupport).apply(
+        this._writer, arguments);
+    },
+
+    /** ie9,firfox */
+    clear: function() {
+      if (this._ie && this._writer.clear) {
+        return this._writer.clear();
+      }
+      return (this._writer.clear || this.unsupport).apply(
+        this._writer, arguments);
+    },
+
+    /**
+     * 用来追踪函数的调用轨迹。
+     * 
+     * 
+     * 比如，有一个加法器函数。
+     * 
+     * <pre>
+     * function add(a, b) {
+     * 	return a + b;
+     * }
+     * </pre>
+     * 
+     * 如果想知道这个函数是如何被调用的，在其中加入console.trace()方法就可以了。
+     * 
+     * <pre>
+     * function add(a, b) {
+     * 	console.trace();
+     * 	return a + b;
+     * }
+     * </pre>
+     * 
+     * 假定这个函数的调用代码如下：
+     * 
+     * <pre>
+     * var x = add3(1, 1);
+     * function add3(a, b) {
+     * 	return add2(a, b);
+     * }
+     * function add2(a, b) {
+     * 	return add1(a, b);
+     * }
+     * function add1(a, b) {
+     * 	return add(a, b);
+     * }
+     * </pre>
+     * 
+     * 运行后，会显示add()的调用轨迹，从上到下依次为add()、add1()、add2()、add3()。
+     * 
+     */
+    trace: function() {
+      return (this._writer.trace || this.unsupport).apply(
+        this._writer, arguments);
+    },
+    /**
+     * 打印调试信息，支持printf风格的占位符。
+     */
+    debug: function() {
+      return (this._writer.debug || this.unsupport).apply(
+        this._writer, arguments);
+    },
+
+    /**
+     * 用来显示网页的某个节点（node）所包含的html/xml代码。比如，先获取一个表格节点，然后，显示该节点包含的代码。
+     * dirxml(document.getElementById("ID"));
+     */
+    dirxml: function() {
+      return (this._writer.dirxml || this.unsupport).apply(
+        this._writer, arguments);
+    },
+
+    /**
+     * 如果信息太多，可以分组显示，用到的方法是console.group()和console.groupEnd()。
+     */
+    group: function() {
+      if (this._ie) {
+        return this.println(arguments[0] || "***************start*****************");
+      }
+      return (this._writer.group || this.unsupport).apply(
+        this._writer, arguments);
+    },
+    groupCollapsed: function() {
+      return (this._writer.groupCollapsed || this.unsupport).apply(
+        this._writer, arguments);
+    },
+    /**
+     * 如果信息太多，可以分组显示，用到的方法是console.group()和console.groupEnd()。
+     */
+    groupEnd: function() {
+      if (this._ie) {
+        return this.println(arguments[0] || "***************end*****************");
+      }
+      return (this._writer.groupEnd || this.unsupport).apply(
+        this._writer, arguments);
+    },
+    markTimeline: function() {
+      return (this._writer.markTimeline || this.unsupport).apply(
+        this._writer, arguments);
+    },
+    /**
+     * time()和timeEnd()，用来显示代码的运行时间。
+     * 
+     * time("计时器一"); ----待检测的代码---- timeEnd("计时器一");
+     */
+    time: function() {
+      return (this._writer.time || this.unsupport).apply(
+        this._writer, arguments);
+    },
+    timeEnd: function() {
+      return (this._writer.timeEnd || this.unsupport).apply(
+        this._writer, arguments);
+    },
+    timeStamp: function() {
+      return (this._writer.timeStamp || this.unsupport).apply(
+        this._writer, arguments);
+    },
+    count: function() {
+      return (this._writer.count || this.unsupport).apply(
+        this._writer, arguments);
+    }
+  });
+
+
+/*
+ * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
+ *
+ * Copyright 2008, 2014 Atom Union, Inc. Released under the MIT license
+ *
+ * Date: Feb 13, 2014
+ */
+
+Class.forName({
+  name: "class js.lang.System extends Object",
+  "static err": null, // 错误流
+  "static out": null, // 输出流
+  "static properties": {},
+  "private static _env": (function() {
+    var userAgent = navigator.userAgent,
+      ua = userAgent.toLowerCase(),
+      check = function(r) {
+        return r.test(ua);
+      },
+      DOC = document,
+      docMode = DOC.documentMode,
+      isStrict = DOC.compatMode === "CSS1Compat",
+      isOpera = check(/opera/),
+      isChrome = check(/\bchrome\b/),
+      isWebKit = check(/webkit/),
+      isSafari = !isChrome && check(/safari/),
+      isSafari2 = isSafari && check(/applewebkit\/4/), // unique to Safari 2
+      isSafari3 = isSafari && check(/version\/3/),
+      isSafari4 = isSafari && check(/version\/4/),
+      isIE = !isOpera && check(/msie/),
+      isIE7 = isIE && (check(/msie 7/) || docMode === 7),
+      isIE8 = isIE && (check(/msie 8/) && docMode !== 7),
+      isIE6 = isIE && !isIE7 && !isIE8,
+      isGecko = !isWebKit && check(/gecko/),
+      isGecko2 = isGecko && check(/rv:1\.8/),
+      isGecko3 = isGecko && check(/rv:1\.9/),
+      isBorderBox = isIE && !isStrict,
+      isWindows = check(/windows|win32/),
+      isMac = check(/macintosh|mac os x/),
+      isAir = check(/adobeair/),
+      isLinux = check(/linux/),
+      isSecure = /^https/i.test(location.protocol),
+      isIE9 = isIE && (check(/msie 9/) || docMode === 7),
+      isIE10 = isIE && (check(/msie 10/) || docMode === 7),
+      isIETrident = /(msie\s|trident.*rv:)([\w.]+)/.exec(ua);
+
+    return {
+      userAgent: userAgent,
+      isStrict: isStrict,
+      isOpera: isOpera,
+      isChrome: isChrome,
+      isWebkit: isWebKit,
+
+      isSafari: isSafari,
+      safariVersion: isSafari4 ? '4' : (isSafari3 ? '3' : (isSafari2 ? '2' : null)),
+
+      isIE: isIE || !!isIETrident,
+      ieVersion: isIE6 ? '6' : (isIE7 ? '7' : (isIE8 ? '8' : (isIE9 ? '9' : (isIE10 ? '10' : (!!isIETrident && Object.isArray(isIETrident) && isIETrident.length > 2 ? isIETrident[2] : null))))),
+
+      isGecko: isGecko,
+      geckoVesion: isGecko3 ? '3' : (isGecko2 ? '2' : (isGecko ? '1' : null)),
+
+      isBorderBox: isBorderBox,
+      isWindows: isWindows,
+      isMac: isMac,
+      isAir: isAir,
+      isLinux: isLinux,
+      isSecure: isSecure
+    };
+  })(),
+
+  /**
+   * 获得指定的环境变量值
+   */
+  "static getEnv": function(env) {
+    return (env) ? this._env[env] : this._env;
+  },
+
+  "static setOut": function(out) {
+    return js.lang.System.out = out;
+  },
+
+  "static setError": function(e) {
+    return js.lang.System.err = e;
+  },
+
+  "public static currentTimeMillis": function() {
+    return new Date().getTime();
+  },
+
+  "public static native arraycopy": function(src, srcPos, dest, destPos, length) {
+    var parameter = Array.prototype.slice.call(src, srcPos, srcPos + length);
+    Array.prototype.splice.call(parameter, 0, 0, destPos, 0);
+    Array.prototype.splice.apply(dest, parameter);
+  },
+
+  "public static setProperty": function(name, value) {
+    return js.lang.System.properties[name] = value;
+  },
+
+  "public static getProperty": function(name) {
+    return js.lang.System.properties[name];
+  },
+
+  "public static setProperties": function(props) {
+    js.lang.System.properties = props;
+  },
+
+  "public static Properties getProperties": function() {
+    return js.lang.System.properties;
   }
 });
 
@@ -1695,44 +2123,16 @@ Class.forName({
   '@Setter @Getter loadedScripts': {},
   '@Setter @Getter waitingList': {},
   '@Setter @Getter path': [],
-  '@Setter @Getter root': "",
-  '@Setter @Getter version': null,
-  '@Setter @Getter debug': false,
 
   URLClassLoader: function(parent) {
     this.parent = parent;
-
-    var root = [window.location.origin],
-      version = null,
-      isDebug = false,
-      scripts = document.getElementsByTagName("script");
-
-    for (var i = 0, len = scripts.length; i < len; i++) {
-      var script = scripts[i],
-        jsvm = script.getAttribute("jsvm"),
-        servletpath = script.getAttribute("servletpath"),
-        hasDebug = script.hasAttribute("debug"),
-        debug = script.getAttribute("debug"),
-        v = script.getAttribute("version");
-
-      if (jsvm && jsvm === 'true') {
-        if (servletpath) {
-          root.push(servletpath);
-        }
-
-        if (hasDebug && debug.toLowerCase() !== 'false') {
-          isDebug = true;
-        }
-
-        version = v;
-        break;
-      }
-    }
-
-    this.debug = isDebug;
-    this.version = version;
-    this.root = root.join("/");
   },
+
+  getVersion: function() {
+    return js.lang.System.getProperty("skin");
+  },
+
+  "public abstract getRelative": function() {},
 
   findClass: function(scriptUrl, notModify) {
     var isString = (Object.isString(scriptUrl));
@@ -1761,8 +2161,9 @@ Class.forName({
       }
       src = src.replace(/[.]/g, "/") + ".js";
 
-      if (this.version) {
-        querys.push("v=" + this.version);
+
+      if (this.getVersion()) {
+        querys.push("v=" + this.getVersion());
       }
 
       if (notModify) {
@@ -1773,7 +2174,7 @@ Class.forName({
         src += "?" + querys.join("&");
       }
 
-      classes[url] = this.root + src;
+      classes[url] = this.getRelative() + src;
     }
     return classes;
   },
@@ -1809,79 +2210,19 @@ Class.forName({
    *          alert( 'Number of scripts loaded: ' + completed.length );
    *          alert( 'Number of failures: ' + failed.length ); });
    */
-  loadClass: function(scriptUrl, synchronous, notModify, callback, $scope, showBusy) {
+  loadClass: (function(global) {
 
-    var isString = (Object.isString(scriptUrl));
+    var checkLoaded = function(url, success, asynchronous, notModify, callback, $scope, completed, failed, last) {
 
-    if (isString)
-      scriptUrl = [scriptUrl];
-
-    if (!Object.isArray(scriptUrl)) {
-      return false;
-    }
-
-    var scriptCount = scriptUrl.length,
-      completed = [],
-      failed = [];
-
-    if (!$scope) {
-      $scope = this;
-    }
-
-    if (scriptCount === 0) {
-      if (callback) {
-        callback.call($scope, true);
-      }
-      return true;
-    }
-
-    for (var i = 0; i < scriptCount; i++) {
-      var url = scriptUrl[i];
-
-      this.loadClassInternal(url, synchronous, notModify, function(url, success) {
-        (success ? completed : failed).push(url);
-        if (i === scriptCount - 1) {
-          if (callback) {
-            callback.call($scope, completed, failed);
-          }
-          if (failed.length > 0) {
-            throw new js.lang.ClassNotFoundException("Can't find Class named (" + failed.join(",") + ")");
-          }
+      (success ? completed : failed).push(url);
+      if (last) {
+        if (callback) {
+          callback.call($scope, completed, failed);
         }
-      }, $scope, showBusy);
-    }
-  },
-
-  "protected loadClassInternal": function(scriptUrl, synchronous, notModify, callback, $scope, showBusy) {
-
-    var isString = Object.isString(scriptUrl);
-
-    if (!isString) {
-      return false;
-    }
-
-    var loadedScripts = this.loadedScripts,
-      waitingList = this.waitingList,
-      scope = this;
-
-    if (showBusy) {
-      document.setStyle('cursor', 'wait');
-    }
-
-    if (!$scope) {
-      $scope = this;
-    }
-
-    var checkLoaded = function(url, success) {
-      if (showBusy) {
-        document.getDocumentElement().removeStyle('cursor');
-      }
-      if (callback) {
-        callback.call($scope, url, success);
       }
     };
 
-    var onLoad = function(url, success) {
+    var onLoad = function(url, success, asynchronous, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last) {
       // Mark this script as loaded.
 
       if (success) {
@@ -1895,15 +2236,17 @@ Class.forName({
 
           // Check all callbacks waiting for this file.
           for (var i = 0; i < waitingInfo.length; i++) {
-            waitingInfo[i](url, success);
+            waitingInfo[i](url, success, asynchronous, notModify, callback, $scope, completed, failed, last);
           }
         }
+      } else if (scope.parent) {
+        scope.parent.loadClass(url, callback, $scope, asynchronous, notModify);
       } else {
-        scope.parent.loadClassInternal(url, synchronous, notModify, callback, $scope, showBusy);
+        throw new js.lang.ClassNotFoundException("Can't find Class named (" + url + ")");
       }
     };
 
-    var loadScript = function(url, src) {
+    var loadScript = function(url, src, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last) {
 
       // Create the <script> element.
       var script = document.createElement('script');
@@ -1913,14 +2256,14 @@ Class.forName({
       if (script) {
         if ('addEventListener' in script) {
           script.onload = function() {
-            onLoad(url, true);
+            onLoad(url, true, true, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
           };
         } else if ('readyState' in script) { // for <IE9
           // Compatability
           script.onreadystatechange = function() {
             if (script.readyState === 'loaded' || script.readyState === 'complete') {
               script.onreadystatechange = null;
-              onLoad(url, true);
+              onLoad(url, true, true, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
             }
           };
         } else {
@@ -1931,14 +2274,14 @@ Class.forName({
             // immediately. Which will break the loading
             // sequence. (#3661)
             setTimeout(function() {
-              onLoad(url, true);
+              onLoad(url, true, true, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
             }, 0);
           };
 
           // FIXME: Opera and Safari will not fire onerror.
           /** @ignore */
           script.onerror = function() {
-            onLoad(url, false);
+            onLoad(url, false, true, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
           };
         }
         // }
@@ -1949,7 +2292,7 @@ Class.forName({
 
     };
 
-    var synchronousScript = function(url, src) {
+    var synchronousScript = function(url, src, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last) {
       var isCrossOriginRestricted = false,
         xhr, status, isIE = /msie/.test(navigator.userAgent.toLowerCase()),
         debugSourceURL = isIE ? "" : ("\n//@ sourceURL=" + src);
@@ -1972,84 +2315,1397 @@ Class.forName({
       isCrossOriginRestricted = isCrossOriginRestricted || (status === 0);
 
       if (isCrossOriginRestricted) {
-        onLoad(url, false);
+        onLoad(url, false, false, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
       } else if ((status >= 200 && status < 300) || (status === 304)) {
-
         //eval(xhr.responseText + debugSourceURL);
-        new Function(xhr.responseText + debugSourceURL)();
+        new Function(xhr.responseText + debugSourceURL)(url);
 
-        onLoad(url, true);
+        onLoad(url, true, false, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
       } else {
-        onLoad(url, false);
+        onLoad(url, false, false, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
       }
       xhr = null;
     };
 
-    var url = scriptUrl;
+    return function(scriptUrl, callback, $scope, asynchronous, notModify) {
 
-    // 1.判断内存中是否存在
-    var u = url.split("."),
-      ref = window;
-    for (var j = 0, len = u.length; j < len; j++) {
-      if (ref) {
-        ref = ref[u[j]];
-      } else {
-        break;
+      var isString = (Object.isString(scriptUrl));
+
+      if (isString)
+        scriptUrl = [scriptUrl];
+
+      if (!Object.isArray(scriptUrl)) {
+        return false;
       }
-    }
-    if (ref && !ref.equals(window)) {
-      return;
-    }
 
-    // 2.判断当前ClassLoader是否加载过。
-    if (loadedScripts[url]) {
-      return;
-    }
+      var scriptCount = scriptUrl.length,
+        completed = [],
+        failed = [];
 
-    var waitingInfo = waitingList[url] || (waitingList[url] = []);
+      if (!$scope) {
+        $scope = this;
+      }
 
-    // 3.Load it only for the first request.
-    if (waitingInfo.length > 0) {
-      return;
-    } else {
-      waitingInfo.push(checkLoaded);
-    }
+      if (scriptCount === 0) {
+        if (callback) {
+          callback.call($scope, true);
+        }
+        return true;
+      }
 
-    var classes = this.findClass(url, notModify);
+      for (var i = 0; i < scriptCount; i++) {
+        var url = scriptUrl[i];
 
-    if (synchronous) {
-      loadScript(url, classes[url]);
-    } else {
-      synchronousScript(url, classes[url]);
-    }
+        var last = i === scriptCount - 1;
 
-    // 4.委托父加载器加载
-  }
+        isString = Object.isString(url);
+
+        if (!isString) {
+          continue;
+        }
+
+        var loadedScripts = this.loadedScripts,
+          waitingList = this.waitingList,
+          scope = this;
+
+        if (!$scope) {
+          $scope = this;
+        }
+
+        // 1.判断内存中是否存在
+        var u = url.split("."),
+          ref = global;
+        for (var j = 0, len = u.length; j < len; j++) {
+          if (ref) {
+            ref = ref[u[j]];
+          } else {
+            break;
+          }
+        }
+        if (ref && !ref.equals(global)) {
+          return;
+        }
+
+        // 2.判断当前ClassLoader是否加载过。
+        if (loadedScripts[url]) {
+          return;
+        }
+
+        var waitingInfo = waitingList[url] || (waitingList[url] = []);
+
+        // 3.Load it only for the first request. // 4.委托父加载器加载
+        if (waitingInfo.length > 0) {
+          return;
+        } else {
+          waitingInfo.push(checkLoaded);
+        }
+
+        var classes = this.findClass(url, notModify);
+
+        if (asynchronous) {
+          loadScript(url, classes[url], notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
+        } else {
+          synchronousScript(url, classes[url], notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last);
+        }
+
+      }
+    };
+  })(this)
+
 });
 
 
-window.$import = function(name, classloader, async, callback) {
-  if (Object.isNull(classloader)) {
-    classloader = js.lang.ClassLoader.getSystemClassLoader();
-  } else if (!Object.isInstanceof(classloader, js.lang.ClassLoader)) {
-    switch (classloader) {
-      case 'BootstrapClassLoader':
-        classloader = atom.misc.Launcher.BootstrapClassLoader.getBootstrapClassLoader();
-        break;
-      case 'ExtClassLoader':
-        classloader = atom.misc.Launcher.ExtClassLoader.getExtClassLoader();
-        break;
-      case 'CSSClassLoader':
-        classloader = atom.misc.Launcher.CSSClassLoader.getCSSClassLoader();
-        break;
-      default:
-        classloader = js.lang.ClassLoader.getSystemClassLoader();
-        break;
+/*
+ * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
+ *
+ * Copyright 2008, 2014 Atom Union, Inc. Released under the MIT license
+ *
+ * Date: Feb 14, 2014
+ */
+/**
+ * Sea.js 3.0.0 | seajs.org/LICENSE.md
+ */
+
+(function(global, undefined) {
+
+  // Avoid conflicting when `sea.js` is loaded multiple times
+  if (global.seajs) {
+    return
+  }
+
+  var seajs = global.seajs = {
+    // The current version of Sea.js being used
+    version: "3.0.0"
+  }
+
+  var data = seajs.data = {}
+
+
+  /**
+   * util-lang.js - The minimal language enhancement
+   */
+
+  function isType(type) {
+    return function(obj) {
+      return {}.toString.call(obj) == "[object " + type + "]"
     }
   }
-  // 1判断内存中是否存在 ， 2判断当前ClassLoader是否加载过。classloader.getDebug()
-  return classloader.loadClass(name, async, false, callback);
-};
+
+  var isObject = isType("Object")
+  var isString = isType("String")
+  var isArray = Array.isArray || isType("Array")
+  var isFunction = isType("Function")
+
+  var _cid = 0
+
+  function cid() {
+    return _cid++
+  }
+
+
+  /**
+   * util-events.js - The minimal events support
+   */
+
+  var events = data.events = {}
+
+  // Bind event
+  seajs.on = function(name, callback) {
+    var list = events[name] || (events[name] = [])
+    list.push(callback)
+    return seajs
+  }
+
+  // Remove event. If `callback` is undefined, remove all callbacks for the
+  // event. If `event` and `callback` are both undefined, remove all callbacks
+  // for all events
+  seajs.off = function(name, callback) {
+    // Remove *all* events
+    if (!(name || callback)) {
+      events = data.events = {}
+      return seajs
+    }
+
+    var list = events[name]
+    if (list) {
+      if (callback) {
+        for (var i = list.length - 1; i >= 0; i--) {
+          if (list[i] === callback) {
+            list.splice(i, 1)
+          }
+        }
+      } else {
+        delete events[name]
+      }
+    }
+
+    return seajs
+  }
+
+  // Emit event, firing all bound callbacks. Callbacks receive the same
+  // arguments as `emit` does, apart from the event name
+  var emit = seajs.emit = function(name, data) {
+    var list = events[name]
+
+    if (list) {
+      // Copy callback lists to prevent modification
+      list = list.slice()
+
+      // Execute event callbacks, use index because it's the faster.
+      for (var i = 0, len = list.length; i < len; i++) {
+        list[i](data)
+      }
+    }
+
+    return seajs
+  }
+
+  /**
+   * util-path.js - The utilities for operating path such as id, uri
+   */
+
+  var DIRNAME_RE = /[^?#]*\//
+
+  var DOT_RE = /\/\.\//g
+  var DOUBLE_DOT_RE = /\/[^/]+\/\.\.\//
+  var MULTI_SLASH_RE = /([^:/])\/+\//g
+
+  // Extract the directory portion of a path
+  // dirname("a/b/c.js?t=123#xx/zz") ==> "a/b/"
+  // ref: http://jsperf.com/regex-vs-split/2
+  function dirname(path) {
+    return path.match(DIRNAME_RE)[0]
+  }
+
+  // Canonicalize a path
+  // realpath("http://test.com/a//./b/../c") ==> "http://test.com/a/c"
+  function realpath(path) {
+    // /a/b/./c/./d ==> /a/b/c/d
+    path = path.replace(DOT_RE, "/")
+
+    /*
+      @author wh1100717
+      a//b/c ==> a/b/c
+      a///b/////c ==> a/b/c
+      DOUBLE_DOT_RE matches a/b/c//../d path correctly only if replace // with / first
+    */
+    path = path.replace(MULTI_SLASH_RE, "$1/")
+
+    // a/b/c/../../d  ==>  a/b/../d  ==>  a/d
+    while (path.match(DOUBLE_DOT_RE)) {
+      path = path.replace(DOUBLE_DOT_RE, "/")
+    }
+
+    return path
+  }
+
+  // Normalize an id
+  // normalize("path/to/a") ==> "path/to/a.js"
+  // NOTICE: substring is faster than negative slice and RegExp
+  function normalize(path) {
+    var last = path.length - 1
+    var lastC = path.charCodeAt(last)
+
+    // If the uri ends with `#`, just return it without '#'
+    if (lastC === 35 /* "#" */ ) {
+      return path.substring(0, last)
+    }
+
+    return (path.substring(last - 2) === ".js" ||
+      path.indexOf("?") > 0 ||
+      lastC === 47 /* "/" */ ) ? path : path + ".js"
+  }
+
+
+  var PATHS_RE = /^([^/:]+)(\/.+)$/
+  var VARS_RE = /{([^{]+)}/g
+
+  function parseAlias(id) {
+    var alias = data.alias
+    return alias && isString(alias[id]) ? alias[id] : id
+  }
+
+  function parsePaths(id) {
+    var paths = data.paths
+    var m
+
+    if (paths && (m = id.match(PATHS_RE)) && isString(paths[m[1]])) {
+      id = paths[m[1]] + m[2]
+    }
+
+    return id
+  }
+
+  function parseVars(id) {
+    var vars = data.vars
+
+    if (vars && id.indexOf("{") > -1) {
+      id = id.replace(VARS_RE, function(m, key) {
+        return isString(vars[key]) ? vars[key] : m
+      })
+    }
+
+    return id
+  }
+
+  function parseMap(uri) {
+    var map = data.map
+    var ret = uri
+
+    if (map) {
+      for (var i = 0, len = map.length; i < len; i++) {
+        var rule = map[i]
+
+        ret = isFunction(rule) ?
+          (rule(uri) || uri) :
+          uri.replace(rule[0], rule[1])
+
+        // Only apply the first matched rule
+        if (ret !== uri) break
+      }
+    }
+
+    return ret
+  }
+
+
+  var ABSOLUTE_RE = /^\/\/.|:\//
+  var ROOT_DIR_RE = /^.*?\/\/.*?\//
+
+  function addBase(id, refUri) {
+    var ret
+    var first = id.charCodeAt(0)
+
+    // Absolute
+    if (ABSOLUTE_RE.test(id)) {
+      ret = id
+    }
+    // Relative
+    else if (first === 46 /* "." */ ) {
+      ret = (refUri ? dirname(refUri) : data.cwd) + id
+    }
+    // Root
+    else if (first === 47 /* "/" */ ) {
+      var m = data.cwd.match(ROOT_DIR_RE)
+      ret = m ? m[0] + id.substring(1) : id
+    }
+    // Top-level
+    else {
+      ret = data.base + id
+    }
+
+    // Add default protocol when uri begins with "//"
+    if (ret.indexOf("//") === 0) {
+      ret = location.protocol + ret
+    }
+
+    return realpath(ret)
+  }
+
+  function id2Uri(id, refUri) {
+    if (!id) return ""
+
+    id = parseAlias(id)
+    id = parsePaths(id)
+    id = parseAlias(id)
+    id = parseVars(id)
+    id = parseAlias(id)
+    id = normalize(id)
+    id = parseAlias(id)
+
+    var uri = addBase(id, refUri)
+    uri = parseAlias(uri)
+    uri = parseMap(uri)
+
+    return uri
+  }
+
+  // For Developers
+  seajs.resolve = id2Uri;
+
+  // Check environment
+  var isWebWorker = typeof window === 'undefined' && typeof importScripts !== 'undefined' && isFunction(importScripts);
+
+  // Ignore about:xxx and blob:xxx
+  var IGNORE_LOCATION_RE = /^(about|blob):/;
+  var loaderDir;
+  // Sea.js's full path
+  var loaderPath;
+  // Location is read-only from web worker, should be ok though
+  var cwd = (!location.href || IGNORE_LOCATION_RE.test(location.href)) ? '' : dirname(location.href);
+
+  if (isWebWorker) {
+    // Web worker doesn't create DOM object when loading scripts
+    // Get sea.js's path by stack trace.
+    var stack;
+    try {
+      var up = new Error();
+      throw up;
+    } catch (e) {
+      // IE won't set Error.stack until thrown
+      stack = e.stack.split('\n');
+    }
+    // First line is 'Error'
+    stack.shift();
+
+    var m;
+    // Try match `url:row:col` from stack trace line. Known formats:
+    // Chrome:  '    at http://localhost:8000/script/sea-worker-debug.js:294:25'
+    // FireFox: '@http://localhost:8000/script/sea-worker-debug.js:1082:1'
+    // IE11:    '   at Anonymous function (http://localhost:8000/script/sea-worker-debug.js:295:5)'
+    // Don't care about older browsers since web worker is an HTML5 feature
+    var TRACE_RE = /.*?((?:http|https|file)(?::\/{2}[\w]+)(?:[\/|\.]?)(?:[^\s"]*)).*?/i
+      // Try match `url` (Note: in IE there will be a tailing ')')
+    var URL_RE = /(.*?):\d+:\d+\)?$/;
+    // Find url of from stack trace.
+    // Cannot simply read the first one because sometimes we will get:
+    // Error
+    //  at Error (native) <- Here's your problem
+    //  at http://localhost:8000/_site/dist/sea.js:2:4334 <- What we want
+    //  at http://localhost:8000/_site/dist/sea.js:2:8386
+    //  at http://localhost:8000/_site/tests/specs/web-worker/worker.js:3:1
+    while (stack.length > 0) {
+      var top = stack.shift();
+      m = TRACE_RE.exec(top);
+      if (m != null) {
+        break;
+      }
+    }
+    var url;
+    if (m != null) {
+      // Remove line number and column number
+      // No need to check, can't be wrong at this point
+      var url = URL_RE.exec(m[1])[1];
+    }
+    // Set
+    loaderPath = url
+      // Set loaderDir
+    loaderDir = dirname(url || cwd);
+    // This happens with inline worker.
+    // When entrance script's location.href is a blob url,
+    // cwd will not be available.
+    // Fall back to loaderDir.
+    if (cwd === '') {
+      cwd = loaderDir;
+    }
+  } else {
+    var doc = document
+    var scripts = doc.scripts
+
+    // Recommend to add `seajsnode` id for the `sea.js` script element
+    var loaderScript = doc.getElementById("seajsnode") ||
+      scripts[scripts.length - 1]
+
+    function getScriptAbsoluteSrc(node) {
+      return node.hasAttribute ? // non-IE6/7
+        node.src :
+        // see http://msdn.microsoft.com/en-us/library/ms536429(VS.85).aspx
+        node.getAttribute("src", 4)
+    }
+    loaderPath = getScriptAbsoluteSrc(loaderScript)
+      // When `sea.js` is inline, set loaderDir to current working directory
+    loaderDir = dirname(loaderPath || cwd)
+  }
+
+  /**
+   * util-request.js - The utilities for requesting script and style files
+   * ref: tests/research/load-js-css/test.html
+   */
+  if (isWebWorker) {
+    function requestFromWebWorker(url, callback, charset) {
+      // Load with importScripts
+      var error;
+      try {
+        importScripts(url);
+      } catch (e) {
+        error = e;
+      }
+      callback(error);
+    }
+    // For Developers
+    seajs.request = requestFromWebWorker;
+  } else {
+    var doc = document
+    var head = doc.head || doc.getElementsByTagName("head")[0] || doc.documentElement
+    var baseElement = head.getElementsByTagName("base")[0]
+
+    var currentlyAddingScript
+
+    function request(url, callback, charset) {
+      var mod = cachedMods[Module.getId(url)];
+      if (mod) {
+        mod.uri = url;
+      }
+
+      var node = doc.createElement("script")
+
+      if (charset) {
+        var cs = isFunction(charset) ? charset(url) : charset
+        if (cs) {
+          node.charset = cs
+        }
+      }
+
+      addOnload(node, callback, url, charset)
+
+      node.async = true
+      node.src = url
+
+      // For some cache cases in IE 6-8, the script executes IMMEDIATELY after
+      // the end of the insert execution, so use `currentlyAddingScript` to
+      // hold current node, for deriving url in `define` call
+      currentlyAddingScript = node
+
+      // ref: #185 & http://dev.jquery.com/ticket/2709
+      baseElement ?
+        head.insertBefore(node, baseElement) :
+        head.appendChild(node)
+
+      currentlyAddingScript = null
+    }
+
+    function addOnload(node, callback, url, charset) {
+      var supportOnload = "onload" in node
+
+      if (supportOnload) {
+        node.onload = onload
+        node.onerror = function() {
+          // Fixed by lico
+          var bootstrap = js.lang.System.getProperty("atom.bootstrap.class.path"),
+            ext = js.lang.System.getProperty("js.ext.dirs"),
+            app = js.lang.System.getProperty("js.class.path");
+
+          if (url.indexOf(app) === 0) {
+            url = url.replace(app, ext);
+            request(url, callback, charset);
+          } else if (url.indexOf(ext) === 0) {
+            url = url.replace(ext, bootstrap);
+            request(url, callback, charset);
+          } else {
+            emit("error", {
+              uri: url,
+              node: node
+            })
+            onload(true)
+          }
+        }
+      } else {
+        node.onreadystatechange = function() {
+
+          console.log(node.readyState)
+          if (/loaded|complete/.test(node.readyState)) {
+            onload()
+          }
+        }
+      }
+
+      function onload(error) {
+        // Ensure only run once and handle memory leak in IE
+        node.onload = node.onerror = node.onreadystatechange = null
+
+        // Remove the script to reduce memory leak
+        if (!data.debug) {
+          head.removeChild(node)
+        }
+
+        // Dereference the node
+        node = null
+
+        callback(error)
+      }
+    }
+
+    // For Developers
+    seajs.request = request
+
+  }
+  var interactiveScript
+
+  function getCurrentScript() {
+    if (currentlyAddingScript) {
+      return currentlyAddingScript
+    }
+
+    // For IE6-9 browsers, the script onload event may not fire right
+    // after the script is evaluated. Kris Zyp found that it
+    // could query the script nodes and the one that is in "interactive"
+    // mode indicates the current script
+    // ref: http://goo.gl/JHfFW
+    if (interactiveScript && interactiveScript.readyState === "interactive") {
+      return interactiveScript
+    }
+
+    var scripts = head.getElementsByTagName("script")
+
+    for (var i = scripts.length - 1; i >= 0; i--) {
+      var script = scripts[i]
+      if (script.readyState === "interactive") {
+        interactiveScript = script
+        return interactiveScript
+      }
+    }
+  }
+
+  /**
+   * util-deps.js - The parser for dependencies
+   * ref: tests/research/parse-dependencies/test.html
+   * ref: https://github.com/seajs/searequire
+   */
+
+  function parseDependencies(s) {
+    if (s.indexOf('require') == -1) {
+      return []
+    }
+    var index = 0,
+      peek, length = s.length,
+      isReg = 1,
+      modName = 0,
+      parentheseState = 0,
+      parentheseStack = [],
+      res = []
+    while (index < length) {
+      readch()
+      if (isBlank()) {} else if (isQuote()) {
+        dealQuote()
+        isReg = 1
+      } else if (peek == '/') {
+        readch()
+        if (peek == '/') {
+          index = s.indexOf('\n', index)
+          if (index == -1) {
+            index = s.length
+          }
+        } else if (peek == '*') {
+          index = s.indexOf('*/', index)
+          if (index == -1) {
+            index = length
+          } else {
+            index += 2
+          }
+        } else if (isReg) {
+          dealReg()
+          isReg = 0
+        } else {
+          index--
+          isReg = 1
+        }
+      } else if (isWord()) {
+        dealWord()
+      } else if (isNumber()) {
+        dealNumber()
+      } else if (peek == '(') {
+        parentheseStack.push(parentheseState)
+        isReg = 1
+      } else if (peek == ')') {
+        isReg = parentheseStack.pop()
+      } else {
+        isReg = peek != ']'
+        modName = 0
+      }
+    }
+    return res
+
+    function readch() {
+      peek = s.charAt(index++)
+    }
+
+    function isBlank() {
+      return /\s/.test(peek)
+    }
+
+    function isQuote() {
+      return peek == '"' || peek == "'"
+    }
+
+    function dealQuote() {
+      var start = index
+      var c = peek
+      var end = s.indexOf(c, start)
+      if (end == -1) {
+        index = length
+      } else if (s.charAt(end - 1) != '\\') {
+        index = end + 1
+      } else {
+        while (index < length) {
+          readch()
+          if (peek == '\\') {
+            index++
+          } else if (peek == c) {
+            break
+          }
+        }
+      }
+      if (modName) {
+        // Fixed by lico
+        var name = s.slice(start, index - 1);
+        if (name.indexOf("/") === -1) {
+          var p = name.indexOf("!");
+          if (p !== -1) {
+            if (name.indexOf("css:skin!") === 0 || name.indexOf("css!") === 0 || name.indexOf("css:app!") === 0 || name.indexOf("css:ext!") === 0 || name.indexOf("css:bootstrap!") === 0) {
+              return;
+            }
+            // name = name.substring(p + 1);
+          }
+          // name = name.replace(/[.]/g, "/");
+        }
+        res.push(name)
+        modName = 0
+      }
+    }
+
+    function dealReg() {
+      index--
+      while (index < length) {
+        readch()
+        if (peek == '\\') {
+          index++
+        } else if (peek == '/') {
+          break
+        } else if (peek == '[') {
+          while (index < length) {
+            readch()
+            if (peek == '\\') {
+              index++
+            } else if (peek == ']') {
+              break
+            }
+          }
+        }
+      }
+    }
+
+    function isWord() {
+      return /[a-z_$]/i.test(peek)
+    }
+
+    function dealWord() {
+      var s2 = s.slice(index - 1)
+      var r = /^[\w$]+/.exec(s2)[0]
+      parentheseState = {
+        'if': 1,
+        'for': 1,
+        'while': 1,
+        'with': 1
+      }[r]
+      isReg = {
+        'break': 1,
+        'case': 1,
+        'continue': 1,
+        'debugger': 1,
+        'delete': 1,
+        'do': 1,
+        'else': 1,
+        'false': 1,
+        'if': 1,
+        'in': 1,
+        'instanceof': 1,
+        'return': 1,
+        'typeof': 1,
+        'void': 1
+      }[r]
+      modName = /^require\s*\(\s*(['"]).+?\1\s*\)/.test(s2)
+      if (modName) {
+        r = /^require\s*\(\s*['"]/.exec(s2)[0]
+        index += r.length - 2
+      } else {
+        index += /^[\w$]+(?:\s*\.\s*[\w$]+)*/.exec(s2)[0].length - 1
+      }
+    }
+
+    function isNumber() {
+      return /\d/.test(peek) || peek == '.' && /\d/.test(s.charAt(index))
+    }
+
+    function dealNumber() {
+      var s2 = s.slice(index - 1)
+      var r
+      if (peek == '.') {
+        r = /^\.\d+(?:E[+-]?\d*)?\s*/i.exec(s2)[0]
+      } else if (/^0x[\da-f]*/i.test(s2)) {
+        r = /^0x[\da-f]*\s*/i.exec(s2)[0]
+      } else {
+        r = /^\d+\.?\d*(?:E[+-]?\d*)?\s*/i.exec(s2)[0]
+      }
+      index += r.length - 1
+      isReg = 0
+    }
+  }
+  /**
+   * module.js - The core of module loader
+   */
+
+  var cachedMods = seajs.cache = {}
+  var anonymousMeta
+
+  var fetchingList = {}
+  var fetchedList = {}
+  var callbackList = {}
+
+  var STATUS = Module.STATUS = {
+    // 1 - The `module.uri` is being fetched
+    FETCHING: 1,
+    // 2 - The meta data has been saved to cachedMods
+    SAVED: 2,
+    // 3 - The `module.dependencies` are being loaded
+    LOADING: 3,
+    // 4 - The module are ready to execute
+    LOADED: 4,
+    // 5 - The module is being executed
+    EXECUTING: 5,
+    // 6 - The `module.exports` is available
+    EXECUTED: 6,
+    // 7 - 404
+    ERROR: 7
+  }
+
+
+  function Module(uri, deps) {
+    this.uri = uri
+    this.dependencies = deps || []
+    this.deps = {} // Ref the dependence modules
+    this.status = 0
+
+    this._entry = []
+  }
+
+  // Resolve module.dependencies
+  Module.prototype.resolve = function() {
+    var mod = this
+    var ids = mod.dependencies
+    var uris = []
+
+    var bootstap = js.lang.System.getProperty("atom.bootstrap.class.path"),
+      ext = js.lang.System.getProperty("js.ext.dirs"),
+      app = js.lang.System.getProperty("js.class.path");
+
+    for (var i = 0, len = ids.length; i < len; i++) {
+      var id = ids[i];
+
+      // Fixed by lico
+      var prefix = "",
+        url = "";
+      var index = id.indexOf("!")
+      if (index !== -1) {
+        prefix = id.substring(0, index);
+        id = id.substring(index + 1);
+      }
+
+      id = id.replace(/[.]/g, "/");
+      switch (prefix) {
+        //bootstrap,ext,app
+        case 'js:ext':
+        case 'ext':
+          url = ext;
+          break;
+        case 'js:bootstrap':
+        case 'bootstrap':
+          url = bootstap;
+          break;
+
+        case 'js:app':
+        case 'app':
+        default:
+          url = app;
+          break;
+      }
+
+      uris[i] = Module.resolve(url + id, mod.uri)
+    }
+    return uris
+  }
+
+  Module.prototype.pass = function() {
+    var mod = this
+
+    var len = mod.dependencies.length
+
+    for (var i = 0; i < mod._entry.length; i++) {
+      var entry = mod._entry[i]
+      var count = 0
+      for (var j = 0; j < len; j++) {
+        var m = mod.deps[mod.dependencies[j]]
+          // If the module is unload and unused in the entry, pass entry to it
+        if (m.status < STATUS.LOADED && !entry.history.hasOwnProperty(m.uri)) {
+          entry.history[m.uri] = true
+          count++
+          m._entry.push(entry)
+          if (m.status === STATUS.LOADING) {
+            m.pass()
+          }
+        }
+      }
+      // If has passed the entry to it's dependencies, modify the entry's count and del it in the module
+      if (count > 0) {
+        entry.remain += count - 1
+        mod._entry.shift()
+        i--
+      }
+    }
+  }
+
+  // Load module.dependencies and fire onload when all done
+  Module.prototype.load = function() {
+    var mod = this
+
+    // If the module is being loaded, just wait it onload call
+    if (mod.status >= STATUS.LOADING) {
+      return
+    }
+
+    mod.status = STATUS.LOADING
+
+    // Emit `load` event for plugins such as combo plugin
+    var uris = mod.resolve()
+    emit("load", uris)
+
+    for (var i = 0, len = uris.length; i < len; i++) {
+      mod.deps[mod.dependencies[i]] = Module.get(uris[i])
+    }
+
+    // Pass entry to it's dependencies
+    mod.pass()
+
+    // If module has entries not be passed, call onload
+    if (mod._entry.length) {
+      mod.onload()
+      return
+    }
+
+    // Begin parallel loading
+    var requestCache = {}
+    var m
+
+    for (i = 0; i < len; i++) {
+      m = cachedMods[Module.getId(uris[i])]
+
+      if (m.status < STATUS.FETCHING) {
+        m.fetch(requestCache)
+      } else if (m.status === STATUS.SAVED) {
+        m.load()
+      }
+    }
+
+    // Send all requests at last to avoid cache bug in IE6-9. Issues#808
+    for (var requestUri in requestCache) {
+      if (requestCache.hasOwnProperty(requestUri)) {
+        requestCache[requestUri]()
+      }
+    }
+  }
+
+  // Call this method when module is loaded
+  Module.prototype.onload = function() {
+    var mod = this
+    mod.status = STATUS.LOADED
+
+    // When sometimes cached in IE, exec will occur before onload, make sure len is an number
+    for (var i = 0, len = (mod._entry || []).length; i < len; i++) {
+      var entry = mod._entry[i]
+      if (--entry.remain === 0) {
+        entry.callback()
+      }
+    }
+
+    delete mod._entry
+  }
+
+  // Call this method when module is 404
+  Module.prototype.error = function() {
+    var mod = this
+    mod.onload()
+    mod.status = STATUS.ERROR
+  }
+
+  // Execute a module
+  Module.prototype.exec = function() {
+    var mod = this
+
+    // When module is executed, DO NOT execute it again. When module
+    // is being executed, just return `module.exports` too, for avoiding
+    // circularly calling
+    if (mod.status >= STATUS.EXECUTING) {
+      return mod.exports
+    }
+
+    mod.status = STATUS.EXECUTING
+
+    if (mod._entry && !mod._entry.length) {
+      delete mod._entry
+    }
+
+    //non-cmd module has no property factory and exports
+    if (!mod.hasOwnProperty('factory')) {
+      mod.non = true
+      return
+    }
+
+    // Create require
+    var uri = mod.uri
+
+    function require(id) {
+      // Fixed by lico
+      if (id && Object.isString(id) && id.indexOf("/") === -1) {
+        var index = id.indexOf("!");
+        if (index !== -1) {
+          switch (id.substring(0, index)) {
+            //css,css-ext,skin
+            case 'css:skin':
+              id = id.substring(index + 1);
+              global.$import(id, 'CSSClassLoader', atom.misc.Launcher.CSSClassLoader.SKIN);
+              return;
+            case 'css':
+            case 'css:app':
+              id = id.substring(index + 1);
+              global.$import(id, 'CSSClassLoader');
+              return;
+            case 'css:ext':
+              id = id.substring(index + 1);
+              global.$import(id, 'CSSClassLoader', atom.misc.Launcher.CSSClassLoader.EXT);
+              return;
+            case 'css:bootstrap':
+              id = id.substring(index + 1);
+              global.$import(id, 'CSSClassLoader', atom.misc.Launcher.CSSClassLoader.BOOTSTRAP);
+              return;
+            default:
+              break;
+          }
+        }
+
+        // id = id.replace(/[.]/g, "/");
+      }
+      var m = mod.deps[id] || Module.get(require.resolve(id))
+      if (m.status == STATUS.ERROR) {
+        throw new Error('module was broken: ' + m.uri);
+      }
+      return m.exec()
+    }
+
+    require.resolve = function(id) {
+      return Module.resolve(id, uri)
+    }
+
+    require.async = function(ids, callback) {
+      Module.use(ids, callback, uri + "_async_" + cid())
+      return require
+    }
+
+    // Exec factory
+    var factory = mod.factory
+
+    var exports = isFunction(factory) ?
+      factory(require, mod.exports = {}, mod) :
+      factory
+
+    if (exports === undefined) {
+      exports = mod.exports
+    }
+
+    // Reduce memory leak
+    delete mod.factory
+
+    mod.exports = exports
+    mod.status = STATUS.EXECUTED
+
+    // Emit `exec` event
+    emit("exec", mod)
+
+    return mod.exports
+  }
+
+  // Fetch a module
+  Module.prototype.fetch = function(requestCache) {
+    var mod = this
+    var uri = mod.uri
+
+    mod.status = STATUS.FETCHING
+
+    // Emit `fetch` event for plugins such as combo plugin
+    var emitData = {
+      uri: uri
+    }
+    emit("fetch", emitData)
+    var requestUri = emitData.requestUri || uri
+
+    // Empty uri or a non-CMD module
+    if (!requestUri || fetchedList.hasOwnProperty(requestUri)) {
+      mod.load()
+      return
+    }
+
+    if (fetchingList.hasOwnProperty(requestUri)) {
+      callbackList[requestUri].push(mod)
+      return
+    }
+
+    fetchingList[requestUri] = true
+    callbackList[requestUri] = [mod]
+
+    // Emit `request` event for plugins such as text plugin
+    emit("request", emitData = {
+      uri: uri,
+      requestUri: requestUri,
+      onRequest: onRequest,
+      charset: isFunction(data.charset) ? data.charset(requestUri) || 'utf-8' : data.charset
+    })
+
+    if (!emitData.requested) {
+      requestCache ?
+        requestCache[emitData.requestUri] = sendRequest :
+        sendRequest()
+    }
+
+    function sendRequest() {
+      seajs.request(emitData.requestUri, emitData.onRequest, emitData.charset)
+    }
+
+    function onRequest(error) {
+      delete fetchingList[requestUri]
+      fetchedList[requestUri] = true
+
+      // Save meta data of anonymous module
+      if (anonymousMeta) {
+        Module.save(uri, anonymousMeta)
+        anonymousMeta = null
+      }
+
+      // Call callbacks
+      var m, mods = callbackList[requestUri]
+      delete callbackList[requestUri]
+      while ((m = mods.shift())) {
+        // When 404 occurs, the params error will be true
+        if (error === true) {
+          m.error()
+        } else {
+          m.load()
+        }
+      }
+    }
+  }
+
+  // Resolve id to uri
+  Module.resolve = function(id, refUri) {
+    // Emit `resolve` event for plugins such as text plugin
+    var emitData = {
+      id: id,
+      refUri: refUri
+    }
+    emit("resolve", emitData)
+
+    return emitData.uri || seajs.resolve(emitData.id, refUri)
+  }
+
+  // Define a module
+  Module.define = function(id, deps, factory) {
+    var argsLen = arguments.length
+
+    // define(factory)
+    if (argsLen === 1) {
+      factory = id
+      id = undefined
+    } else if (argsLen === 2) {
+      factory = deps
+
+      // define(deps, factory)
+      if (isArray(id)) {
+        deps = id
+        id = undefined
+      }
+      // define(id, factory)
+      else {
+        deps = undefined
+      }
+    }
+
+    // Parse dependencies according to the module factory code
+    if (!isArray(deps) && isFunction(factory)) {
+      deps = typeof parseDependencies === "undefined" ? [] : parseDependencies(factory.toString())
+    }
+
+    var meta = {
+      id: id,
+      uri: Module.resolve(id),
+      deps: deps,
+      factory: factory
+    }
+
+    // Try to derive uri in IE6-9 for anonymous modules
+    if (!isWebWorker && !meta.uri && doc.attachEvent && typeof getCurrentScript !== "undefined") {
+      var script = getCurrentScript()
+
+      if (script) {
+        meta.uri = script.src
+      }
+
+      // NOTE: If the id-deriving methods above is failed, then falls back
+      // to use onload event to get the uri
+    }
+
+    // Emit `define` event, used in nocache plugin, seajs node version etc
+    emit("define", meta)
+
+    meta.uri ? Module.save(meta.uri, meta) :
+      // Save information for "saving" work in the script onload event
+      anonymousMeta = meta
+  }
+
+  // Save meta data to cachedMods
+  Module.save = function(uri, meta) {
+
+    var bootstrap = js.lang.System.getProperty("atom.bootstrap.class.path"),
+      ext = js.lang.System.getProperty("js.ext.dirs"),
+      app = js.lang.System.getProperty("js.class.path");
+
+    var index = uri.indexOf(app);
+    if (index !== -1) {
+      meta.id = uri.substring(index + app.length);
+    } else {
+      index = uri.indexOf(ext);
+      if (index !== -1) {
+        meta.id = uri.substring(index + ext.length);
+      } else {
+        index = uri.indexOf(bootstrap);
+        if (index !== -1) {
+          meta.id = uri.substring(index + bootstrap.length);
+        }
+      }
+    }
+
+    var mod = Module.get(uri)
+
+    // Do NOT override already saved modules
+    if (mod.status < STATUS.SAVED) {
+      mod.id = meta.id || uri
+      mod.dependencies = meta.deps || []
+      mod.factory = meta.factory
+      mod.status = STATUS.SAVED
+
+      emit("save", mod)
+    }
+  }
+
+  Module.getId = function(uri) {
+    var bootstrap = js.lang.System.getProperty("atom.bootstrap.class.path"),
+      ext = js.lang.System.getProperty("js.ext.dirs"),
+      app = js.lang.System.getProperty("js.class.path");
+
+    var index = uri.indexOf(app),
+      id = "main";
+    if (index !== -1) {
+      id = uri.substring(index + app.length);
+    } else {
+      index = uri.indexOf(ext);
+      if (index !== -1) {
+        id = uri.substring(index + ext.length);
+      } else {
+        index = uri.indexOf(bootstrap);
+        if (index !== -1) {
+          id = uri.substring(index + bootstrap.length);
+        } else {
+          id = uri;
+        }
+      }
+    }
+    return id;
+  };
+  // Get an existed module or create a new one
+  Module.get = function(uri, deps) {
+
+    var id = Module.getId(uri);
+    return cachedMods[id] || (cachedMods[id] = new Module(uri, deps))
+  }
+
+  // Use function is equal to load a anonymous module
+  Module.use = function(ids, callback, uri) {
+
+    ids = isArray(ids) ? ids : [ids];
+    // Fixed by lico
+    /*
+    for (var i = 0, len = ids.length; i < len; i++) {
+      if (ids[i].indexOf("/") === -1) {
+        var id = ids[i];
+        var index = id.indexOf("!");
+        if (index !== -1) {
+          id = id.substring(index + 1);
+        }
+        ids[i] = id.replace(/[.]/g, "/");
+      }
+    }
+    */
+
+    var mod = Module.get(uri, ids)
+
+    mod._entry.push(mod)
+    mod.history = {}
+    mod.remain = 1
+
+    mod.callback = function() {
+      var exports = []
+      var uris = mod.resolve()
+
+      for (var i = 0, len = uris.length; i < len; i++) {
+        exports[i] = cachedMods[Module.getId(uris[i])].exec()
+      }
+
+      if (callback) {
+        callback.apply(global, exports)
+      }
+
+      delete mod.callback
+      delete mod.history
+      delete mod.remain
+      delete mod._entry
+    }
+
+    mod.load()
+  }
+
+
+  // Public API
+
+  seajs.use = function(ids, callback) {
+    Module.use(ids, callback, data.cwd + "_use_" + cid())
+    return seajs
+  }
+
+  Module.define.cmd = {}
+  global.define = Module.define
+
+
+  // For Developers
+
+  seajs.Module = Module
+  data.fetchedList = fetchedList
+  data.cid = cid
+
+  seajs.require = function(id) {
+    var mod = Module.get(Module.resolve(id))
+    if (mod.status < STATUS.EXECUTING) {
+      mod.onload()
+      mod.exec()
+    }
+    return mod.exports
+  }
+
+  /**
+   * config.js - The configuration for the loader
+   */
+
+  // The root path to use for id2uri parsing
+  data.base = loaderDir
+
+  // The loader directory
+  data.dir = loaderDir
+
+  // The loader's full path
+  data.loader = loaderPath
+
+  // The current working directory
+  data.cwd = cwd
+
+  // The charset for requesting files
+  data.charset = "utf-8"
+
+  // data.alias - An object containing shorthands of module id
+  // data.paths - An object containing path shorthands in module id
+  // data.vars - The {xxx} variables in module id
+  // data.map - An array containing rules to map module uri
+  // data.debug - Debug mode. The default value is false
+
+  seajs.config = function(configData) {
+
+    for (var key in configData) {
+      var curr = configData[key]
+      var prev = data[key]
+
+      // Merge object config such as alias, vars
+      if (prev && isObject(prev)) {
+        for (var k in curr) {
+          prev[k] = curr[k]
+        }
+      } else {
+        // Concat array config such as map
+        if (isArray(prev)) {
+          curr = prev.concat(curr)
+        }
+        // Make sure that `data.base` is an absolute path
+        else if (key === "base") {
+          // Make sure end with "/"
+          if (curr.slice(-1) !== "/") {
+            curr += "/"
+          }
+          curr = addBase(curr)
+        }
+
+        // Set config
+        data[key] = curr
+      }
+    }
+
+    emit("config", configData)
+    return seajs
+  }
+
+})(this);
 
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
@@ -2171,8 +3827,11 @@ Class.forName({
   "private static bootstrapClassLoader": null,
 
   "private BootstrapClassLoader": function() {
-    //System.getProperty("atom.boot.class.path")
-    this.setRoot(this.getRoot() + (this.debug ? '/jre/src/main/js/' : "/jre/classes/js/"));
+
+  },
+
+  "public getRelative": function() {
+    return js.lang.System.getProperty("atom.bootstrap.class.path");
   },
 
   "public static getBootstrapClassLoader": function() {
@@ -2192,8 +3851,10 @@ Class.forName({
 
   "private ExtClassLoader": function(parent) {
     this.parent = parent;
-    //System.getProperty("js.ext.dirs")
-    this.setRoot(this.getRoot() + "/lib/");
+  },
+
+  "public getRelative": function() {
+    return js.lang.System.getProperty("js.ext.dirs");
   },
 
   "public static getExtClassLoader": function(cl) {
@@ -2210,27 +3871,13 @@ Class.forName({
   name: "class atom.misc.Launcher.CSSClassLoader extends js.net.URLClassLoader",
 
   "private static cssClassLoader": null,
-  "public static final BOOT": "BOOT",
+  "public static final BOOTSTRAP": "BOOTSTRAP",
   "public static final EXT": "EXT",
   "public static final APP": "APP",
   "public static final SKIN": "SKIN",
   "@Setter @Getter private skin": null,
 
-  "private CSSClassLoader": function() {
-    var skin = null,
-      scripts = document.getElementsByTagName("script");
-    for (var i = 0, len = scripts.length; i < len; i++) {
-      var script = scripts[i],
-        jsvm = script.getAttribute("jsvm"),
-        s = script.getAttribute("skin");
-
-      if (jsvm && jsvm === 'true') {
-        skin = s;
-        break;
-      }
-    }
-    this.skin = skin;
-  },
+  "private CSSClassLoader": function() {},
 
   "public static getCSSClassLoader": function() {
     var loader = atom.misc.Launcher.CSSClassLoader.cssClassLoader;
@@ -2239,6 +3886,10 @@ Class.forName({
       atom.misc.Launcher.CSSClassLoader.cssClassLoader = loader;
     }
     return loader;
+  },
+
+  "public getRelative": function() {
+    return js.lang.System.getProperty("atom.root.dirs");
   },
 
   findClass: function(linkUrl, notModify, type) {
@@ -2273,8 +3924,11 @@ Class.forName({
         querys.push("t=" + new Date().getTime());
       }
 
-      if (this.version) {
-        querys.push("v=" + this.version);
+      var version = js.lang.System.getProperty("version");
+      var debug = js.lang.System.getProperty("debug");
+
+      if (version) {
+        querys.push("v=" + version);
       }
 
       if (querys.length > 0) {
@@ -2286,31 +3940,57 @@ Class.forName({
           relative = '/lib/';
           break;
         case atom.misc.Launcher.CSSClassLoader.SKIN:
-          relative = (this.debug ? '/src/main/skin/' : "/classes/skin/") + this.skin + "/css/";
+          relative = (debug ? '/src/main/skin/' : "/classes/skin/") + this.skin + "/css/";
           break;
-        case atom.misc.Launcher.CSSClassLoader.BOOT:
+        case atom.misc.Launcher.CSSClassLoader.BOOTSTRAP:
           relative = "";
           break;
         case atom.misc.Launcher.CSSClassLoader.APP:
         default:
-          relative = (this.debug ? '/src/main/css/' : "/classes/css/");
+          relative = (debug ? '/src/main/css/' : "/classes/css/");
           break;
       }
 
-      classes[url] = this.root + relative + src;
+      classes[url] = this.getRelative() + relative + src;
     }
     return classes;
   },
 
-  "protected loadClassInternal": function(linkUrl, type, notModify) {
-    if (!Object.isString(linkUrl)) {
+  "protected loadClass": function(url, callback, $scope, type, notModify) {
+
+    var isString = (Object.isString(url));
+
+    if (isString)
+      url = [url];
+
+    if (!Object.isArray(url)) {
       return false;
     }
-    var link = document.createElement('link');
-    link.type = 'text/css';
-    link.rel = 'stylesheet';
-    link.href = this.findClass(linkUrl, notModify, type)[linkUrl];
-    (document.head || document.getElementsByTagName("head")[0]).appendChild(link);
+
+    var linkCount = url.length,
+      completed = [],
+      failed = [];
+
+    if (linkCount === 0) {
+      if (callback) {
+        callback.call($scope, true);
+      }
+      return true;
+    }
+
+    for (var i = 0; i < linkCount; i++) {
+      var linkUrl = url[i];
+
+      if (!Object.isString(linkUrl)) {
+        return false;
+      }
+      var link = document.createElement('link');
+      link.type = 'text/css';
+      link.rel = 'stylesheet';
+      link.href = this.findClass(linkUrl, notModify, type)[linkUrl];
+      (document.head || document.getElementsByTagName("head")[0]).appendChild(link);
+
+    }
   }
 });
 
@@ -2318,32 +3998,16 @@ Class.forName({
   name: "class atom.misc.Launcher.AppClassLoader extends js.net.URLClassLoader",
 
   "private static appClassLoader": null,
-  '@Setter @Getter mainClass': null,
 
   "private AppClassLoader": function(parent) {
     this.parent = parent;
-
-    var mainClass = null,
-      scripts = document.getElementsByTagName("script");
-
-    for (var i = 0, len = scripts.length; i < len; i++) {
-      var script = scripts[i],
-        jsvm = script.getAttribute("jsvm"),
-        main = script.getAttribute("main");
-
-      if (jsvm && jsvm === 'true') {
-        if (main) {
-          mainClass = main;
-        }
-        break;
-      }
-    }
-
-    this.mainClass = mainClass;
-
-    //System.getProperty("js.class.path")
-    this.setRoot(this.getRoot() + (this.debug ? '/src/main/js/' : "/classes/js/"));
   },
+
+
+  "public getRelative": function() {
+    return js.lang.System.getProperty("js.class.path");
+  },
+
 
   "public static getAppClassLoader": function(cl) {
     var loader = atom.misc.Launcher.AppClassLoader.appClassLoader;
@@ -2355,17 +4019,196 @@ Class.forName({
   },
 
   "public main": function() {
-    if (this.mainClass) {
-      this.loadClass(this.mainClass);
+    var mainClass = js.lang.System.getProperty("main");
+    if (mainClass) {
+      if (typeof seajs !== 'undefined') {
+        seajs.config({
+          // base: js.lang.System.getProperty("js.class.path")
+        })
+        seajs.use(mainClass);
+      } else {
+        this.loadClass(mainClass);
+      }
     }
   }
 });
-/*
-$import([
-    "js.lang.ClassNotFoundException",
-    "js.lang.reflect.Field",
-    "js.lang.reflect.Method"
-], "BootstrapClassLoader");
-*/
-js.dom.Document.ready(atom.misc.Launcher.getLauncher().getLoader().main, atom.misc.Launcher.getLauncher().getLoader());
+(function(global) {
+  global.$import = function(name, classloader, async, callback) {
+    if (Object.isNull(classloader)) {
+      var index = name.indexOf("!");
+      var prefix = "";
+      if (index !== -1) {
+        prefix = name.substring(0, index);
+        name = name.substring(index + 1);
+      }
 
+      switch (prefix) {
+        //css,css-ext,skin
+        case 'skin':
+          classloader = 'CSSClassLoader';
+          async = atom.misc.Launcher.CSSClassLoader.SKIN;
+          break;
+        case 'css':
+        case 'css:app':
+          classloader = 'CSSClassLoader';
+          async = null;
+          break;
+        case 'css:ext':
+          classloader = 'CSSClassLoader';
+          async = atom.misc.Launcher.CSSClassLoader.EXT;
+          break;
+        case 'css:bootstrap':
+          classloader = 'CSSClassLoader';
+          async = atom.misc.Launcher.CSSClassLoader.BOOTSTRAP;
+          break;
+
+          //4.bootstrap,ext,app
+        case 'js:ext':
+        case 'ext':
+          classloader = 'ExtClassLoader';
+          break;
+        case 'js:bootstrap':
+        case 'bootstrap':
+          classloader = 'BootstrapClassLoader';
+          break;
+        case 'js:app':
+        case 'app':
+        default:
+          classloader = null;
+          break;
+      }
+
+      if (Object.isNull(classloader)) {
+        classloader = js.lang.ClassLoader.getSystemClassLoader();
+      }
+    } else if (!Object.isInstanceof(classloader, js.lang.ClassLoader)) {
+      switch (classloader) {
+        case 'BootstrapClassLoader':
+          classloader = atom.misc.Launcher.BootstrapClassLoader.getBootstrapClassLoader();
+          break;
+        case 'ExtClassLoader':
+          classloader = atom.misc.Launcher.ExtClassLoader.getExtClassLoader();
+          break;
+        case 'CSSClassLoader':
+          classloader = atom.misc.Launcher.CSSClassLoader.getCSSClassLoader();
+          break;
+        default:
+          classloader = js.lang.ClassLoader.getSystemClassLoader();
+          break;
+      }
+    }
+    // 1判断内存中是否存在 ， 2判断当前ClassLoader是否加载过。classloader.getDebug()
+    return classloader.loadClass(name, callback, null, async, false);
+  };
+
+  if (!global.define) {
+    global.define = function(factory) {
+      if (Object.isFunction(factory)) {
+        factory.call(global, global.$import, global);
+      } else {
+        var name = arguments.callee.caller.arguments[0];
+        if (name && !"".equals(name = name.trim())) {
+          var names = name.split("."),
+            len = names.length,
+            g = global;
+          for (var i = 0; i < len; i++) {
+            g = g[i];
+            if (!g) {
+              g = {};
+            }
+          }
+          g = factory;
+        }
+      }
+    };
+  }
+
+  js.lang.System.setOut(new js.io.Console(console));
+
+  var root = [location.origin],
+    version = null,
+    isDebug = false,
+    scripts = document.getElementsByTagName("script"),
+    path = null,
+    mainClass = null,
+    skin = null;
+
+  for (var i = 0, len = scripts.length; i < len; i++) {
+    var script = scripts[i],
+      jsvm = script.getAttribute("jsvm"),
+      servletpath = script.getAttribute("servletpath"),
+      hasDebug = script.hasAttribute("debug"),
+      debug = script.getAttribute("debug"),
+      v = script.getAttribute("version"),
+      main = script.getAttribute("main"),
+      s = script.getAttribute("skin");
+
+    if (jsvm && jsvm === 'true') {
+      if (servletpath) {
+        servletpath = servletpath.trim();
+
+        if (!"/".equals(servletpath)) {
+          if (servletpath.indexOf("/") === 0) {
+            servletpath = servletpath.substring(1);
+          }
+          if (servletpath.lastIndexOf("/") === servletpath.length - 1) {
+            servletpath = servletpath.substring(0, servletpath.length - 1);
+          }
+          root.push(servletpath);
+        }
+      }
+
+      if (hasDebug && debug.toLowerCase() !== 'false') {
+        isDebug = true;
+      }
+
+      if (main) {
+        mainClass = main;
+      }
+      skin = s;
+      version = v;
+      break;
+    }
+  }
+
+  path = root.join("/");
+
+  var loader = atom.misc.Launcher.getLauncher().getLoader();
+
+  var refPath = isDebug ? '/src/main/' : "/classes/";
+
+  var bootstrapPath = path + "/jre" + refPath;
+  var extPath = path + '/lib/';
+  var appPath = path + refPath;
+
+  js.lang.System.setProperty("atom.root.dirs", path);
+
+  js.lang.System.setProperty("atom.bootstrap.class.path", bootstrapPath + 'js/');
+  js.lang.System.setProperty("js.ext.dirs", extPath);
+  js.lang.System.setProperty("js.class.path", appPath + 'js/');
+
+  js.lang.System.setProperty("css.bootstrap.dirs", bootstrapPath + 'css/');
+  js.lang.System.setProperty("css.ext.dirs", extPath);
+  js.lang.System.setProperty("css.class.path", appPath + 'css/');
+  js.lang.System.setProperty("css.skin.path", appPath + 'skin/');
+
+  js.lang.System.setProperty("template.bootstrap.dirs", bootstrapPath + 'template/');
+  js.lang.System.setProperty("template.ext.dirs", extPath);
+  js.lang.System.setProperty("template.class.path", appPath + 'template/');
+
+  js.lang.System.setProperty("main", mainClass);
+  js.lang.System.setProperty("debug", isDebug);
+  js.lang.System.setProperty("version", version);
+  js.lang.System.setProperty("servletpath", servletpath);
+  js.lang.System.setProperty("skin", skin);
+  /*
+  $import([
+      "js.lang.ClassNotFoundException",
+      "js.lang.reflect.Field",
+      "js.lang.reflect.Method"
+  ], "BootstrapClassLoader");
+  */
+  js.dom.Document.ready(loader.main, loader);
+
+
+})(this);
