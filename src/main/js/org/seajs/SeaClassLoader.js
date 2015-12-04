@@ -153,10 +153,10 @@
     if (lastC === 35 /* "#" */ ) {
       return path.substring(0, last)
     }
-
+    var version = js.lang.System.getProperty("version");
     return (path.substring(last - 2) === ".js" ||
       path.indexOf("?") > 0 ||
-      lastC === 47 /* "/" */ ) ? path : path + ".js"
+      lastC === 47 /* "/" */ ) ? path : path + ".js?v=" + version
   }
 
 
@@ -1289,3 +1289,4 @@
   }
 
 })(this);
+
