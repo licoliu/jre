@@ -8,12 +8,15 @@
  * Date: 2014年7月7日
  */
 
-$import("js.awt.Component");
+define(function(require, exports, module) {
 
-Class.forName({
-  name: "abstract class js.awt.Field extends js.awt.Component",
-  "public Field": function() {
+  require("bootstrap!js.awt.Component");
 
-  }
+  Class.forName({
+    name: "abstract class js.awt.Field extends js.awt.Component",
+    "public Field": function() {
+
+    }
+  });
 });
 

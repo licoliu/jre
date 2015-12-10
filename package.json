@@ -33,6 +33,6 @@
     "lico"
   ],
   "license": "MIT",
-  "debug": true,
+  "debug": false,
   "version": "1.0.1"
 }

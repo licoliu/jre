@@ -5,10 +5,14 @@
  * 
  * Date: Feb 12, 2014
  */
-$import("js.lang.Exception", "BootstrapClassLoader");
-Class.forName({
-  name: "class js.lang.NullPointerException extends js.lang.Exception",
-  "private name": "js.lang.NullPointerException",
-  "private number": 107
+define(function(require, exports, module) {
+
+  require("bootstrap!js.lang.Exception");
+  Class.forName({
+    name: "class js.lang.NullPointerException extends js.lang.Exception",
+    "private name": "js.lang.NullPointerException",
+    "private number": 107
+  });
+
 });
 

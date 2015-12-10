@@ -5,11 +5,14 @@
  * 
  * Date: Feb 12, 2014
  */
-$import("js.lang.Exception", "BootstrapClassLoader");
-Class.forName({
-  name: "class js.util.NoSuchElementException extends js.lang.Exception",
-  "private name": "js.util.NoSuchElementException", // 错误名
-  "private number": 801
-    // 错误号
+define(function(require, exports, module) {
+
+  require("bootstrap!js.lang.Exception");
+  Class.forName({
+    name: "class js.util.NoSuchElementException extends js.lang.Exception",
+    "private name": "js.util.NoSuchElementException", // 错误名
+    "private number": 801
+      // 错误号
+  });
 });
 

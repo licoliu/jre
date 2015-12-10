@@ -5,45 +5,47 @@
  * 
  * Date: Feb 11, 2014
  */
+define(function(require, exports, module) {
 
-$import("js.util.Set", "BootstrapClassLoader");
-$import("js.util.HashMap", "BootstrapClassLoader");
+  require("bootstrap!js.util.Set");
+  require("bootstrap!js.util.HashMap");
 
-Class.forName({
-  name: "class js.util.HashSet extends js.util.Set",
+  Class.forName({
+    name: "class js.util.HashSet extends js.util.Set",
 
-  "private _table": null,
-  HashSet: function() {
-    this._table = new js.util.HashMap();
-  },
+    "private _table": null,
+    HashSet: function() {
+      this._table = new js.util.HashMap();
+    },
 
-  iterator: function() {
-    return this._table.keySet().iterator();
-  },
+    iterator: function() {
+      return this._table.keySet().iterator();
+    },
 
-  size: function() {
-    return this._table.size();
-  },
+    size: function() {
+      return this._table.size();
+    },
 
-  isEmpty: function() {
-    return this._table.isEmpty();
-  },
+    isEmpty: function() {
+      return this._table.isEmpty();
+    },
 
-  contains: function(o) {
-    return this._table.containsKey(o);
-  },
+    contains: function(o) {
+      return this._table.containsKey(o);
+    },
 
-  add: function(e) {
-    return this._table.put(e, null);
-  },
+    add: function(e) {
+      return this._table.put(e, null);
+    },
 
-  remove: function(o) {
-    this._table.remove(o);
-    return o;
-  },
+    remove: function(o) {
+      this._table.remove(o);
+      return o;
+    },
 
-  clear: function() {
-    this._table.clear();
-  }
+    clear: function() {
+      this._table.clear();
+    }
+  });
 });
 

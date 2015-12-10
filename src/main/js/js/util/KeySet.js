@@ -5,21 +5,23 @@
  * 
  * Date: Feb 11, 2014
  */
+define(function(require, exports, module) {
 
-$import("js.util.Set", "BootstrapClassLoader");
-$import("js.util.KeyIterator", "BootstrapClassLoader");
+  require("bootstrap!js.util.Set");
+  require("bootstrap!js.util.KeyIterator");
 
-Class.forName({
-  name: "class js.util.KeySet extends js.util.Set",
-  "private _element": null,
-  KeySet: function(element) {
-    this._element = element;
-  },
-  iterator: function() {
-    return new js.util.KeyIterator(this._element);
-  },
-  size: function() {
-    return this._element.size();
-  }
+  Class.forName({
+    name: "class js.util.KeySet extends js.util.Set",
+    "private _element": null,
+    KeySet: function(element) {
+      this._element = element;
+    },
+    iterator: function() {
+      return new js.util.KeyIterator(this._element);
+    },
+    size: function() {
+      return this._element.size();
+    }
+  });
 });
 

@@ -8,12 +8,15 @@
  * Date: 2014年7月7日
  */
 
-$import("js.awt.Container");
+define(function(require, exports, module) {
 
-Class.forName({
-  name: "class js.awt.Window extends js.awt.Container",
-  "public Window": function() {
+  require("bootstrap!js.awt.Container");
 
-  }
+  Class.forName({
+    name: "class js.awt.Window extends js.awt.Container",
+    "public Window": function() {
+
+    }
+  });
 });
 

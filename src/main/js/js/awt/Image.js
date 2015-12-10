@@ -8,12 +8,15 @@
  * Date: 2014年7月7日
  */
 
-$import("js.awt.Component");
+define(function(require, exports, module) {
 
-Class.forName({
-  name: "class js.awt.Image extends js.awt.Component",
-  "public Image": function() {
+  require("bootstrap!js.awt.Component");
 
-  }
+  Class.forName({
+    name: "class js.awt.Image extends js.awt.Component",
+    "public Image": function() {
+
+    }
+  });
 });
 

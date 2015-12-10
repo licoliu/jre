@@ -8,12 +8,15 @@
  * Date: 2014年7月7日
  */
 
-$import("js.awt.Text");
+define(function(require, exports, module) {
 
-Class.forName({
-  name: "class js.awt.TextArea extends js.awt.Text",
-  "public TextArea": function() {
+  require("bootstrap!js.awt.Text");
 
-  }
+  Class.forName({
+    name: "class js.awt.TextArea extends js.awt.Text",
+    "public TextArea": function() {
+
+    }
+  });
 });
 

@@ -5,11 +5,14 @@
  * 
  * Date: Feb 12, 2014
  */
-$import("js.lang.Exception", "BootstrapClassLoader");
-Class.forName({
-  name: "class js.lang.IllegalAccessException extends js.lang.Exception",
-  "private name": "js.lang.IllegalAccessException", // 错误名
-  "private number": 101
-    // 错误号
+define(function(require, exports, module) {
+
+  require("bootstrap!js.lang.Exception");
+  Class.forName({
+    name: "class js.lang.IllegalAccessException extends js.lang.Exception",
+    "private name": "js.lang.IllegalAccessException", // 错误名
+    "private number": 101
+      // 错误号
+  });
 });
 

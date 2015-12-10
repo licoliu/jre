@@ -5,10 +5,12 @@
  * 
  * Date: Feb 11, 2014
  */
+define(function(require, exports, module) {
 
-$import("js.util.Map", "BootstrapClassLoader");
+  require("bootstrap!js.util.Map");
 
-Class.forName({
-  name: "class js.util.TreeMap extends js.util.Map"
+  Class.forName({
+    name: "class js.util.TreeMap extends js.util.Map"
+  });
 });
 

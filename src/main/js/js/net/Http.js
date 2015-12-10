@@ -5,12 +5,15 @@
  * 
  * Date: Feb 14, 2014
  */
+define(function(require, exports, module) {
 
-Class.forName({
-  name: "class js.net.http.Http extends Object",
-  "public static REQUEST": {
-    TYPE: ["GET", "HEAD", "PUT", "DELETE", "POST", "OPTIONS"]
-  },
-  Http: function() {}
+  Class.forName({
+    name: "class js.net.http.Http extends Object",
+    "public static REQUEST": {
+      TYPE: ["GET", "HEAD", "PUT", "DELETE", "POST", "OPTIONS"]
+    },
+    Http: function() {}
+  });
+
 });
 

@@ -8,12 +8,15 @@
  * Date: 2014年7月7日
  */
 
-$import("js.awt.Panel");
+define(function(require, exports, module) {
 
-Class.forName({
-  name: "class js.awt.GridPanel extends js.awt.Panel",
-  "public GridPanel": function() {
+  require("bootstrap!js.awt.Panel");
 
-  }
+  Class.forName({
+    name: "class js.awt.GridPanel extends js.awt.Panel",
+    "public GridPanel": function() {
+
+    }
+  });
 });
 

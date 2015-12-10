@@ -23,12 +23,16 @@
  * @see     java.lang.Object#clone()
  * @since   JDK1.0
  */
-$import("js.lang.Exception", "BootstrapClassLoader");
-Class.forName({
-  name: "class js.lang.CloneNotSupportedException extends js.lang.Exception",
-  "private name": "js.lang.CloneNotSupportedException", // 错误名
-  "private number": 109
-    // 错误号
+define(function(require, exports, module) {
+
+  require("bootstrap!js.lang.Exception");
+  Class.forName({
+    name: "class js.lang.CloneNotSupportedException extends js.lang.Exception",
+    "private name": "js.lang.CloneNotSupportedException", // 错误名
+    "private number": 109
+      // 错误号
+
+  });
 
 });
 

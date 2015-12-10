@@ -249,7 +249,7 @@ Class.forName({
       if (typeof seajs !== 'undefined') {
         seajs.config({
           // base: js.lang.System.getProperty("js.class.path")
-        })
+        });
         seajs.use(mainClass);
       } else {
         this.loadClass(mainClass);
@@ -356,12 +356,13 @@ Class.forName({
     scripts = document.getElementsByTagName("script"),
     path = null,
     mainClass = null,
-    skin = null;
+    skin = null,
+    servletpath = null;
 
   for (var i = 0, len = scripts.length; i < len; i++) {
     var script = scripts[i],
       jsvm = script.getAttribute("jsvm"),
-      servletpath = script.getAttribute("servletpath"),
+      sp = script.getAttribute("servletpath"),
       hasDebug = script.hasAttribute("debug"),
       debug = script.getAttribute("debug"),
       v = script.getAttribute("version"),
@@ -369,18 +370,19 @@ Class.forName({
       s = script.getAttribute("skin");
 
     if (jsvm && jsvm === 'true') {
-      if (servletpath) {
-        servletpath = servletpath.trim();
+      if (sp) {
+        sp = sp.trim();
 
-        if (!"/".equals(servletpath)) {
-          if (servletpath.indexOf("/") === 0) {
-            servletpath = servletpath.substring(1);
+        if (!"/".equals(sp)) {
+          if (sp.indexOf("/") === 0) {
+            sp = sp.substring(1);
           }
-          if (servletpath.lastIndexOf("/") === servletpath.length - 1) {
-            servletpath = servletpath.substring(0, servletpath.length - 1);
+          if (sp.lastIndexOf("/") === sp.length - 1) {
+            sp = sp.substring(0, sp.length - 1);
           }
-          root.push(servletpath);
+          root.push(sp);
         }
+        servletpath = sp;
       }
 
       if (hasDebug && debug.toLowerCase() !== 'false') {
