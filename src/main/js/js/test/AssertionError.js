@@ -7,14 +7,17 @@
  *
  * Date: 2014年6月25日
  */
+define(function(require, exports, module) {
 
 
-$import("js.lang.Error", "BootstrapClassLoader");
-Class.forName({
-  name: "class js.test.AssertionError extends js.lang.Error",
-  "private name": "js.test.AssertionError", // 错误名
-  "private number": -1
+  require("bootstrap!js.lang.Error");
+  Class.forName({
+    name: "class js.test.AssertionError extends js.lang.Error",
+    "private name": "js.test.AssertionError", // 错误名
+    "private number": -1
 
+
+  });
 
 });
 

@@ -8,12 +8,15 @@
  * Date: 2014年7月7日
  */
 
-$import("js.awt.Component");
+define(function(require, exports, module) {
 
-Class.forName({
-  name: "class js.awt.Label extends js.awt.Component",
-  "public Label": function() {
+  require("bootstrap!js.awt.Component");
 
-  }
+  Class.forName({
+    name: "class js.awt.Label extends js.awt.Component",
+    "public Label": function() {
+
+    }
+  });
 });
 

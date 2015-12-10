@@ -8,12 +8,15 @@
  * Date: 2014年7月7日
  */
 
-$import("js.awt.Window");
+define(function(require, exports, module) {
 
-Class.forName({
-  name: "class js.awt.Dialog extends js.awt.Window",
-  "public Dialog": function() {
+  require("bootstrap!js.awt.Window");
 
-  }
+  Class.forName({
+    name: "class js.awt.Dialog extends js.awt.Window",
+    "public Dialog": function() {
+
+    }
+  });
 });
 

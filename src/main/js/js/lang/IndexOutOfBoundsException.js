@@ -5,11 +5,16 @@
  * 
  * Date: Feb 12, 2014
  */
-$import("js.lang.Exception", "BootstrapClassLoader");
-Class.forName({
-  name: "class js.lang.IndexOutOfBoundsException extends js.lang.Exception",
-  "private name": "js.lang.IndexOutOfBoundsException", // 错误名
-  "private number": 104
-    // 错误号
+define(function(require, exports, module) {
+
+  require("bootstrap!js.lang.Exception");
+
+  Class.forName({
+    name: "class js.lang.IndexOutOfBoundsException extends js.lang.Exception",
+    "private name": "js.lang.IndexOutOfBoundsException", // 错误名
+    "private number": 104
+      // 错误号
+  });
+
 });
 

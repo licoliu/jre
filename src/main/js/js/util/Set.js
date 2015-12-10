@@ -5,11 +5,14 @@
  * 
  * Date: Feb 11, 2014
  */
+define(function(require, exports, module) {
 
-$import("js.util.Collection", "BootstrapClassLoader");
+  require("bootstrap!js.util.Collection");
 
-Class.forName({
-  name: "class js.util.Set extends js.util.Collection"
+  Class.forName({
+    name: "class js.util.Set extends js.util.Collection"
+
+  });
 
 });
 

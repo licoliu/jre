@@ -7,14 +7,18 @@
  *
  * Date: 2014年6月25日
  */
-$import("js.lang.Throwable", "BootstrapClassLoader");
-Class.forName({
-  name: "class ReferenceError",
-  alias: "js.lang.ReferenceError",
 
-  "private name": "js.lang.ReferenceError", // 错误名
-  "private number": 4,
+define(function(require, exports, module) {
 
-  ReferenceError: function() {}
+  require("bootstrap!js.lang.Throwable");
+  Class.forName({
+    name: "class ReferenceError",
+    alias: "js.lang.ReferenceError",
+
+    "private name": "js.lang.ReferenceError", // 错误名
+    "private number": 4,
+
+    ReferenceError: function() {}
+  });
 });
 

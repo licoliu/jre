@@ -8,12 +8,15 @@
  * Date: 2014年7月7日
  */
 
-$import("js.awt.Panel");
+define(function(require, exports, module) {
 
-Class.forName({
-  name: "class js.awt.TreePanel extends js.awt.Panel",
-  "public TreePanel": function() {
+  require("bootstrap!js.awt.Panel");
 
-  }
+  Class.forName({
+    name: "class js.awt.TreePanel extends js.awt.Panel",
+    "public TreePanel": function() {
+
+    }
+  });
 });
 

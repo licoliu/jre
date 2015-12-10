@@ -5,20 +5,22 @@
  * 
  * Date: Feb 11, 2014
  */
+define(function(require, exports, module) {
 
-$import("js.util.HashIterator", "BootstrapClassLoader");
+  require("bootstrap!js.util.HashIterator");
 
-Class
-  .forName({
-    name: "class js.util.KeyIterator extends js.util.HashIterator",
-    next: function() {
-      try {
-        var next = this._element._table[this._element._hashArray[this._cursor]];
-        this._lastRet = this._cursor++;
-        return next.getKey();
-      } catch (e) {
-        throw new js.lang.IndexOutOfBoundsException("Index: " + this._cursor + ", Size: " + this._element.size() + ",Message:" + e.getMessage());
+  Class
+    .forName({
+      name: "class js.util.KeyIterator extends js.util.HashIterator",
+      next: function() {
+        try {
+          var next = this._element._table[this._element._hashArray[this._cursor]];
+          this._lastRet = this._cursor++;
+          return next.getKey();
+        } catch (e) {
+          throw new js.lang.IndexOutOfBoundsException("Index: " + this._cursor + ", Size: " + this._element.size() + ",Message:" + e.getMessage());
+        }
       }
-    }
-  });
+    });
+});
 

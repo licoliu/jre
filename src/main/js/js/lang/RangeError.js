@@ -7,15 +7,17 @@
  *
  * Date: 2014年6月25日
  */
+define(function(require, exports, module) {
 
-$import("js.lang.Throwable", "BootstrapClassLoader");
-Class.forName({
-  name: "class RangeError",
-  alias: "js.lang.RangeError",
+  require("bootstrap!js.lang.Throwable");
+  Class.forName({
+    name: "class RangeError",
+    alias: "js.lang.RangeError",
 
-  "private name": "js.lang.RangeError", // 错误名
-  "private number": 3,
+    "private name": "js.lang.RangeError", // 错误名
+    "private number": 3,
 
-  RangeError: function() {}
+    RangeError: function() {}
+  });
 });
 

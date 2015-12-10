@@ -5,6 +5,7 @@
  * 
  * Date: Feb 14, 2014
  */
+
 Class
   .forName({
     name: "class js.io.Console extends js.io.PrintWriter",

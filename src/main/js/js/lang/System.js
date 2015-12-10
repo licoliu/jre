@@ -77,11 +77,11 @@ Class.forName({
   },
 
   "static setOut": function(out) {
-    return js.lang.System.out = out;
+    js.lang.System.out = out;
   },
 
   "static setError": function(e) {
-    return js.lang.System.err = e;
+    js.lang.System.err = e;
   },
 
   "public static currentTimeMillis": function() {
@@ -95,7 +95,7 @@ Class.forName({
   },
 
   "public static setProperty": function(name, value) {
-    return js.lang.System.properties[name] = value;
+    js.lang.System.properties[name] = value;
   },
 
   "public static getProperty": function(name) {
