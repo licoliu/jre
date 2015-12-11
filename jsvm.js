@@ -1355,6 +1355,15 @@ Class.forName({
   contains: function(elem) {
     return (Array.prototype.indexOf.call(this, elem) != -1) ? true : false;
   },
+  peek: function() {
+    return this.slice(-1)[0];
+  },
+  last: function() {
+    return this[this.length - 1];
+  },
+  first: function() {
+    return this[0];
+  },
   indexOf: function(elem, start, end) {
     for (var i = start || 0, len = Math.min(end || this.length, this.length); i < len; i++) {
       if (this[i] === elem) {
@@ -1381,7 +1390,6 @@ Class.forName({
     return this.length;
   }
 });
-
 
 /*!
  * JSRT JavaScript Library 0.2.1
