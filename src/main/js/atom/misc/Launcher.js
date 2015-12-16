@@ -213,6 +213,10 @@ Class.forName({
       link.type = 'text/css';
       link.rel = 'stylesheet';
       link.href = this.findClass(linkUrl, notModify, type)[linkUrl];
+      if (this.loadedScripts[link.href]) {
+        continue;
+      }
+      this.loadedScripts[link.href] = 1;
       (document.head || document.getElementsByTagName("head")[0]).appendChild(link);
 
     }
