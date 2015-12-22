@@ -14,7 +14,15 @@ Class.forName({
     this.splice(0, this.length);
   },
   contains: function(elem) {
-    return (Array.prototype.indexOf.call(this, elem) != -1) ? true : false;
+    return (this.indexOf(elem) !== -1);
+  },
+  remove: function(elem) {
+    var index = this.indexOf(elem);
+    if (index > -1) {
+      this.splice(index, 1);
+      return true;
+    }
+    return false;
   },
   peek: function() {
     return this.slice(-1)[0];
