@@ -11,7 +11,7 @@ define(function(require, exports, module) {
 
   Class
     .forName({
-      name: "public class js.text.FieldPosition",
+      name: "public class js.text.FieldPosition extends Object",
 
       /**
        * Input: Desired field to determine start and end offsets for. The

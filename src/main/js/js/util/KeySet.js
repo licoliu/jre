@@ -8,7 +8,6 @@
 define(function(require, exports, module) {
 
   require("bootstrap!js.util.Set");
-  require("bootstrap!js.util.KeyIterator");
 
   Class.forName({
     name: "class js.util.KeySet extends js.util.Set",
