@@ -9,7 +9,6 @@
  */
 define(function(require, exports, module) {
 
-  require("bootstrap!js.lang.System");
   Class.forName({
     name: "public class js.util.Arrays",
 
