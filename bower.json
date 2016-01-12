@@ -13,10 +13,13 @@
     "test",
     "tests"
   ],
+  "main": [
+    "./jsvm.js",
+    "./src/main/"
+  ],
   "dependencies": {},
   "devDependencies": {
-    "seajs": "~3.0.0",
-    "requirejs": "~2.1.22"
+    "seajs": "~3.0.0"
   },
   "overrides": {},
   "group": "js",
