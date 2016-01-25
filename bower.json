@@ -25,5 +25,5 @@
   "group": "js",
   "artifact": "jre",
   "debug": false,
-  "version": "1.0.2"
+  "version": "1.0.3"
 }

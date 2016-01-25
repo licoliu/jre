@@ -411,12 +411,15 @@ Class.forName({
   var bootstrapPath = path + "/jre" + refPath;
   var extPath = path + '/lib/';
   var appPath = path + refPath;
+  var testPath = path + '/src/test/js/';
 
   js.lang.System.setProperty("atom.root.dirs", path);
 
   js.lang.System.setProperty("atom.bootstrap.class.path", bootstrapPath + 'js/');
   js.lang.System.setProperty("js.ext.dirs", extPath);
   js.lang.System.setProperty("js.class.path", appPath + 'js/');
+
+  js.lang.System.setProperty("js.test.dirs", testPath);
 
   js.lang.System.setProperty("css.bootstrap.dirs", bootstrapPath + 'css/');
   js.lang.System.setProperty("css.ext.dirs", extPath);

@@ -7,8 +7,6 @@
  */
 define(function(require, exports, module) {
 
-  require("bootstrap!js.lang.System");
-
   Class.forName({
     name: "class js.test.TestCase extends Object",
     "@Setter @Getter private _testMethods": [],

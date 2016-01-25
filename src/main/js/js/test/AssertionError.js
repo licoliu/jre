@@ -9,14 +9,10 @@
  */
 define(function(require, exports, module) {
 
-
-  require("bootstrap!js.lang.Error");
   Class.forName({
     name: "class js.test.AssertionError extends js.lang.Error",
     "private name": "js.test.AssertionError", // 错误名
     "private number": -1
-
-
   });
 
 });

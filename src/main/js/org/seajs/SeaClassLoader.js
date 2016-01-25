@@ -717,6 +717,7 @@
 
     var bootstap = js.lang.System.getProperty("atom.bootstrap.class.path"),
       ext = js.lang.System.getProperty("js.ext.dirs"),
+      test = js.lang.System.getProperty("js.test.dirs"),
       app = js.lang.System.getProperty("js.class.path");
 
     for (var i = 0, len = ids.length; i < len; i++) {
@@ -741,6 +742,11 @@
         case 'js:bootstrap':
         case 'bootstrap':
           url = bootstap;
+          break;
+
+        case 'js:test':
+        case 'test':
+          url = test;
           break;
 
         case 'js:app':
@@ -1094,6 +1100,7 @@
 
     var bootstrap = js.lang.System.getProperty("atom.bootstrap.class.path"),
       ext = js.lang.System.getProperty("js.ext.dirs"),
+      test = js.lang.System.getProperty("js.test.dirs"),
       app = js.lang.System.getProperty("js.class.path");
 
     var index = uri.indexOf(app);
@@ -1107,6 +1114,11 @@
         index = uri.indexOf(bootstrap);
         if (index !== -1) {
           meta.id = uri.substring(index + bootstrap.length);
+        } else {
+          index = uri.indexOf(test);
+          if (index !== -1) {
+            meta.id = uri.substring(index + test.length);
+          }
         }
       }
     }
@@ -1127,6 +1139,7 @@
   Module.getId = function(uri) {
     var bootstrap = js.lang.System.getProperty("atom.bootstrap.class.path"),
       ext = js.lang.System.getProperty("js.ext.dirs"),
+      test = js.lang.System.getProperty("js.test.dirs"),
       app = js.lang.System.getProperty("js.class.path");
 
     var index = uri.indexOf(app),
@@ -1142,7 +1155,12 @@
         if (index !== -1) {
           id = uri.substring(index + bootstrap.length);
         } else {
-          id = uri;
+          index = uri.indexOf(test);
+          if (index !== -1) {
+            id = uri.substring(index + test.length);
+          } else {
+            id = uri;
+          }
         }
       }
     }
