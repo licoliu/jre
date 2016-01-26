@@ -10,8 +10,7 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "test",
-    "tests"
+    "classes"
   ],
   "main": [
     "./jsvm.js",
@@ -24,6 +23,6 @@
   "overrides": {},
   "group": "js",
   "artifact": "jre",
-  "debug": false,
+  "debug": true,
   "version": "1.0.3"
 }
