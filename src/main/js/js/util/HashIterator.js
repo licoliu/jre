@@ -30,21 +30,15 @@ define(function(require, exports, module) {
         if (this._lastRet === -1)
           throw new js.lang.IllegalStateException();
         try {
-          this._element._table.splice(
-            this._element._hashArray[this._lastRet], 1);
-
           var keys = this._element._hash;
 
           Object.each(keys, function(i, v, o) {
             if (v === this._element._hashArray[this._lastRet]) {
-              remove(i);
+              this._element.remove(i);
               return false;
             }
           }, this);
-          /*
-           * for (var i in keys) { if (keys[i] === this._lastRet) {
-           * delete this._element._hash[i]; break; } }
-           */
+
           if (this._lastRet < this._cursor)
             this._cursor--;
           this._lastRet = -1;
