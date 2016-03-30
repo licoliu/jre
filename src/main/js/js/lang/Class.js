@@ -6,6 +6,34 @@
  * Date: Feb 10, 2014
  */
 
+/**
+ * @namespace js
+ */
+/**
+ * @namespace js.awt
+ */
+/**
+ * @namespace js.dom
+ */
+/**
+ * @namespace js.io
+ */
+/**
+ * @namespace js.lang
+ */
+/**
+ * @namespace js.net
+ */
+/**
+ * @namespace js.test
+ */
+/**
+ * @namespace js.text
+ */
+/**
+ * @namespace js.util
+ */
+
 (function(global) {
   var USEECMA = !!Object.defineProperties;
 
