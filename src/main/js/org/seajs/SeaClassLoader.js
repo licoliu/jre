@@ -9,6 +9,12 @@
  * Sea.js 3.0.0 | seajs.org/LICENSE.md
  */
 
+/**
+ * @namespace org
+ */
+/**
+ * @namespace org.seajs
+ */
 (function(global, undefined) {
 
   // Avoid conflicting when `sea.js` is loaded multiple times

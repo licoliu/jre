@@ -1,3 +1,9 @@
+/**
+ * @namespace atom
+ */
+/**
+ * @namespace atom.misc
+ */
 Class.forName({
   name: "class atom.misc.Launcher extends Object",
   "private static launcher": null,
