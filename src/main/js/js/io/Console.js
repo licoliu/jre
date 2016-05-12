@@ -269,4 +269,3 @@ Class
         this._writer, arguments);
     }
   });
-

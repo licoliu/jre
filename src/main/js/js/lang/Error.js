@@ -33,4 +33,3 @@ Class.forName({
 });
 
 js.lang.Error.init();
-

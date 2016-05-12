@@ -72,4 +72,3 @@ Class.forName({
     return this;
   }
 });
-

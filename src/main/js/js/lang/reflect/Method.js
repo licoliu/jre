@@ -50,4 +50,3 @@ Class.forName({
   }
 });
 js.lang.reflect.Method.loaded = true;
-

@@ -17,4 +17,3 @@ Class.forName({
 
   SyntaxError: function() {}
 });
-

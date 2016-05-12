@@ -11,4 +11,3 @@ Class.forName({
   "private name": "js.lang.NoSuchFieldException",
   "private number": 105
 });
-

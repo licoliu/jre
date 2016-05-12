@@ -57,7 +57,7 @@ var dest = {
   lib: './lib/'
 };
 
-var settings = config("./pom.json");
+var settings = config("./pomy.json");
 
 /****************tasks***************/
 gulp.task('pom', function() {
@@ -77,7 +77,7 @@ gulp.task('pom', function() {
     settings.version = version;
   }
 
-  return gulp.src("./pom.json")
+  return gulp.src("./pomy.json")
     .pipe(jeditor(settings))
     .pipe(gulp.dest("./"));
 });

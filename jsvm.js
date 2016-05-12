@@ -1206,8 +1206,6 @@ Object
 
 // TODO
 // Function,Array,String,Boolean,Number,Date,RegExp,Error,EvalError,RangeError,ReferenceError,SyntaxError,TypeError,URIError对象的$class属性
-
-
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  *
@@ -1335,8 +1333,6 @@ Object
     Object.$class = $class;
   }
 })(this);
-
-
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  *
@@ -1412,8 +1408,6 @@ Class.forName({
     return this.length;
   }
 });
-
-
 /*!
  * JSRT JavaScript Library 0.2.1
  * lico.atom@gmail.com
@@ -1431,8 +1425,6 @@ Class.forName({
     return Object.isBoolean(s) && this == s;
   }
 });
-
-
 /*!
  * JSRT JavaScript Library 0.2.1
  * lico.atom@gmail.com
@@ -1448,8 +1440,6 @@ Class.forName({
   alias: "js.lang.Function",
   Function: function() {}
 });
-
-
 /*!
  * JSRT JavaScript Library 0.2.1
  * lico.atom@gmail.com
@@ -1470,8 +1460,6 @@ Class.forName({
   }
 
 });
-
-
 /*!
  * JSRT JavaScript Library 0.2.1
  * lico.atom@gmail.com
@@ -1487,8 +1475,6 @@ Class.forName({
   alias: "js.lang.RegExp",
   RegExp: function() {}
 });
-
-
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  * 
@@ -1515,8 +1501,6 @@ Class.forName({
   }
 
 });
-
-
 /*!
  * JSRT JavaScript Library 0.2.1
  * lico.atom@gmail.com
@@ -1567,8 +1551,6 @@ Class.forName({
 /*Object.extend([ Error, EvalError, RangeError, ReferenceError, SyntaxError,
 TypeError, URIError ], js.lang.Throwable.$class.getMethods(),
 'prototype', '_value');*/
-
-
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  *
@@ -1590,8 +1572,6 @@ Class.forName({
   }
 
 });
-
-
 /*!
  * JSRT JavaScript Library 0.2.1
  * lico.atom@gmail.com
@@ -1627,8 +1607,6 @@ Class.forName({
 });
 
 js.lang.Error.init();
-
-
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  *
@@ -1642,8 +1620,6 @@ Class.forName({
   "private number": 100
     // 错误号
 });
-
-
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  *
@@ -1657,8 +1633,6 @@ Class.forName({
   "private name": "js.lang.NoSuchMethodException",
   "private number": 106
 });
-
-
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  *
@@ -1672,8 +1646,6 @@ Class.forName({
   "private name": "js.lang.NoSuchFieldException",
   "private number": 105
 });
-
-
 /*!
  * JSRT JavaScript Library 0.2.1
  * lico.atom@gmail.com
@@ -1691,8 +1663,6 @@ Class.forName({
 
 
 });
-
-
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  * 
@@ -1713,8 +1683,6 @@ Class.forName({
     return atom.misc.Launcher.getLauncher().getClassLoader();
   }
 });
-
-
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  * 
@@ -1737,8 +1705,6 @@ Class.forName({
   /** 写入字符数组,字符,字符串或某一部分 */
   write: function(cbuf, off, len) {}
 });
-
-
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  * 
@@ -1754,8 +1720,6 @@ Class.forName({
     this.print(cbuf, off, len, true);
   }
 });
-
-
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  * 
@@ -2027,8 +1991,6 @@ Class
         this._writer, arguments);
     }
   });
-
-
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  *
@@ -2141,8 +2103,6 @@ Class.forName({
     return js.lang.System.properties;
   }
 });
-
-
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  *
@@ -2447,8 +2407,6 @@ Class.forName({
   })(this)
 
 });
-
-
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  *
@@ -3743,8 +3701,6 @@ Class.forName({
   };
 
 })(this);
-
-
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  *
@@ -3809,8 +3765,6 @@ Class.forName({
     return document;
   }
 });
-
-
 Class.forName({
   name: "class atom.misc.Launcher extends Object",
   "private static launcher": null,
@@ -4259,4 +4213,3 @@ Class.forName({
 
 
 })(this);
-

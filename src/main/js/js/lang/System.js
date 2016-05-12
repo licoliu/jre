@@ -110,4 +110,3 @@ Class.forName({
     return js.lang.System.properties;
   }
 });
-

@@ -15,4 +15,3 @@ Class.forName({
     return Object.isBoolean(s) && this == s;
   }
 });
-

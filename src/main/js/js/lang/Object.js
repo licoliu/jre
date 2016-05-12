@@ -125,4 +125,3 @@
     Object.$class = $class;
   }
 })(this);
-

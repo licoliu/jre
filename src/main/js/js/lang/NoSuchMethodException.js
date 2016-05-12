@@ -11,4 +11,3 @@ Class.forName({
   "private name": "js.lang.NoSuchMethodException",
   "private number": 106
 });
-

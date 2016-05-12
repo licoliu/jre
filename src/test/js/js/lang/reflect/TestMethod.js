@@ -37,4 +37,3 @@ Class
   });
 
 new test.lang.reflect.TestMethod();
-

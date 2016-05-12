@@ -68,4 +68,3 @@ Class.forName({
 });
 
 new test.util.TestHashSet();
-

@@ -48,4 +48,3 @@ Class.forName({
 /*Object.extend([ Error, EvalError, RangeError, ReferenceError, SyntaxError,
 TypeError, URIError ], js.lang.Throwable.$class.getMethods(),
 'prototype', '_value');*/
-

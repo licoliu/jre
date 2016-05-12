@@ -57,4 +57,3 @@ Class.forName({
   }
 });
 new test.text.TestDateFormat();
-

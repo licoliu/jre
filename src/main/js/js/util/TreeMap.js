@@ -13,4 +13,3 @@ define(function(require, exports, module) {
     name: "class js.util.TreeMap extends js.util.Map"
   });
 });
-
