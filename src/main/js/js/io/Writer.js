@@ -20,4 +20,3 @@ Class.forName({
   /** 写入字符数组,字符,字符串或某一部分 */
   write: function(cbuf, off, len) {}
 });
-

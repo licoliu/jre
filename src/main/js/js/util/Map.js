@@ -139,4 +139,3 @@ define(function(require, exports, module) {
       equals: function(o) {}
     });
 });
-

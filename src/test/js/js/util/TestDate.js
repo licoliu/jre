@@ -40,4 +40,3 @@ Class.forName({
 });
 
 new test.util.TestDate();
-

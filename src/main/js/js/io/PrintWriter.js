@@ -13,4 +13,3 @@ Class.forName({
     this.print(cbuf, off, len, true);
   }
 });
-

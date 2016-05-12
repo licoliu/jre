@@ -13,4 +13,3 @@ Class.forName({
   alias: "js.lang.RegExp",
   RegExp: function() {}
 });
-

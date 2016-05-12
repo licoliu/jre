@@ -347,4 +347,3 @@ Class.forName({
   }
 });
 new test.lang.TestObject();
-

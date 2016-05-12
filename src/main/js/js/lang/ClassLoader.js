@@ -18,4 +18,3 @@ Class.forName({
     return atom.misc.Launcher.getLauncher().getClassLoader();
   }
 });
-

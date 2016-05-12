@@ -15,4 +15,3 @@ var dogClass = Class.forName({
     return this.word;
   }
 });
-

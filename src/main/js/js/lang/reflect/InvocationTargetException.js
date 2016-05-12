@@ -13,4 +13,3 @@ Class
     "private number": 100
       // 错误号
   });
-

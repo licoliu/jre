@@ -21,4 +21,3 @@ define(function(require, exports, module) {
     ReferenceError: function() {}
   });
 });
-

@@ -21,7 +21,8 @@
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.6",
-    "main-bower-files": "^2.7.0"
+    "main-bower-files": "^2.7.0",
+    "pomy": "^1.0.1"
   },
   "engines": {
     "node": "^0.12.2",
@@ -29,10 +30,74 @@
   },
   "group": "js",
   "artifact": "jre",
-  "authors": [
-    "lico"
-  ],
   "license": "MIT",
-  "debug": true,
-  "version": "1.0.3"
+  "debug": false,
+  "version": "1.1.1",
+  "jre": {
+    "name": "jsvm",
+    "uglify": "jsvm.min",
+    "files": [
+      "./src/main/js/js/lang/Class.js",
+      "./src/main/js/js/lang/Object.js",
+      "./src/main/js/js/lang/Array.js",
+      "./src/main/js/js/lang/Boolean.js",
+      "./src/main/js/js/lang/Function.js",
+      "./src/main/js/js/lang/Number.js",
+      "./src/main/js/js/lang/RegExp.js",
+      "./src/main/js/js/lang/String.js",
+      "./src/main/js/js/lang/Throwable.js",
+      "./src/main/js/js/lang/Exception.js",
+      "./src/main/js/js/lang/Error.js",
+      "./src/main/js/js/lang/ClassNotFoundException.js",
+      "./src/main/js/js/lang/NoSuchMethodException.js",
+      "./src/main/js/js/lang/NoSuchFieldException.js",
+      "./src/main/js/js/lang/InternalError.js",
+      "./src/main/js/js/lang/ClassLoader.js",
+      "./src/main/js/js/io/Writer.js",
+      "./src/main/js/js/io/PrintWriter.js",
+      "./src/main/js/js/io/Console.js",
+      "./src/main/js/js/lang/System.js",
+      "./src/main/js/js/net/URLClassLoader.js",
+      "./src/main/js/org/seajs/SeaClassLoader.js",
+      "./src/main/js/js/dom/Document.js",
+      "./src/main/js/atom/misc/Launcher.js"
+    ]
+  },
+  "target": "prod",
+  "organization": {
+    "name": "atomunion",
+    "url": "https://github.com/atomunion"
+  },
+  "contributors": [],
+  "developers": [{
+    "id": "lico",
+    "name": "lico liu",
+    "email": "lico.atom@gmail.com",
+    "url": "https://github.com/licoliu"
+  }],
+  "author": "lico",
+  "googleWebmasterMeta": "",
+  "registry": "https://registry.npm.taobao.org",
+  "manual": {
+    "url": "http://github.com/licoliu/jre",
+    "email": "lico.atom@gmail.com"
+  },
+  "site": {
+    "domain": "localhost",
+    "port": 8421,
+    "user": "root",
+    "nohup": true
+  },
+  "homepage": "http://github.com/licoliu/jre",
+  "bugs": {
+    "url": "http://github.com/licoliu/jre/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:licoliu/jre.git"
+  },
+  "keywords": "JSRT, JRE, Node.js, Gulp, API Document, JsDoc, Open Source",
+  "define": "cmd",
+  "skin": "default",
+  "title": "jre"
 }

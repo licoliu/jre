@@ -44,4 +44,3 @@ Class.forName({
 });
 
 new test.lang.TestOOP();
-

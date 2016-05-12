@@ -3,6 +3,8 @@ bower_components/
 node_modules/
 classes/
 lib/
+target/
+jre/
 
 # mac
 .DS_Store

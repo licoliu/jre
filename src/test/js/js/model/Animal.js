@@ -20,4 +20,3 @@ var animalClass = Class.forName({
     return "i am a animal";
   }
 });
-

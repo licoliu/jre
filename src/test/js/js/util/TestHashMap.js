@@ -36,4 +36,3 @@ Class.forName({
 });
 
 new test.util.TestHashMap();
-

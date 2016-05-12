@@ -1206,4 +1206,3 @@ Object
 
 // TODO
 // Function,Array,String,Boolean,Number,Date,RegExp,Error,EvalError,RangeError,ReferenceError,SyntaxError,TypeError,URIError对象的$class属性
-
