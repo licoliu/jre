@@ -55,7 +55,7 @@ define(function(require, exports, module) {
     },
     invokeAfterClass: function() {
 
-      var afterClass = this.getConfigMethods()[0];
+      var afterClass = this.getConfigMethods()[3];
 
       if (afterClass) {
         afterClass.getValue().call(this.getClass().getClassConstructor());

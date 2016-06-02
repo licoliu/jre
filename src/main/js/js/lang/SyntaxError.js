@@ -7,7 +7,6 @@
  *
  * Date: 2014年6月25日
  */
-$import("js.lang.Throwable", "BootstrapClassLoader");
 Class.forName({
   name: "class SyntaxError",
   alias: "js.lang.SyntaxError",

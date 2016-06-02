@@ -12,6 +12,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.text.DateFormatSymbols");
   require("bootstrap!js.text.FieldPosition");
   require("bootstrap!js.util.GregorianCalendar");
+  require("bootstrap!js.lang.NullPointerException");
 
   /**
    * 字母 日期或时间元素 表示 示例

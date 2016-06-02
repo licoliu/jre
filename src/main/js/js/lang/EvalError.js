@@ -7,8 +7,6 @@
  *
  * Date: 2014年6月25日
  */
-
-$import("js.lang.Throwable", "BootstrapClassLoader");
 Class.forName({
   name: "class EvalError",
   alias: "js.lang.EvalError",

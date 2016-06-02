@@ -11,7 +11,5 @@ Class.forName({
   name: "class js.lang.InternalError extends js.lang.Error",
 
   "private name": "js.lang.InternalError", // 错误名
-  "private number": 99,
-
-
+  "private number": 99
 });

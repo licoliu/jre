@@ -6,6 +6,34 @@
  * Date: Feb 10, 2014
  */
 
+/**
+ * @namespace js
+ */
+/**
+ * @namespace js.awt
+ */
+/**
+ * @namespace js.dom
+ */
+/**
+ * @namespace js.io
+ */
+/**
+ * @namespace js.lang
+ */
+/**
+ * @namespace js.net
+ */
+/**
+ * @namespace js.test
+ */
+/**
+ * @namespace js.text
+ */
+/**
+ * @namespace js.util
+ */
+
 (function(global) {
   var USEECMA = !!Object.defineProperties;
 
@@ -1370,7 +1398,7 @@ Class.forName({
   },
   indexOf: function(elem, start, end) {
     for (var i = start || 0, len = Math.min(end || this.length, this.length); i < len; i++) {
-      if (this[i] === elem) {
+      if (Object.isFunction(elem) ? elem(this[i]) : this[i] === elem) {
         return i;
       }
     }
@@ -1406,6 +1434,9 @@ Class.forName({
   },
   getLength: function() {
     return this.length;
+  },
+  size: function() {
+    return this.getLength();
   }
 });
 /*!
@@ -1659,10 +1690,127 @@ Class.forName({
   name: "class js.lang.InternalError extends js.lang.Error",
 
   "private name": "js.lang.InternalError", // 错误名
-  "private number": 99,
-
-
+  "private number": 99
 });
+/*!
+ * JSRT JavaScript Library 0.2.1
+ * lico.atom@gmail.com
+ *
+ * Copyright 2008, 2014 Atom Union, Inc.
+ * Released under the MIT license
+ *
+ * Date: 2014年6月25日
+ */
+  Class.forName({
+    name: "class EvalError",
+    alias: "js.lang.EvalError",
+
+    "private name": "js.lang.EvalError", // 错误名
+    "private number": 2,
+
+  EvalError: function() {}
+  });
+
+/*!
+ * JSRT JavaScript Library 0.2.1
+ * lico.atom@gmail.com
+ *
+ * Copyright 2008, 2014 Atom Union, Inc.
+ * Released under the MIT license
+ *
+ * Date: 2014年6月25日
+ */
+Class.forName({
+  name: "class SyntaxError",
+  alias: "js.lang.SyntaxError",
+
+  "private name": "js.lang.SyntaxError", // 错误名
+  "private number": 5,
+
+  SyntaxError: function() {}
+});
+
+/*!
+ * JSRT JavaScript Library 0.2.1
+ * lico.atom@gmail.com
+ *
+ * Copyright 2008, 2014 Atom Union, Inc.
+ * Released under the MIT license
+ *
+ * Date: 2014年6月25日
+ */
+
+  Class.forName({
+  name: "class RangeError",
+    alias: "js.lang.RangeError",
+
+    "private name": "js.lang.RangeError", // 错误名
+    "private number": 3,
+
+    RangeError: function() {}
+  });
+
+/*!
+ * JSRT JavaScript Library 0.2.1
+ * lico.atom@gmail.com
+ *
+ * Copyright 2008, 2014 Atom Union, Inc.
+ * Released under the MIT license
+ *
+ * Date: 2014年6月25日
+ */
+
+
+  Class.forName({
+    name: "class ReferenceError",
+    alias: "js.lang.ReferenceError",
+
+    "private name": "js.lang.ReferenceError", // 错误名
+    "private number": 4,
+
+  ReferenceError: function() {}
+  });
+
+/*!
+ * JSRT JavaScript Library 0.2.1
+ * lico.atom@gmail.com
+ *
+ * Copyright 2008, 2014 Atom Union, Inc.
+ * Released under the MIT license
+ *
+ * Date: 2014年6月25日
+ */
+
+  Class.forName({
+    name: "class TypeError",
+    alias: "js.lang.TypeError",
+
+    "private name": "js.lang.TypeError", // 错误名
+    "private number": 6,
+
+  TypeError: function() {}
+  });
+
+/*!
+ * JSRT JavaScript Library 0.2.1
+ * lico.atom@gmail.com
+ *
+ * Copyright 2008, 2014 Atom Union, Inc.
+ * Released under the MIT license
+ *
+ * Date: 2014年6月25日
+ */
+
+  Class.forName({
+    name: "class URIError",
+    alias: "js.lang.URIError",
+
+    "private name": "js.lang.URIError", // 错误名
+    "private number": 7,
+
+  URIError: function() {}
+  });
+
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  * 
@@ -2289,7 +2437,7 @@ Class.forName({
     var synchronousScript = function(url, src, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last) {
       var isCrossOriginRestricted = false,
         xhr, status, isIE = /msie/.test(navigator.userAgent.toLowerCase()),
-        debugSourceURL = isIE ? "" : ("\n//@ sourceURL=" + src);
+        debugSourceURL = isIE ? "" : ("\n//# sourceURL=" + src);
 
       if (typeof XMLHttpRequest != 'undefined') {
         xhr = new XMLHttpRequest();
@@ -2418,6 +2566,12 @@ Class.forName({
  * Sea.js 3.0.0 | seajs.org/LICENSE.md
  */
 
+/**
+ * @namespace org
+ */
+/**
+ * @namespace org.seajs
+ */
 (function(global, undefined) {
 
   // Avoid conflicting when `sea.js` is loaded multiple times
@@ -2991,7 +3145,11 @@ Class.forName({
         if (name.indexOf("/") === -1) {
           var p = name.indexOf("!");
           if (p !== -1) {
-            if (name.indexOf("css:skin!") === 0 || name.indexOf("css!") === 0 || name.indexOf("css:app!") === 0 || name.indexOf("css:ext!") === 0 || name.indexOf("css:bootstrap!") === 0) {
+            if (name.indexOf("css:skin!") === 0 ||
+              name.indexOf("css!") === 0 ||
+              name.indexOf("css:app!") === 0 ||
+              name.indexOf("css:ext!") === 0 ||
+              name.indexOf("css:bootstrap!") === 0) {
               return;
             }
             // name = name.substring(p + 1);
@@ -3765,6 +3923,12 @@ Class.forName({
     return document;
   }
 });
+/**
+ * @namespace atom
+ */
+/**
+ * @namespace atom.misc
+ */
 Class.forName({
   name: "class atom.misc.Launcher extends Object",
   "private static launcher": null,
@@ -3810,6 +3974,29 @@ Class.forName({
       atom.misc.Launcher.launcher = launcher;
     }
     return launcher;
+  }
+});
+
+Class.forName({
+  name: "class atom.misc.Launcher.TestcaseClassLoader extends js.net.URLClassLoader",
+
+  "private static testcaseClassLoader": null,
+
+  "private TestcaseClassLoader": function() {
+
+  },
+
+  "public getRelative": function() {
+    return js.lang.System.getProperty("js.test.dirs");
+  },
+
+  "public static getTestcaseClassLoader": function() {
+    var loader = atom.misc.Launcher.TestcaseClassLoader.testcaseClassLoader;
+    if (!loader) {
+      loader = new atom.misc.Launcher.TestcaseClassLoader();
+      atom.misc.Launcher.TestcaseClassLoader.testcaseClassLoader = loader;
+    }
+    return loader;
   }
 });
 
@@ -4023,7 +4210,8 @@ Class.forName({
         });
         seajs.use(mainClass);
       } else {
-        this.loadClass(mainClass);
+        // this.loadClass(mainClass);
+        $import(mainClass)
       }
     }
   }
@@ -4039,6 +4227,7 @@ Class.forName({
       }
 
       switch (prefix) {
+
         //css,css-ext,skin
         case 'skin':
           classloader = 'CSSClassLoader';
@@ -4058,7 +4247,13 @@ Class.forName({
           async = atom.misc.Launcher.CSSClassLoader.BOOTSTRAP;
           break;
 
-          //4.bootstrap,ext,app
+          //test
+        case 'js:test':
+        case 'test':
+          classloader = 'TestcaseClassLoader';
+          break;
+
+          //bootstrap,ext,app
         case 'js:ext':
         case 'ext':
           classloader = 'ExtClassLoader';
@@ -4077,13 +4272,18 @@ Class.forName({
       if (Object.isNull(classloader)) {
         classloader = js.lang.ClassLoader.getSystemClassLoader();
       }
-    } else if (!Object.isInstanceof(classloader, js.lang.ClassLoader)) {
+    }
+
+    if (!Object.isInstanceof(classloader, js.lang.ClassLoader)) {
       switch (classloader) {
         case 'BootstrapClassLoader':
           classloader = atom.misc.Launcher.BootstrapClassLoader.getBootstrapClassLoader();
           break;
         case 'ExtClassLoader':
           classloader = atom.misc.Launcher.ExtClassLoader.getExtClassLoader();
+          break;
+        case 'TestcaseClassLoader':
+          classloader = atom.misc.Launcher.TestcaseClassLoader.getTestcaseClassLoader();
           break;
         case 'CSSClassLoader':
           classloader = atom.misc.Launcher.CSSClassLoader.getCSSClassLoader();
@@ -4202,14 +4402,140 @@ Class.forName({
   js.lang.System.setProperty("version", version);
   js.lang.System.setProperty("servletpath", servletpath);
   js.lang.System.setProperty("skin", skin);
-  /*
-  $import([
-      "js.lang.ClassNotFoundException",
-      "js.lang.reflect.Field",
-      "js.lang.reflect.Method"
-  ], "BootstrapClassLoader");
-  */
+
   js.dom.Document.ready(loader.main, loader);
-
-
 })(this);
+/*
+ * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
+ * 
+ * Copyright 2008, 2014 Atom Union, Inc. Released under the MIT license
+ * 
+ * Date: Feb 12, 2014
+ */
+
+Class.forName({
+  name: "class js.lang.NullPointerException extends js.lang.Exception",
+  "private name": "js.lang.NullPointerException",
+  "private number": 107
+});
+/*
+ * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
+ * 
+ * Copyright 2008, 2014 Atom Union, Inc. Released under the MIT license
+ * 
+ * Date: Feb 12, 2014
+ */
+Class.forName({
+  name: "class js.lang.IllegalArgumentException extends js.lang.Exception",
+  "private name": "js.lang.IllegalArgumentException", // 错误名
+  "private number": 102
+    // 错误号
+});
+/*
+ * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
+ * 
+ * Copyright 2008, 2014 Atom Union, Inc. Released under the MIT license
+ * 
+ * Date: Feb 14, 2014
+ */
+Class
+  .forName({
+    name: "class js.lang.reflect.InvocationTargetException extends js.lang.Exception",
+    "private name": "InvocationTargetException", // 错误名
+    "private number": 100
+      // 错误号
+  });
+/*
+ * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
+ * 
+ * Copyright 2008, 2014 Atom Union, Inc. Released under the MIT license
+ * 
+ * Date: Feb 14, 2014
+ */
+
+Class.forName({
+  name: "abstract class js.lang.reflect.Constructor extends Object"
+});
+/*
+ * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
+ *
+ * Copyright 2008, 2014 Atom Union, Inc. Released under the MIT license
+ *
+ * Date: Feb 14, 2014
+ */
+
+Class.forName({
+  name: "public final class js.lang.reflect.Field extends Object",
+  "@Setter @Getter private _declaringClass": null,
+  "@Setter @Getter private _name": null,
+  "@Setter @Getter private _modifiers": null,
+  "@Setter @Getter private _annotations": null,
+  "@Setter @Getter private _value": null,
+
+  Field: function(name, value, declaringClass, modifiers, annotations) {
+    this._name = name;
+    this._declaringClass = declaringClass;
+    this._modifiers = modifiers;
+    this._annotations = annotations;
+    this._value = value;
+
+  },
+  clone: function() {
+    return this;
+  },
+  "set": function(obj, value) {
+    obj[this._name] = value;
+  },
+  "get": function(obj) {
+    return obj[this._name];
+  }
+});
+js.lang.reflect.Field.loaded = true;
+/*
+ * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
+ *
+ * Copyright 2008, 2014 Atom Union, Inc. Released under the MIT license
+ *
+ * Date: Feb 14, 2014
+ */
+
+Class.forName({
+  name: "public final class js.lang.reflect.Method extends Object",
+
+  "@Setter @Getter private _declaringClass": null,
+  "@Setter @Getter private _name": null,
+  "@Setter @Getter private _modifiers": null,
+  "@Setter @Getter private _annotations": null,
+  "@Setter @Getter private _value": null,
+  Method: function(name, methodAccessor, declaringClass, modifiers,
+    annotations) {
+    this._name = name;
+    this._declaringClass = declaringClass;
+    this._modifiers = modifiers;
+    this._annotations = annotations;
+    this._value = methodAccessor;
+  },
+  clone: function() {
+    return this;
+  },
+  /** 对带有指定参数的指定对象调用由此 Method 对象表示的基础方法。 */
+  invoke: function() {
+    if (arguments.length > 0) {
+      var obj = arguments[0];
+      if (!obj || !this._value) {
+        throw new js.lang.NullPointerException();
+      } else if (obj[this._name]) {
+        // TODO 判断权限是否可以被调用
+        try {
+          return this._value.apply(obj, Array.prototype.slice.call(
+            arguments, 1));
+        } catch (e) {
+          throw new js.lang.reflect.InvocationTargetException(e
+            .getMessage());
+        }
+      }
+    }
+    throw new js.lang.IllegalArgumentException();
+  }
+});
+js.lang.reflect.Method.loaded = true;

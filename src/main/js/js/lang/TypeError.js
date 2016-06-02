@@ -7,16 +7,13 @@
  *
  * Date: 2014年6月25日
  */
-define(function(require, exports, module) {
 
-  require("bootstrap!js.lang.Throwable");
-  Class.forName({
-    name: "class TypeError",
-    alias: "js.lang.TypeError",
+Class.forName({
+  name: "class TypeError",
+  alias: "js.lang.TypeError",
 
-    "private name": "js.lang.TypeError", // 错误名
-    "private number": 6,
+  "private name": "js.lang.TypeError", // 错误名
+  "private number": 6,
 
-    TypeError: function() {}
-  });
+  TypeError: function() {}
 });

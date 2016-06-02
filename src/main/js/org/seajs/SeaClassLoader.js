@@ -588,7 +588,11 @@
         if (name.indexOf("/") === -1) {
           var p = name.indexOf("!");
           if (p !== -1) {
-            if (name.indexOf("css:skin!") === 0 || name.indexOf("css!") === 0 || name.indexOf("css:app!") === 0 || name.indexOf("css:ext!") === 0 || name.indexOf("css:bootstrap!") === 0) {
+            if (name.indexOf("css:skin!") === 0 ||
+              name.indexOf("css!") === 0 ||
+              name.indexOf("css:app!") === 0 ||
+              name.indexOf("css:ext!") === 0 ||
+              name.indexOf("css:bootstrap!") === 0) {
               return;
             }
             // name = name.substring(p + 1);

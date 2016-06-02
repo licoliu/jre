@@ -184,7 +184,7 @@ Class.forName({
     var synchronousScript = function(url, src, notModify, callback, $scope, loadedScripts, waitingList, scope, completed, failed, last) {
       var isCrossOriginRestricted = false,
         xhr, status, isIE = /msie/.test(navigator.userAgent.toLowerCase()),
-        debugSourceURL = isIE ? "" : ("\n//@ sourceURL=" + src);
+        debugSourceURL = isIE ? "" : ("\n//# sourceURL=" + src);
 
       if (typeof XMLHttpRequest != 'undefined') {
         xhr = new XMLHttpRequest();

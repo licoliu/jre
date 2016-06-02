@@ -6,10 +6,6 @@
  * Date: Feb 14, 2014
  */
 
-$import("js.lang.NullPointerException", "BootstrapClassLoader");
-$import("js.lang.IllegalArgumentException", "BootstrapClassLoader");
-$import("js.lang.reflect.InvocationTargetException", "BootstrapClassLoader");
-
 Class.forName({
   name: "public final class js.lang.reflect.Method extends Object",
 

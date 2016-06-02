@@ -35,7 +35,7 @@ Class.forName({
   },
   indexOf: function(elem, start, end) {
     for (var i = start || 0, len = Math.min(end || this.length, this.length); i < len; i++) {
-      if (this[i] === elem) {
+      if (Object.isFunction(elem) ? elem(this[i]) : this[i] === elem) {
         return i;
       }
     }
@@ -71,5 +71,8 @@ Class.forName({
   },
   getLength: function() {
     return this.length;
+  },
+  size: function() {
+    return this.getLength();
   }
 });

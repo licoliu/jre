@@ -53,6 +53,29 @@ Class.forName({
 });
 
 Class.forName({
+  name: "class atom.misc.Launcher.TestcaseClassLoader extends js.net.URLClassLoader",
+
+  "private static testcaseClassLoader": null,
+
+  "private TestcaseClassLoader": function() {
+
+  },
+
+  "public getRelative": function() {
+    return js.lang.System.getProperty("js.test.dirs");
+  },
+
+  "public static getTestcaseClassLoader": function() {
+    var loader = atom.misc.Launcher.TestcaseClassLoader.testcaseClassLoader;
+    if (!loader) {
+      loader = new atom.misc.Launcher.TestcaseClassLoader();
+      atom.misc.Launcher.TestcaseClassLoader.testcaseClassLoader = loader;
+    }
+    return loader;
+  }
+});
+
+Class.forName({
   name: "class atom.misc.Launcher.BootstrapClassLoader extends js.net.URLClassLoader",
 
   "private static bootstrapClassLoader": null,
@@ -262,7 +285,8 @@ Class.forName({
         });
         seajs.use(mainClass);
       } else {
-        this.loadClass(mainClass);
+        // this.loadClass(mainClass);
+        $import(mainClass)
       }
     }
   }
@@ -278,6 +302,7 @@ Class.forName({
       }
 
       switch (prefix) {
+
         //css,css-ext,skin
         case 'skin':
           classloader = 'CSSClassLoader';
@@ -297,7 +322,13 @@ Class.forName({
           async = atom.misc.Launcher.CSSClassLoader.BOOTSTRAP;
           break;
 
-          //4.bootstrap,ext,app
+          //test
+        case 'js:test':
+        case 'test':
+          classloader = 'TestcaseClassLoader';
+          break;
+
+          //bootstrap,ext,app
         case 'js:ext':
         case 'ext':
           classloader = 'ExtClassLoader';
@@ -316,13 +347,18 @@ Class.forName({
       if (Object.isNull(classloader)) {
         classloader = js.lang.ClassLoader.getSystemClassLoader();
       }
-    } else if (!Object.isInstanceof(classloader, js.lang.ClassLoader)) {
+    }
+
+    if (!Object.isInstanceof(classloader, js.lang.ClassLoader)) {
       switch (classloader) {
         case 'BootstrapClassLoader':
           classloader = atom.misc.Launcher.BootstrapClassLoader.getBootstrapClassLoader();
           break;
         case 'ExtClassLoader':
           classloader = atom.misc.Launcher.ExtClassLoader.getExtClassLoader();
+          break;
+        case 'TestcaseClassLoader':
+          classloader = atom.misc.Launcher.TestcaseClassLoader.getTestcaseClassLoader();
           break;
         case 'CSSClassLoader':
           classloader = atom.misc.Launcher.CSSClassLoader.getCSSClassLoader();
@@ -441,14 +477,6 @@ Class.forName({
   js.lang.System.setProperty("version", version);
   js.lang.System.setProperty("servletpath", servletpath);
   js.lang.System.setProperty("skin", skin);
-  /*
-  $import([
-      "js.lang.ClassNotFoundException",
-      "js.lang.reflect.Field",
-      "js.lang.reflect.Method"
-  ], "BootstrapClassLoader");
-  */
+
   js.dom.Document.ready(loader.main, loader);
-
-
 })(this);
