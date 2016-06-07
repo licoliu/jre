@@ -654,7 +654,9 @@
         'typeof': 1,
         'void': 1
       }[r];
-      modName = /^require\s*\(\s*(['"]).+?\1\s*\)/.test(s2);
+      // Fixed by lico
+      // modName = /^require\s*\(\s*(['"]).+?\1\s*\)/.test(s2);
+      modName = /^require\s*\(\s*(['"])[^\n\r'"+]+?\1\s*\)/.test(s2);
       if (modName) {
         r = /^require\s*\(\s*['"]/.exec(s2)[0];
         index += r.length - 2;

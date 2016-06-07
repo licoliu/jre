@@ -1701,16 +1701,15 @@ Class.forName({
  *
  * Date: 2014年6月25日
  */
-  Class.forName({
-    name: "class EvalError",
-    alias: "js.lang.EvalError",
+Class.forName({
+  name: "class EvalError",
+  alias: "js.lang.EvalError",
 
-    "private name": "js.lang.EvalError", // 错误名
-    "private number": 2,
+  "private name": "js.lang.EvalError", // 错误名
+  "private number": 2,
 
   EvalError: function() {}
-  });
-
+});
 /*!
  * JSRT JavaScript Library 0.2.1
  * lico.atom@gmail.com
@@ -1729,7 +1728,6 @@ Class.forName({
 
   SyntaxError: function() {}
 });
-
 /*!
  * JSRT JavaScript Library 0.2.1
  * lico.atom@gmail.com
@@ -1740,16 +1738,15 @@ Class.forName({
  * Date: 2014年6月25日
  */
 
-  Class.forName({
+Class.forName({
   name: "class RangeError",
-    alias: "js.lang.RangeError",
+  alias: "js.lang.RangeError",
 
-    "private name": "js.lang.RangeError", // 错误名
-    "private number": 3,
+  "private name": "js.lang.RangeError", // 错误名
+  "private number": 3,
 
-    RangeError: function() {}
-  });
-
+  RangeError: function() {}
+});
 /*!
  * JSRT JavaScript Library 0.2.1
  * lico.atom@gmail.com
@@ -1761,16 +1758,15 @@ Class.forName({
  */
 
 
-  Class.forName({
-    name: "class ReferenceError",
-    alias: "js.lang.ReferenceError",
+Class.forName({
+  name: "class ReferenceError",
+  alias: "js.lang.ReferenceError",
 
-    "private name": "js.lang.ReferenceError", // 错误名
-    "private number": 4,
+  "private name": "js.lang.ReferenceError", // 错误名
+  "private number": 4,
 
   ReferenceError: function() {}
-  });
-
+});
 /*!
  * JSRT JavaScript Library 0.2.1
  * lico.atom@gmail.com
@@ -1781,16 +1777,15 @@ Class.forName({
  * Date: 2014年6月25日
  */
 
-  Class.forName({
-    name: "class TypeError",
-    alias: "js.lang.TypeError",
+Class.forName({
+  name: "class TypeError",
+  alias: "js.lang.TypeError",
 
-    "private name": "js.lang.TypeError", // 错误名
-    "private number": 6,
+  "private name": "js.lang.TypeError", // 错误名
+  "private number": 6,
 
   TypeError: function() {}
-  });
-
+});
 /*!
  * JSRT JavaScript Library 0.2.1
  * lico.atom@gmail.com
@@ -1801,16 +1796,15 @@ Class.forName({
  * Date: 2014年6月25日
  */
 
-  Class.forName({
-    name: "class URIError",
-    alias: "js.lang.URIError",
+Class.forName({
+  name: "class URIError",
+  alias: "js.lang.URIError",
 
-    "private name": "js.lang.URIError", // 错误名
-    "private number": 7,
+  "private name": "js.lang.URIError", // 错误名
+  "private number": 7,
 
   URIError: function() {}
-  });
-
+});
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  * 
@@ -3211,7 +3205,9 @@ Class.forName({
         'typeof': 1,
         'void': 1
       }[r];
-      modName = /^require\s*\(\s*(['"]).+?\1\s*\)/.test(s2);
+      // Fixed by lico
+      // modName = /^require\s*\(\s*(['"]).+?\1\s*\)/.test(s2);
+      modName = /^require\s*\(\s*(['"])[^\n\r'"+]+?\1\s*\)/.test(s2);
       if (modName) {
         r = /^require\s*\(\s*['"]/.exec(s2)[0];
         index += r.length - 2;
