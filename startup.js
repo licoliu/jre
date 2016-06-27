@@ -11,7 +11,7 @@ http.createServer(function(req, res) {
   var filename = req.url;
 
   if (!filename || filename === '/') {
-    filename = "/index.html";
+    filename = "/index-test.html";
   }
 
   var index = filename.indexOf("?");
