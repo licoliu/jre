@@ -2,7 +2,7 @@ define(function(require, exports, module) {
 
   require("test!js.model.Animal");
 
-  var dogClass = Class.forName({
+  return Class.forName({
     name: "public class js.model.Dog extends js.model.Animal",
     "@Getter @Setter private color": "black",
     "@Getter @Setter private word": "",
@@ -12,5 +12,5 @@ define(function(require, exports, module) {
     say: function() {
       return this.word;
     }
-  });
+  }).getClassConstructor();
 });

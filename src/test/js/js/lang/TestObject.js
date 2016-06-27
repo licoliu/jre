@@ -8,7 +8,7 @@ define(function(require, exports, module) {
 
   var dog = new js.model.Dog("dog", "汪汪");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.lang.TestObject extends js.test.TestCase",
     "@Setter @Getter private obj": dog,
 
@@ -345,6 +345,6 @@ define(function(require, exports, module) {
       }
 
     }
-  });
+  }).getClassConstructor();
 
 });

@@ -7,7 +7,7 @@
  */
 define(function(require, exports, module) {
 
-  Class.forName({
+  return Class.forName({
     name: "class js.net.http.Rest extends Object",
     Rest: function() {},
     build: (function() {
@@ -34,5 +34,5 @@ define(function(require, exports, module) {
         return null;
       };
     })()
-  });
+  }).getClassConstructor();
 });

@@ -53,7 +53,7 @@ define(function(require, exports, module) {
    *
    * Z 时区
    */
-  Class
+  return Class
     .forName({
       name: 'abstract class js.text.SimpleDateFormat extends js.text.DateFormat',
 
@@ -652,5 +652,5 @@ define(function(require, exports, module) {
         return (this.pattern.equals(that.pattern) && this.dateFormatSymbols
           .equals(that.dateFormatSymbols));
       }
-    });
+    }).getClassConstructor();
 });

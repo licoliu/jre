@@ -9,9 +9,7 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.util.Collection");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.Set extends js.util.Collection"
-
-  });
-
+  }).getClassConstructor();
 });

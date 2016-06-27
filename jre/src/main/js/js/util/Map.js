@@ -40,7 +40,7 @@ define(function(require, exports, module) {
    * 
    * @see {@link js.util.Collection}
    */
-  Class
+  return Class
     .forName( /** @lends js.util.Map.prototype */ {
       name: "class js.util.Map extends Object",
 
@@ -333,5 +333,5 @@ define(function(require, exports, module) {
        * @return {js.lang.Boolean} true if the specified object is equal to this map
        */
       equals: function(o) {}
-    });
+    }).getClassConstructor();
 });

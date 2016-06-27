@@ -22,7 +22,7 @@
  */
 define(function(require, exports, module) {
 
-  Class.forName({
+  return Class.forName({
     name: "abstract class js.util.Collection extends Object",
 
     "clone": function() {
@@ -169,5 +169,5 @@ define(function(require, exports, module) {
       }
       return r;
     }
-  });
+  }).getClassConstructor();
 });

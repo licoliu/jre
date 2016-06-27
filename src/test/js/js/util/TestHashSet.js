@@ -5,7 +5,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.TestCase");
   require("bootstrap!js.test.Assert");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.TestHashSet extends js.test.TestCase",
     "@Setter @Getter private set": new js.util.HashSet(),
     TestHashSet: function() {
@@ -67,5 +67,5 @@ define(function(require, exports, module) {
         js.lang.System.out.println("克隆前：value:" + v1 + "       克隆后：value:" + v2);
       }
     }
-  });
+  }).getClassConstructor();
 });

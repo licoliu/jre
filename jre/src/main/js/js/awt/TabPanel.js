@@ -12,10 +12,10 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.awt.Panel");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.awt.GridPanel extends js.awt.Panel",
     "public GridPanel": function() {
 
     }
-  });
+  }).getClassConstructor();
 });

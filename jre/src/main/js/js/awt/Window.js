@@ -12,10 +12,10 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.awt.Window");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.awt.Dialog extends js.awt.Window",
     "public Dialog": function() {
 
     }
-  });
+  }).getClassConstructor();
 });

@@ -4,7 +4,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.lang.StringBuffer");
   require("bootstrap!js.test.Assert");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.lang.TestStringBuffer extends js.test.TestCase",
     "@Setter @Getter private stringBuffer": new js.lang.StringBuffer(),
 
@@ -89,7 +89,7 @@ define(function(require, exports, module) {
       js.test.Assert.assertTrue("类js.lang.StringBuffer中的toString方法测试不通过", "0123456789".equals(this.getStringBuffer().toString()));
       js.test.Assert.assertTrue("类js.lang.StringBuffer中的toString方法测试不通过", "0,1,2,3,4,5,6,7,8,9".equals(this.getStringBuffer().toString(',')));
     }
-  });
+  }).getClassConstructor();
 
 });
 

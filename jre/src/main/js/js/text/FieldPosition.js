@@ -9,7 +9,7 @@
  */
 define(function(require, exports, module) {
 
-  Class
+  return Class
     .forName({
       name: "public class js.text.FieldPosition extends Object",
 
@@ -110,5 +110,5 @@ define(function(require, exports, module) {
         return this.getClass().getName() + "[field=" + this.field + ",beginIndex=" + this.beginIndex + ",endIndex=" + this.endIndex + ']';
       }
 
-    });
+    }).getClassConstructor();
 });

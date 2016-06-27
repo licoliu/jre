@@ -14,7 +14,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.TestCase");
   require("bootstrap!js.test.Assert");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.TestDate extends js.test.TestCase",
     "@Setter @Getter private date": new js.util.Date(),
     TestDate: function() {},
@@ -38,5 +38,5 @@ define(function(require, exports, module) {
       js.test.Assert.assertTrue("类js.util.Date中的compareTo方法测试不通过", this.getDate().compareTo(new Date()) < 0);
       js.test.Assert.assertTrue("类js.util.Date中的compareTo方法测试不通过", this.getDate().compareTo(this.getDate().clone()) === 0);
     }
-  });
+  }).getClassConstructor();
 });

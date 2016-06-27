@@ -7,12 +7,12 @@
  */
 define(function(require, exports, module) {
 
-  Class.forName({
+  return Class.forName({
     name: "class js.net.http.Http extends Object",
     "public static REQUEST": {
       TYPE: ["GET", "HEAD", "PUT", "DELETE", "POST", "OPTIONS"]
     },
     Http: function() {}
-  });
+  }).getClassConstructor();
 
 });

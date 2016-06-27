@@ -7,7 +7,7 @@
  */
 define(function(require, exports, module) {
 
-  Class
+  return Class
     .forName({
       name: "abstract class js.util.Calendar extends Object",
 
@@ -690,5 +690,5 @@ define(function(require, exports, module) {
         buffer.append(']');
         return buffer.toString();
       }
-    });
+    }).getClassConstructor();
 });

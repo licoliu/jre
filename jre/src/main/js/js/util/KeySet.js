@@ -10,7 +10,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.util.Set");
   require("bootstrap!js.util.KeyIterator");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.KeySet extends js.util.Set",
     "private _element": null,
     KeySet: function(element) {
@@ -22,5 +22,5 @@ define(function(require, exports, module) {
     size: function() {
       return this._element.size();
     }
-  });
+  }).getClassConstructor();
 });

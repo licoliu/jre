@@ -9,7 +9,7 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.util.Iterator");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.LinkIterator extends js.util.Iterator",
 
     LinkIterator: function(element, index) {
@@ -39,5 +39,5 @@ define(function(require, exports, module) {
     "previousIndex": function() {
       return this._cursor - 1;
     }
-  });
+  }).getClassConstructor();
 });

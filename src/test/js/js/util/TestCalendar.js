@@ -15,7 +15,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.TestCase");
   require("bootstrap!js.test.Assert");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.TestCalendar extends js.test.TestCase",
     "@Setter @Getter private calendar": null,
 
@@ -294,5 +294,5 @@ define(function(require, exports, module) {
     "@Test testToString": function() {
       js.lang.System.out.println(this.getCalendar().toString());
     }
-  });
+  }).getClassConstructor();
 });

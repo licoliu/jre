@@ -15,7 +15,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.lang.NullPointerException");
   require("bootstrap!js.lang.IllegalArgumentException");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.Queue extends js.util.Collection",
 
     /**
@@ -154,5 +154,5 @@ define(function(require, exports, module) {
           modified = true;
       return modified;
     }
-  });
+  }).getClassConstructor();
 });

@@ -12,10 +12,10 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.awt.Text");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.awt.TextArea extends js.awt.Text",
     "public TextArea": function() {
 
     }
-  });
+  }).getClassConstructor();
 });

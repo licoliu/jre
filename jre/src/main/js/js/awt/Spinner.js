@@ -12,10 +12,10 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.awt.Component");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.awt.Spinner extends js.awt.Component",
     "public Spinner": function() {
 
     }
-  });
+  }).getClassConstructor();
 });

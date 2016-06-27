@@ -9,12 +9,12 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.lang.Exception");
 
-  Class
+  return Class
     .forName({
       name: "class js.lang.UnsupportedOperationException extends js.lang.Exception",
       "private name": "js.lang.UnsupportedOperationException", // 错误名
       "private number": 108
         // 错误号
-    });
+    }).getClassConstructor();
 
 });

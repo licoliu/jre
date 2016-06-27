@@ -9,7 +9,7 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.util.Calendar");
 
-  Class
+  return Class
     .forName({
       name: "abstract class js.util.GregorianCalendar extends js.util.Calendar",
 
@@ -488,5 +488,5 @@ define(function(require, exports, module) {
         }
 
       }
-    });
+    }).getClassConstructor();
 });

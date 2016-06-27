@@ -9,10 +9,10 @@
  */
 define(function(require, exports, module) {
 
-  Class.forName({
+  return Class.forName({
     name: "class js.test.AssertionError extends js.lang.Error",
     "private name": "js.test.AssertionError", // 错误名
     "private number": -1
-  });
+  }).getClassConstructor();
 
 });

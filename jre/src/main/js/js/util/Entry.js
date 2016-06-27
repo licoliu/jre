@@ -7,7 +7,7 @@
  */
 define(function(require, exports, module) {
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.Entry extends Object",
     "private _key": null,
     "private _value": null,
@@ -29,5 +29,5 @@ define(function(require, exports, module) {
     setValue: function(val) {
       this._value = _val;
     }
-  });
+  }).getClassConstructor();
 });

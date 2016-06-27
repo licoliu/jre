@@ -9,7 +9,7 @@
  */
 define(function(require, exports, module) {
 
-  Class.forName({
+  return Class.forName({
     name: "class Date",
     alias: "js.util.Date",
     Date: function() {},
@@ -41,5 +41,5 @@ define(function(require, exports, module) {
       return thisTime > anotherTime ? 1 : thisTime == anotherTime ? 0 : -1;
     }
 
-  });
+  }).getClassConstructor();
 });

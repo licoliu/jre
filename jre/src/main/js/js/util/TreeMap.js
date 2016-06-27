@@ -9,7 +9,7 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.util.Map");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.TreeMap extends js.util.Map"
-  });
+  }).getClassConstructor();
 });

@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
   require("bootstrap!js.net.URLConnection");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.net.HttpURLConnection extends js.net.URLConnection",
 
     "public static getConnection": function() {
@@ -14,6 +14,6 @@ define(function(require, exports, module) {
       }
       return xhr;
     }
-  });
+  }).getClassConstructor();
 
 });

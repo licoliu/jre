@@ -4,7 +4,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.TestCase");
   require("bootstrap!js.test.Assert");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.TestHashMap extends js.test.TestCase",
     "@Setter @Getter private map": new js.util.HashMap(),
     TestHashMap: function() {
@@ -34,5 +34,5 @@ define(function(require, exports, module) {
         js.lang.System.out.println("value:" + value);
       }
     }
-  });
+  }).getClassConstructor();
 });

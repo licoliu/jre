@@ -7,7 +7,7 @@
  */
 define(function(require, exports, module) {
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.Iterator extends Object",
     "private _element": null,
     "private _cursor": 0,
@@ -41,5 +41,5 @@ define(function(require, exports, module) {
         throw new js.lang.IndexOutOfBoundsException();
       }
     }
-  });
+  }).getClassConstructor();
 });

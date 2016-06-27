@@ -9,7 +9,7 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.util.HashIterator");
 
-  Class
+  return Class
     .forName({
       name: "class js.util.KeyIterator extends js.util.HashIterator",
       next: function() {
@@ -21,5 +21,5 @@ define(function(require, exports, module) {
           throw new js.lang.IndexOutOfBoundsException("Index: " + this._cursor + ", Size: " + this._element.size() + ",Message:" + e.getMessage());
         }
       }
-    });
+    }).getClassConstructor();
 });

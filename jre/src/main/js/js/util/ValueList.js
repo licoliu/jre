@@ -10,7 +10,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.util.List");
   require("bootstrap!js.util.ValueIterator");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.ValueList extends js.util.List",
 
     "private _element": null,
@@ -45,5 +45,5 @@ define(function(require, exports, module) {
       return oldValue;
     }
 
-  });
+  }).getClassConstructor();
 });

@@ -12,10 +12,10 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.awt.Panel");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.awt.TreePanel extends js.awt.Panel",
     "public TreePanel": function() {
 
     }
-  });
+  }).getClassConstructor();
 });

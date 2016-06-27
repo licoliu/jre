@@ -26,7 +26,7 @@ define(function(require, exports, module) {
    *
    * @see AssertionError
    */
-  Class
+  return Class
     .forName({
       name: "public class js.test.Assert",
       /**
@@ -286,5 +286,5 @@ define(function(require, exports, module) {
       "public static <T> void assertThat": function(actual, matcher) {
         // TODO 正则表达式
       }
-    });
+    }).getClassConstructor();
 });

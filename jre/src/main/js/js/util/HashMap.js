@@ -31,7 +31,7 @@ define(function(require, exports, module) {
    * @see {@link js.util.Map}
    */
 
-  Class
+  return Class
     .forName( /** @lends js.util.HashMap.prototype */ {
       name: "class js.util.HashMap extends js.util.Map",
 
@@ -197,5 +197,5 @@ define(function(require, exports, module) {
          * for (var i in this._hash) { this.remove(i); }
          */
       }
-    });
+    }).getClassConstructor();
 });

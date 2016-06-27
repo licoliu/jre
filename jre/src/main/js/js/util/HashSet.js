@@ -10,7 +10,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.util.Set");
   require("bootstrap!js.util.HashMap");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.HashSet extends js.util.Set",
 
     "private _table": null,
@@ -46,5 +46,5 @@ define(function(require, exports, module) {
     clear: function() {
       this._table.clear();
     }
-  });
+  }).getClassConstructor();
 });

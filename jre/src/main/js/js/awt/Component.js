@@ -9,7 +9,7 @@
  */
 define(function(require, exports, module) {
 
-  Class.forName({
+  return Class.forName({
     name: "abstract class js.awt.Component extends Object",
     "public Component": function() {
 
@@ -73,5 +73,5 @@ define(function(require, exports, module) {
 
     "public update": function() {}
 
-  });
+  }).getClassConstructor();
 });

@@ -7,7 +7,7 @@
  */
 define(function(require, exports, module) {
 
-  Class.forName({
+  return Class.forName({
     name: "abstract class js.text.Format extends Object",
     Format: function() {},
 
@@ -16,6 +16,6 @@ define(function(require, exports, module) {
 
     /** 从给定字符串的开始处分析文本以生成一个对象。 */
     'abstract parse': function(source) {}
-  });
+  }).getClassConstructor();
 
 });

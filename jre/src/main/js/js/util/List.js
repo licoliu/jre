@@ -13,7 +13,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.lang.IndexOutOfBoundsException");
   require("bootstrap!js.lang.UnsupportedOperationException");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.List extends js.util.Collection",
 
     listIterator: function() {
@@ -76,5 +76,5 @@ define(function(require, exports, module) {
       }
       return -1;
     }
-  });
+  }).getClassConstructor();
 });

@@ -14,7 +14,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.TestCase");
   require("bootstrap!js.test.Assert");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.text.TestDateFormat extends js.test.TestCase",
     "@Setter @Getter private format": null,
 
@@ -49,5 +49,5 @@ define(function(require, exports, module) {
       js.lang.System.out.println(format1.format(1420041599999));
       js.lang.System.out.println(format2.format(1420041599999));
     }
-  });
+  }).getClassConstructor();
 });

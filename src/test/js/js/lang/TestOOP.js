@@ -21,7 +21,7 @@ define(function(require, exports, module) {
   var animal1 = new js.model.Animal("animal1");
   var animal2 = js.model.Animal.$class.newInstance();
 
-  Class.forName({
+  return Class.forName({
     name: "class js.lang.TestOOP extends js.test.TestCase",
     "@Setter @Getter private dog": dog1,
 
@@ -40,6 +40,6 @@ define(function(require, exports, module) {
 
       // TODO 进一步测试深拷贝
     }
-  });
+  }).getClassConstructor();
 
 });

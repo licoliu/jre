@@ -5,7 +5,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.TestCase");
   require("bootstrap!js.test.Assert");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.TestList extends js.test.TestCase",
     "@Setter @Getter private list": new js.util.ArrayList(),
     TestList: function() {
@@ -47,5 +47,5 @@ define(function(require, exports, module) {
       this.getList().clear();
       js.lang.System.out.println("clear后：" + this.getList().size());
     }
-  });
+  }).getClassConstructor();
 });

@@ -9,7 +9,7 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.util.Set");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.EntrySet extends js.util.Set",
     "private _element": null,
     EntrySet: function(element) {
@@ -21,5 +21,5 @@ define(function(require, exports, module) {
     size: function() {
       return this._element.size();
     }
-  });
+  }).getClassConstructor();
 });

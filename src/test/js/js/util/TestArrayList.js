@@ -3,7 +3,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.TestCase");
   require("bootstrap!js.util.ArrayList");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.TestArrayList extends js.test.TestCase",
     "@Setter @Getter private list": new js.util.ArrayList(),
 
@@ -49,5 +49,5 @@ define(function(require, exports, module) {
         js.lang.System.out.println("克隆前：" + this.getList().get(i++) + "       克隆后：" + itr.next());
       }
     }
-  });
+  }).getClassConstructor();
 });

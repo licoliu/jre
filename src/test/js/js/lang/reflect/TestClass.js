@@ -9,7 +9,7 @@ define(function(require, exports, module) {
 
   var testReflectObject = new js.model.Dog("dog", "汪汪");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.lang.reflect.TestClass extends js.test.TestCase",
     "@Setter @Getter private dog": testReflectObject.getClass(),
     TestClass: function() {},
@@ -83,5 +83,5 @@ define(function(require, exports, module) {
       var c = this.getDog().newInstance();
       js.lang.System.out.println(c.getColor());
     }
-  });
+  }).getClassConstructor();
 });

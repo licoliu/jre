@@ -11,7 +11,7 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.util.HashMap");
 
-  Class.forName({
+  return Class.forName({
     name: "public class js.util.Properties extends js.util.HashMap",
 
     "protected defaults": null,
@@ -58,6 +58,6 @@ define(function(require, exports, module) {
         this.put(i, json[i]);
       }
     }
-  });
+  }).getClassConstructor();
 
 });

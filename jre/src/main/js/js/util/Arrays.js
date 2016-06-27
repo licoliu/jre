@@ -9,7 +9,7 @@
  */
 define(function(require, exports, module) {
 
-  Class.forName({
+  return Class.forName({
     name: "public class js.util.Arrays",
 
     // Suppresses default constructor, ensuring non-instantiability.
@@ -121,5 +121,5 @@ define(function(require, exports, module) {
 
       return true;
     }
-  });
+  }).getClassConstructor();
 });

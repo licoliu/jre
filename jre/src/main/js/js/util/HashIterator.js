@@ -9,7 +9,7 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.util.Iterator");
 
-  Class
+  return Class
     .forName({
       name: "class js.util.HashIterator extends js.util.Iterator",
 
@@ -47,5 +47,5 @@ define(function(require, exports, module) {
         }
       }
 
-    });
+    }).getClassConstructor();
 });

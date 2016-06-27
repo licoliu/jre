@@ -1,7 +1,5 @@
 define(function(require, exports, module) {
-  Class.forName({
+  return Class.forName({
     name: "class js.net.URLConnection extends Object",
-
-  });
-
+  }).getClassConstructor();
 });

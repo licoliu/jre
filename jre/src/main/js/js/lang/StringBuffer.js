@@ -8,7 +8,8 @@
 define(function(require, exports, module) {
 
   require("bootstrap!js.lang.IndexOutOfBoundsException");
-  Class.forName({
+
+  return Class.forName({
     name: "class js.lang.StringBuffer extends Object",
     "private _strings": [],
     StringBuffer: function() {},
@@ -171,6 +172,6 @@ define(function(require, exports, module) {
     toString: function(sp) {
       return this._strings.join(sp || "");
     }
-  });
+  }).getClassConstructor();
 
 });

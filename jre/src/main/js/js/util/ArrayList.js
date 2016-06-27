@@ -11,7 +11,7 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.lang.IndexOutOfBoundsException");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.ArrayList extends js.util.List",
     "private _table": [],
 
@@ -57,5 +57,5 @@ define(function(require, exports, module) {
     "size": function() {
       return this._table.length;
     }
-  });
+  }).getClassConstructor();
 });

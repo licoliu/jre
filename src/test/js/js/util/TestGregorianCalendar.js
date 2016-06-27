@@ -15,7 +15,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.TestCase");
   require("bootstrap!js.test.Assert");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.TestGregorianCalendar extends js.test.TestCase",
     "@Setter @Getter private calendar": new js.util.GregorianCalendar(),
     TestGregorianCalendar: function() {},
@@ -51,5 +51,5 @@ define(function(require, exports, module) {
       js.test.Assert.assertTrue("类js.util.Calendar中的add方法测试不通过", this.getCalendar().get(js.util.Calendar.SECOND) == 25);
 
     }
-  });
+  }).getClassConstructor();
 });

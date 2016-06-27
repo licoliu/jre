@@ -9,8 +9,7 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.util.Set");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.TreeSet extends js.util.Set"
-
-  });
+  }).getClassConstructor();
 });

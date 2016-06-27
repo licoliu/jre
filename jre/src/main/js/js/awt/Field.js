@@ -12,10 +12,10 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.awt.Component");
 
-  Class.forName({
+  return Class.forName({
     name: "abstract class js.awt.Field extends js.awt.Component",
     "public Field": function() {
 
     }
-  });
+  }).getClassConstructor();
 });

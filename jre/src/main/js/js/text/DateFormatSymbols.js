@@ -11,7 +11,7 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.util.Arrays");
 
-  Class
+  return Class
     .forName({
       name: "class js.text.DateFormatSymbols extends Object",
 
@@ -387,5 +387,5 @@ define(function(require, exports, module) {
         dst.localPatternChars = src.localPatternChars;
       }
 
-    });
+    }).getClassConstructor();
 });

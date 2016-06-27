@@ -7,7 +7,7 @@ define(function(require, exports, module) {
 
   var testReflectObject = new js.model.Dog("dog", "汪汪");
 
-  Class
+  return Class
     .forName({
       name: "class js.lang.reflect.TestMethod extends js.test.TestCase",
 
@@ -36,5 +36,5 @@ define(function(require, exports, module) {
       "@Test testGetValue": function() {
         js.lang.System.out.println(this.getMethod().getValue());
       }
-    });
+    }).getClassConstructor();
 });

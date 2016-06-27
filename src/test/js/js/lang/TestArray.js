@@ -2,7 +2,7 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.test.TestCase");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.lang.TestArray extends js.test.TestCase",
     "@Setter @Getter private array": [],
 
@@ -103,6 +103,6 @@ define(function(require, exports, module) {
       js.test.Assert.assertTrue("类js.lang.Array中的size方法测试不通过", this.getArray().size() === 3);
     }
 
-  });
+  }).getClassConstructor();
 
 });

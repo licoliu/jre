@@ -9,7 +9,7 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.util.List");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.util.Stack extends js.util.List",
     "private _table": [],
     "private _max": 10,
@@ -83,6 +83,6 @@ define(function(require, exports, module) {
       return oldValue;
     }
 
-  });
+  }).getClassConstructor();
 
 });

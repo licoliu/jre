@@ -12,11 +12,11 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.awt.Component");
 
-  Class.forName({
+  return Class.forName({
     name: "class js.awt.Video extends js.awt.Component",
     "public Video": function() {
 
     }
-  });
+  }).getClassConstructor();
 
 });

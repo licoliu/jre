@@ -9,7 +9,7 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.text.Format");
 
-  Class.forName({
+  return Class.forName({
     name: "abstract class js.text.DateFormat extends js.text.Format",
 
     '@Gatter @Setter protected calendar': null,
@@ -147,5 +147,5 @@ define(function(require, exports, module) {
     /** 从给定字符串的开始分析文本，以生成一个日期。 */
     'abstract parse': function(source) {}
 
-  });
+  }).getClassConstructor();
 });
