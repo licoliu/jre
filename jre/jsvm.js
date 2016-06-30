@@ -4324,6 +4324,7 @@ Class.forName({
     path = null,
     mainClass = null,
     skin = null,
+    immediately = false,
     servletpath = null;
 
   for (var i = 0, len = scripts.length; i < len; i++) {
@@ -4334,6 +4335,7 @@ Class.forName({
       debug = script.getAttribute("debug"),
       v = script.getAttribute("version"),
       main = script.getAttribute("main"),
+      im = script.getAttribute("immediately"),
       s = script.getAttribute("skin");
 
     if (jsvm && jsvm === 'true') {
@@ -4354,6 +4356,10 @@ Class.forName({
 
       if (hasDebug && debug.toLowerCase() !== 'false') {
         isDebug = true;
+      }
+
+      if (im && im.toLowerCase() === 'true') {
+        immediately = true;
       }
 
       if (main) {
@@ -4398,8 +4404,13 @@ Class.forName({
   js.lang.System.setProperty("version", version);
   js.lang.System.setProperty("servletpath", servletpath);
   js.lang.System.setProperty("skin", skin);
+  js.lang.System.setProperty("immediately", immediately);
 
-  js.dom.Document.ready(loader.main, loader);
+  if (immediately) {
+    loader.main();
+  } else {
+    js.dom.Document.ready(loader.main, loader);
+  }
 })(this);
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
