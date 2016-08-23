@@ -71,9 +71,9 @@
         return this;
       } else if (this instanceof Array) {
         b = [];
-        var parameter = Array.prototype.slice.call(this, 0, this.length);
-        Array.prototype.splice.call(parameter, 0, 0, 0, 0);
-        Array.prototype.splice.apply(b, parameter);
+        for (var i = 0, len = this.length; i < len; i++) {
+          b.push(this[i] ? this[i].clone() : this[i]);
+        }
         return b;
       } else {
         b = this.$class ? this.$class.newInstance() : {};
