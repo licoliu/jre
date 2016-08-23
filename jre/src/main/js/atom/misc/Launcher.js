@@ -129,7 +129,6 @@ Class.forName({
   "public static final EXT": "EXT",
   "public static final APP": "APP",
   "public static final SKIN": "SKIN",
-  "@Setter @Getter private skin": null,
 
   "private CSSClassLoader": function() {},
 
@@ -144,6 +143,10 @@ Class.forName({
 
   "public getRelative": function() {
     return js.lang.System.getProperty("atom.root.dirs");
+  },
+
+  "getSkin": function() {
+    return js.lang.System.getProperty('skin');
   },
 
   findClass: function(linkUrl, notModify, type) {
@@ -194,7 +197,7 @@ Class.forName({
           relative = '/lib/';
           break;
         case atom.misc.Launcher.CSSClassLoader.SKIN:
-          relative = (debug ? '/src/main/skin/' : "/classes/skin/") + this.skin + "/css/";
+          relative = (debug ? '/src/main/skin/' : "/classes/skin/") + this.getSkin() + "/css/";
           break;
         case atom.misc.Launcher.CSSClassLoader.BOOTSTRAP:
           relative = "";
@@ -403,7 +406,7 @@ Class.forName({
     path = null,
     mainClass = null,
     skin = null,
-    immediately = false,
+    immediately = true,
     servletpath = null;
 
   for (var i = 0, len = scripts.length; i < len; i++) {
@@ -437,14 +440,14 @@ Class.forName({
         isDebug = true;
       }
 
-      if (im && im.toLowerCase() === 'true') {
-        immediately = true;
+      if (!im || im.toLowerCase() !== 'true') {
+        immediately = false;
       }
 
       if (main) {
         mainClass = main;
       }
-      skin = s;
+      skin = s || 'default';
       version = v;
       break;
     }

@@ -26,7 +26,7 @@
   "group": "js",
   "artifact": "jre",
   "debug": false,
-  "version": "1.3.1",
+  "version": "1.3.2",
   "jre": {
     "name": "jsvm",
     "uglify": "jsvm.min",

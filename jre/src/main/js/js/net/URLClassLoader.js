@@ -18,7 +18,7 @@ Class.forName({
   },
 
   getVersion: function() {
-    return js.lang.System.getProperty("skin");
+    return js.lang.System.getProperty("version");
   },
 
   "public abstract getRelative": function() {},

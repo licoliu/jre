@@ -159,10 +159,21 @@
     if (lastC === 35 /* "#" */ ) {
       return path.substring(0, last);
     }
-    var version = js.lang.System.getProperty("version");
-    return (path.substring(last - 2) === ".js" ||
+
+    path += (path.substring(last - 2) === ".js" ||
       path.indexOf("?") > 0 ||
-      lastC === 47 /* "/" */ ) ? path : path + ".js?v=" + version;
+      lastC === 47 /* "/" */ ) ? "" : ".js";
+
+    var version = js.lang.System.getProperty("version");
+    if (version) {
+      if (path.indexOf("?") > 0) {
+        path += "&v=" + version
+      } else {
+        path += "?v=" + version
+      }
+    }
+
+    return path;
   }
 
 
@@ -351,7 +362,7 @@
         // see http://msdn.microsoft.com/en-us/library/ms536429(VS.85).aspx
         node.getAttribute("src", 4);
     }
-    loaderPath = getScriptAbsoluteSrc(loaderScript);
+    loaderPath = loaderScript ? getScriptAbsoluteSrc(loaderScript) : null;
     // When `sea.js` is inline, set loaderDir to current working directory
     loaderDir = dirname(loaderPath || cwd);
   }

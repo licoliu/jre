@@ -1307,9 +1307,9 @@ Object
         return this;
       } else if (this instanceof Array) {
         b = [];
-        var parameter = Array.prototype.slice.call(this, 0, this.length);
-        Array.prototype.splice.call(parameter, 0, 0, 0, 0);
-        Array.prototype.splice.apply(b, parameter);
+        for (var i = 0, len = this.length; i < len; i++) {
+          b.push(this[i] ? this[i].clone() : this[i]);
+        }
         return b;
       } else {
         b = this.$class ? this.$class.newInstance() : {};
@@ -1398,7 +1398,7 @@ Class.forName({
   },
   indexOf: function(elem, start, end) {
     for (var i = start || 0, len = Math.min(end || this.length, this.length); i < len; i++) {
-      if (Object.isFunction(elem) ? elem(this[i]) : this[i] === elem) {
+      if (Object.isFunction(elem) ? elem(this[i]) : (this[i] === elem)) {
         return i;
       }
     }
@@ -2265,7 +2265,7 @@ Class.forName({
   },
 
   getVersion: function() {
-    return js.lang.System.getProperty("skin");
+    return js.lang.System.getProperty("version");
   },
 
   "public abstract getRelative": function() {},
@@ -2710,10 +2710,21 @@ Class.forName({
     if (lastC === 35 /* "#" */ ) {
       return path.substring(0, last);
     }
-    var version = js.lang.System.getProperty("version");
-    return (path.substring(last - 2) === ".js" ||
+
+    path += (path.substring(last - 2) === ".js" ||
       path.indexOf("?") > 0 ||
-      lastC === 47 /* "/" */ ) ? path : path + ".js?v=" + version;
+      lastC === 47 /* "/" */ ) ? "" : ".js";
+
+    var version = js.lang.System.getProperty("version");
+    if (version) {
+      if (path.indexOf("?") > 0) {
+        path += "&v=" + version
+      } else {
+        path += "?v=" + version
+      }
+    }
+
+    return path;
   }
 
 
@@ -2902,7 +2913,7 @@ Class.forName({
         // see http://msdn.microsoft.com/en-us/library/ms536429(VS.85).aspx
         node.getAttribute("src", 4);
     }
-    loaderPath = getScriptAbsoluteSrc(loaderScript);
+    loaderPath = loaderScript ? getScriptAbsoluteSrc(loaderScript) : null;
     // When `sea.js` is inline, set loaderDir to current working directory
     loaderDir = dirname(loaderPath || cwd);
   }
@@ -4050,7 +4061,6 @@ Class.forName({
   "public static final EXT": "EXT",
   "public static final APP": "APP",
   "public static final SKIN": "SKIN",
-  "@Setter @Getter private skin": null,
 
   "private CSSClassLoader": function() {},
 
@@ -4065,6 +4075,10 @@ Class.forName({
 
   "public getRelative": function() {
     return js.lang.System.getProperty("atom.root.dirs");
+  },
+
+  "getSkin": function() {
+    return js.lang.System.getProperty('skin');
   },
 
   findClass: function(linkUrl, notModify, type) {
@@ -4115,7 +4129,7 @@ Class.forName({
           relative = '/lib/';
           break;
         case atom.misc.Launcher.CSSClassLoader.SKIN:
-          relative = (debug ? '/src/main/skin/' : "/classes/skin/") + this.skin + "/css/";
+          relative = (debug ? '/src/main/skin/' : "/classes/skin/") + this.getSkin() + "/css/";
           break;
         case atom.misc.Launcher.CSSClassLoader.BOOTSTRAP:
           relative = "";
@@ -4324,7 +4338,7 @@ Class.forName({
     path = null,
     mainClass = null,
     skin = null,
-    immediately = false,
+    immediately = true,
     servletpath = null;
 
   for (var i = 0, len = scripts.length; i < len; i++) {
@@ -4358,14 +4372,14 @@ Class.forName({
         isDebug = true;
       }
 
-      if (im && im.toLowerCase() === 'true') {
-        immediately = true;
+      if (!im || im.toLowerCase() !== 'true') {
+        immediately = false;
       }
 
       if (main) {
         mainClass = main;
       }
-      skin = s;
+      skin = s || 'default';
       version = v;
       break;
     }
