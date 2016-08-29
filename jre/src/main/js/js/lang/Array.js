@@ -33,7 +33,7 @@ Class.forName({
   first: function() {
     return this[0];
   },
-  indexOf: function(elem, start, end) {
+  indexOf: Array.prototype.indexOf ? Array.prototype.indexOf : function(elem, start, end) {
     for (var i = start || 0, len = Math.min(end || this.length, this.length); i < len; i++) {
       if (Object.isFunction(elem) ? elem(this[i]) : (this[i] === elem)) {
         return i;
