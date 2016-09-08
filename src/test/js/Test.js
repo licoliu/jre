@@ -26,6 +26,10 @@ define(function(require, exports, module) {
   require("test!js.util.TestCalendar");
   require("test!js.util.TestGregorianCalendar");
 
+  require("test!org.atomunion.web.context.support.TestGenericWebApplicationContext");
+  require("test!org.atomunion.aop.framework.TestProxyFactoryBean");
+  require("test!org.atomunion.util.TestPatternMatchUtils");
+
   new js.test.TestTestCase();
 
   new js.lang.TestObject();
@@ -51,4 +55,8 @@ define(function(require, exports, module) {
   new js.util.TestDate();
   new js.util.TestCalendar();
   new js.util.TestGregorianCalendar();
+
+  new org.atomunion.web.context.support.TestGenericWebApplicationContext();
+  new org.atomunion.aop.framework.TestProxyFactoryBean();
+  new org.atomunion.util.TestPatternMatchUtils();
 });

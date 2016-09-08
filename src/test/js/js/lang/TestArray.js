@@ -48,31 +48,31 @@ define(function(require, exports, module) {
       js.test.Assert.assertTrue("类js.lang.Array中的first方法测试不通过", ele === "测试0");
     },
 
-    "@Test testIndexOf": function() {
-      var index = this.getArray().indexOf("测试1");
-      js.test.Assert.assertTrue("类js.lang.Array中的indexOf方法测试不通过", index === 1);
+    "@Test testIndexOf2": function() {
+      var index = this.getArray().indexOf2("测试1");
+      js.test.Assert.assertTrue("类js.lang.Array中的indexOf2方法测试不通过", index === 1);
 
-      index = this.getArray().indexOf("测试1", 1, 2);
-      js.test.Assert.assertTrue("类js.lang.Array中的indexOf方法测试不通过", index === 1);
+      index = this.getArray().indexOf2("测试1", 1, 2);
+      js.test.Assert.assertTrue("类js.lang.Array中的indexOf2方法测试不通过", index === 1);
 
-      index = this.getArray().indexOf("测试1", 2, 2);
-      js.test.Assert.assertTrue("类js.lang.Array中的indexOf方法测试不通过", index === -1);
+      index = this.getArray().indexOf2("测试1", 2, 2);
+      js.test.Assert.assertTrue("类js.lang.Array中的indexOf2方法测试不通过", index === -1);
 
-      index = this.getArray().indexOf(function(ele) {
+      index = this.getArray().indexOf2(function(ele) {
         return ele === "测试1";
       });
-      js.test.Assert.assertTrue("类js.lang.Array中的indexOf方法测试不通过", index === 1);
+      js.test.Assert.assertTrue("类js.lang.Array中的indexOf2方法测试不通过", index === 1);
 
-      index = this.getArray().indexOf(function(ele) {
+      index = this.getArray().indexOf2(function(ele) {
         return ele === "测试1";
       }, 1, 2);
-      js.test.Assert.assertTrue("类js.lang.Array中的indexOf方法测试不通过", index === 1);
+      js.test.Assert.assertTrue("类js.lang.Array中的indexOf2方法测试不通过", index === 1);
 
-      index = this.getArray().indexOf(function(ele) {
+      index = this.getArray().indexOf2(function(ele) {
         return ele === "测试1";
       }, 2, 2);
 
-      js.test.Assert.assertTrue("类js.lang.Array中的indexOf方法测试不通过", index === -1);
+      js.test.Assert.assertTrue("类js.lang.Array中的indexOf2方法测试不通过", index === -1);
     },
 
     "@Test testAppend": function() {

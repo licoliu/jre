@@ -19,6 +19,11 @@ Class.forName({
   /** 表示 interface 修饰符的 int 的值。 2E9 */
   "public static final INTERFACE": 512,
 
+  "public static final WRITABLE": 256,
+  "public static final ENUMERABLE": 128,
+  "public static final CONFIGURABLE": 64,
+  "public static final PROXYABLE": 32,
+
   /** 表示 final 修饰符的 int 值。 2E4 */
   "public static final FINAL": 16,
 
@@ -68,6 +73,19 @@ Class.forName({
   "public static isDefault": function(mod) {
     return (mod & js.lang.reflect.Modifier.DEFAULT) !== 0;
   },
+  "public static isProxyable": function(mod) {
+    return (mod & js.lang.reflect.Modifier.PROXYABLE) !== 0;
+  },
+  "public static isWritable": function(mod) {
+    return (mod & js.lang.reflect.Modifier.WRITABLE) !== 0;
+  },
+  "public static isEnumerable": function(mod) {
+    return (mod & js.lang.reflect.Modifier.ENUMERABLE) !== 0;
+  },
+  "public static isConfigurable": function(mod) {
+    return (mod & js.lang.reflect.Modifier.CONFIGURABLE) !== 0;
+  },
+
   clone: function() {
     return this;
   }

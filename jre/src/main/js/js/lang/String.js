@@ -21,6 +21,9 @@ Class.forName({
   },
   getLength: function() {
     return this.length;
+  },
+  endsWith: function(str) {
+    return new RegExp(str + "$").test(this);
   }
 
 });

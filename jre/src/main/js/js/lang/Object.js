@@ -27,11 +27,11 @@
       }
     },
 
-    "non-writable non-enumerable non-configurable non-proxy getClass": function() {
+    "non-writable non-enumerable non-configurable non-proxyable getClass": function() {
       return this.$class || Object.$class;
     },
 
-    "non-writable non-enumerable non-configurable non-proxy getVersion": (function() {
+    "non-writable non-enumerable non-configurable non-proxyable getVersion": (function() {
       /** 主版本号 . 子版本号 [ 修正版本号 [. 编译版本号 ]] */
       var version = "0.1.1.0001";
       return function() {

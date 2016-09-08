@@ -392,20 +392,19 @@ Object
       .indexOf("private ") != -1,
       isDefault = modify
       .indexOf("default ") != -1,
-      isPublic = (modify
-        .indexOf("public ") != -1 || (!isPrivate && !isDefault && !isProtected)),
+      isPublic = (modify.indexOf("public ") != -1 || (!isPrivate && !isDefault && !isProtected)),
       isNonWritable = modify
       .indexOf("non-writable ") != -1,
       isNonEnumerable = modify
       .indexOf("non-enumerable ") != -1,
       isNonConfigurable = modify
       .indexOf("non-configurable ") != -1,
-      isNonProxy = modify
-      .indexOf("non-proxy ") != -1,
-      isWritable = !isNonWritable && modify.indexOf("writable ") != -1,
-      isEnumerable = !isNonEnumerable && modify.indexOf("enumerable ") != -1,
-      isConfigurable = !isNonConfigurable && modify.indexOf("configurable ") != -1,
-      isProxy = !isNonProxy && modify.indexOf("proxy ") != -1;
+      isNonProxyable = modify
+      .indexOf("non-proxyable ") != -1,
+      isWritable = modify.indexOf("writable ") != -1,
+      isEnumerable = modify.indexOf("enumerable ") != -1,
+      isConfigurable = modify.indexOf("configurable ") != -1,
+      isProxyable = modify.indexOf("proxyable ") != -1;
 
     /*
      * abstract 1024, interface 512, final 16, static 8, protected 4,
@@ -421,11 +420,11 @@ Object
      *
      * 提供三种模式
      * 1.系统默认
-     * 		属性默认为writable,enumerable,non-configurable,non-proxy
-     * 		方法默认为writable,non-enumerable,non-configurable,non-proxy, 如果final方法则为non-writable,non-enumerable,non-configurable,non-proxy
-     * 		构造器默认为non-writable,non-enumerable,non-configurable,proxy
-     * 2.手动设置writable，enumerable，configurable，proxy
-     * 3.手动设置non-writable，non-enumerable，non-configurable，non-proxy
+     * 		属性默认为writable,enumerable,non-configurable,non-proxyable
+     * 		方法默认为writable,proxyable,non-enumerable,non-configurable, 如果final方法则为non-writable,non-enumerable,non-configurable,non-proxyable
+     * 		构造器默认为proxyable,non-writable,non-enumerable,non-configurable
+     * 2.手动设置writable，enumerable，configurable，proxyable
+     * 3.手动设置non-writable，non-enumerable，non-configurable，non-proxyable
      */
     var modifiers = 0;
 
@@ -453,15 +452,14 @@ Object
 
     switch (feature) {
       case FEATURE.CONSTRUCTOR:
-        modifiers += Modifier.publicBit;
-        modifiers += Modifier.proxyBit;
+        modifiers += Modifier.proxyableBit;
         break;
       case FEATURE.METHOD:
-        if (isProxy) {
-          modifiers += Modifier.proxyBit;
+        if (!isFinal && (!isNonProxyable || isProxyable)) {
+          modifiers += Modifier.proxyableBit;
         }
 
-        if (!isFinal && !isNonWritable) {
+        if (!isFinal && (!isNonWritable || isWritable)) {
           modifiers += Modifier.writableBit;
         }
 
@@ -474,12 +472,11 @@ Object
         }
         break;
       case FEATURE.FIELD:
-
-        if (!isFinal && !isNonWritable) {
+        if (!isFinal && (!isNonWritable || isWritable)) {
           modifiers += Modifier.writableBit;
         }
 
-        if (!isFinal && !isNonEnumerable) {
+        if (!isFinal && (!isNonEnumerable || isEnumerable)) {
           modifiers += Modifier.enumerableBit;
         }
 
@@ -514,7 +511,7 @@ Object
           writableBit: 256,
           enumerableBit: 128,
           configurableBit: 64,
-          proxyBit: 32,
+          proxyableBit: 32,
 
           finalBit: 16,
           staticBit: 8,
@@ -522,8 +519,8 @@ Object
           privateBit: 2,
           publicBit: 1,
 
-          isProxy: function(modifiers) {
-            return (modifiers & Modifier.proxyBit) !== 0;
+          isProxyable: function(modifiers) {
+            return (modifiers & Modifier.proxyableBit) !== 0;
           },
           isWritable: function(modifiers) {
             return (modifiers & Modifier.writableBit) !== 0;
@@ -562,14 +559,13 @@ Object
         configurable: false
       });
 
-
   var proxy = function(m, b, t, a) {
     var f = m.getValue(),
       modifiers = m.getModifiers(),
       isStatic = Modifier.isStatic(modifiers),
-      isProxy = Modifier.isProxy(modifiers);
+      isProxyable = Modifier.isProxyable(modifiers);
 
-    return (Object.isEmpty(b) && Object.isEmpty(t) && Object.isEmpty(a) && !isProxy) ? f : function() {
+    return ((!Object.isEmpty(b) || !Object.isEmpty(t) || !Object.isEmpty(a)) && isProxyable) ? function() {
       // TODO 判断权限private,default,protected,public
       // TODO 判断是否可以被重写final
 
@@ -601,11 +597,13 @@ Object
 
       // after
       if (!Object.isEmpty(a) && Object.isFunction(a)) {
-        a.apply($this, arguments);
+        var parameter = Array.prototype.slice.call(arguments);
+        parameter.unshift(result);
+        a.apply($this, parameter);
       }
 
       return result;
-    };
+    } : f;
   };
   var doAnnotations = function(self, m) {
     if (Object.isFunction(m.getValue())) {
@@ -617,7 +615,7 @@ Object
           .substring(1) : m.getName();
         name = name.charAt(0).toUpperCase() + name.substring(1);
 
-        var modifier = m.getModifiers();
+        var modifier = Modifier.publicBit + Modifier.writableBit + Modifier.proxyableBit;
         //(((m.getModifiers() & 8) != 0) ? 8 : 0) + 1;
 
         if (m.getAnnotations().indexOf("@Getter") != -1) {
@@ -1019,7 +1017,7 @@ Object
     // 默认无参构造函数
     if (!heap.get(this, "constructor2")) {
       heap.set(this, "constructor2", proxy(new Attribute(name, empty,
-        this, 1, []), this.getSuperClass().getConstructor()));
+        this, Modifier.publicBit + Modifier.proxyableBit, []), this.getSuperClass().getConstructor()));
     }
 
     fetch(alias, function(name, value) {
@@ -1143,7 +1141,6 @@ Object
                 this.getClassConstructor().prototype,
                 n, {
                   value: m.getValue(),
-
                   writable: Modifier.isWritable(modifiers),
                   enumerable: Modifier.isEnumerable(modifiers),
                   configurable: Modifier.isConfigurable(modifiers)
@@ -1263,11 +1260,11 @@ Object
       }
     },
 
-    "non-writable non-enumerable non-configurable non-proxy getClass": function() {
+    "non-writable non-enumerable non-configurable non-proxyable getClass": function() {
       return this.$class || Object.$class;
     },
 
-    "non-writable non-enumerable non-configurable non-proxy getVersion": (function() {
+    "non-writable non-enumerable non-configurable non-proxyable getVersion": (function() {
       /** 主版本号 . 子版本号 [ 修正版本号 [. 编译版本号 ]] */
       var version = "0.1.1.0001";
       return function() {
@@ -1397,6 +1394,9 @@ Class.forName({
     return this[0];
   },
   indexOf: Array.prototype.indexOf ? Array.prototype.indexOf : function(elem, start, end) {
+    return this.indexOf2(elem, start, end);
+  },
+  indexOf2: function(elem, start, end) {
     for (var i = start || 0, len = Math.min(end || this.length, this.length); i < len; i++) {
       if (Object.isFunction(elem) ? elem(this[i]) : (this[i] === elem)) {
         return i;
@@ -1529,6 +1529,9 @@ Class.forName({
   },
   getLength: function() {
     return this.length;
+  },
+  endsWith: function(str) {
+    return new RegExp(str + "$").test(this);
   }
 
 });
@@ -4560,3 +4563,95 @@ Class.forName({
   }
 });
 js.lang.reflect.Method.loaded = true;
+/*
+ * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
+ *
+ * Copyright 2008, 2014 Atom Union, Inc. Released under the MIT license
+ *
+ * Date: Feb 14, 2014
+ */
+
+/**
+ * abstract 1024, interface 512, final 16, static 8, protected 4, private 2
+ * ,public 1,default 0
+ */
+Class.forName({
+  name: "public class js.lang.reflect.Modifier extends Object",
+
+  /** 表示 abstract 修饰符的 int 的值。 2E10 */
+  "public static final ABSTRACT": 1024,
+
+  /** 表示 interface 修饰符的 int 的值。 2E9 */
+  "public static final INTERFACE": 512,
+
+  "public static final WRITABLE": 256,
+  "public static final ENUMERABLE": 128,
+  "public static final CONFIGURABLE": 64,
+  "public static final PROXYABLE": 32,
+
+  /** 表示 final 修饰符的 int 值。 2E4 */
+  "public static final FINAL": 16,
+
+  /** 表示 static 修饰符的 int 值。 2E3 */
+  "public static final STATIC": 8,
+
+  /** 表示 protected 修饰符的 int 值。 2E2 */
+  "public static final PROTECTED": 4,
+
+  /** 表示 private 修饰符的 int 值。2E1 */
+  "public static final PRIVATE": 2,
+
+  /** 表示 public 修饰符的 int 值。 2E0 */
+  "public static final PUBLIC": 1,
+
+  /** 表示 default 修饰符的 int 值。 2E0 */
+  "public static final DEFAULT": 0,
+
+  /** 如果整数参数包括 abstract 修饰符，则返回 true，否则返回 false。 */
+  "public static isAbstract": function(mod) {
+    return (mod & js.lang.reflect.Modifier.ABSTRACT) !== 0;
+  },
+  /** 如果整数参数包括 final 修饰符，则返回 true，否则返回 false。 */
+  "public static isFinal": function(mod) {
+    return (mod & js.lang.reflect.Modifier.FINAL) !== 0;
+  },
+  /** 如果整数参数包括 interface 修饰符，则返回 true，否则返回 false。 */
+  "public static isInterface": function(mod) {
+    return (mod & js.lang.reflect.Modifier.INTERFACE) !== 0;
+  },
+  /** 如果整数参数包括 private 修饰符，则返回 true，否则返回 false。 */
+  "public static isPrivate": function(mod) {
+    return (mod & js.lang.reflect.Modifier.PRIVATE) !== 0;
+  },
+  /** 如果整数参数包括 protected 修饰符，则返回 true，否则返回 false。 */
+  "public static isProtected": function(mod) {
+    return (mod & js.lang.reflect.Modifier.PROTECTED) !== 0;
+  },
+  /** 如果整数参数包括 public 修饰符，则返回 true，否则返回 false。 */
+  "public static isPublic": function(mod) {
+    return (mod & js.lang.reflect.Modifier.PUBLIC) !== 0;
+  },
+  /** 如果整数参数包括 static 修饰符，则返回 true，否则返回 false。 */
+  "public static isStatic": function(mod) {
+    return (mod & js.lang.reflect.Modifier.STATIC) !== 0;
+  },
+  "public static isDefault": function(mod) {
+    return (mod & js.lang.reflect.Modifier.DEFAULT) !== 0;
+  },
+  "public static isProxyable": function(mod) {
+    return (mod & js.lang.reflect.Modifier.PROXYABLE) !== 0;
+  },
+  "public static isWritable": function(mod) {
+    return (mod & js.lang.reflect.Modifier.WRITABLE) !== 0;
+  },
+  "public static isEnumerable": function(mod) {
+    return (mod & js.lang.reflect.Modifier.ENUMERABLE) !== 0;
+  },
+  "public static isConfigurable": function(mod) {
+    return (mod & js.lang.reflect.Modifier.CONFIGURABLE) !== 0;
+  },
+
+  clone: function() {
+    return this;
+  }
+});

@@ -343,7 +343,7 @@ define(function(require, exports, module) {
 
       "private transient int lastZoneIndex": 0,
 
-      "private void initializeData": function() {
+      "private initializeData": function() {
         this.eras = ["公元前", "公元"];
         this.months = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月",
           "九月", "十月", "十一月", "十二月", ""
