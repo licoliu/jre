@@ -10,7 +10,6 @@
 define(function(require, exports, module) {
 
   require("bootstrap!js.test.AssertionError");
-  require("bootstrap!js.lang.StringBuffer");
   require("bootstrap!js.test.AssertionError");
   /**
    * A set of assertion methods useful for writing tests. Only failed assertions

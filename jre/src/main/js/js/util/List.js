@@ -10,8 +10,6 @@ define(function(require, exports, module) {
   require("bootstrap!js.util.Collection");
   require("bootstrap!js.util.LinkIterator");
   require("bootstrap!js.util.Iterator");
-  require("bootstrap!js.lang.IndexOutOfBoundsException");
-  require("bootstrap!js.lang.UnsupportedOperationException");
 
   return Class.forName({
     name: "class js.util.List extends js.util.Collection",

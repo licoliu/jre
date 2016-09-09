@@ -9,8 +9,6 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.util.List");
 
-  require("bootstrap!js.lang.IndexOutOfBoundsException");
-
   return Class.forName({
     name: "class js.util.ArrayList extends js.util.List",
     "private _table": [],

@@ -2,7 +2,7 @@
   "group": "js",
   "artifact": "jre",
   "name": "jre",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "title": "jre",
   "description": "关于javascript的继承框架，类定义，类加载器，集合框架，反射机制，注解，AOP, 单元测试框架，常用包等。",
   "license": "MIT",
@@ -93,7 +93,13 @@
       "./jre/src/main/js/js/lang/reflect/Constructor.js",
       "./jre/src/main/js/js/lang/reflect/Field.js",
       "./jre/src/main/js/js/lang/reflect/Method.js",
-      "./jre/src/main/js/js/lang/reflect/Modifier.js"
+      "./jre/src/main/js/js/lang/reflect/Modifier.js",
+      "./jre/src/main/js/js/lang/CloneNotSupportedException.js",
+      "./jre/src/main/js/js/lang/IllegalAccessException.js",
+      "./jre/src/main/js/js/lang/IllegalStateException.js",
+      "./jre/src/main/js/js/lang/IndexOutOfBoundsException.js",
+      "./jre/src/main/js/js/lang/UnsupportedOperationException.js",
+      "./jre/src/main/js/js/lang/StringBuffer.js"
     ]
   },
   "site": {}

@@ -11,12 +11,10 @@ define(function(require, exports, module) {
    * @requires js.util.Iterator
    * @requires js.util.KeySet
    * @requires js.util.ValueList
-   * @requires js.lang.UnsupportedOperationException
    */
   require("bootstrap!js.util.Iterator");
   require("bootstrap!js.util.KeySet");
   require("bootstrap!js.util.ValueList");
-  require("bootstrap!js.lang.UnsupportedOperationException");
 
   /** 
    * @abstract

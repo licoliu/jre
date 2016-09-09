@@ -10,10 +10,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.util.Collection");
   require("bootstrap!js.util.Iterator");
   require("bootstrap!js.util.NoSuchElementException");
-  require("bootstrap!js.lang.IllegalStateException");
   require("bootstrap!js.util.NoSuchElementException");
-  require("bootstrap!js.lang.NullPointerException");
-  require("bootstrap!js.lang.IllegalArgumentException");
 
   return Class.forName({
     name: "class js.util.Queue extends js.util.Collection",

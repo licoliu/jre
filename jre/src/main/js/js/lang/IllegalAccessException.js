@@ -5,10 +5,8 @@
  * 
  * Date: Feb 12, 2014
  */
-define(function(require, exports, module) {
-  return Class.forName({
-    name: "class js.lang.IllegalAccessException extends js.lang.Exception",
-    "private name": "js.lang.IllegalAccessException", // 错误名
-    "private number": 101 // 错误号
-  }).getClassConstructor();
+Class.forName({
+  name: "class js.lang.IllegalAccessException extends js.lang.Exception",
+  "private name": "js.lang.IllegalAccessException", // 错误名
+  "private number": 101 // 错误号
 });

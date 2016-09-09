@@ -14,7 +14,7 @@
   "artifact": "jre",
   "license": "MIT",
   "debug": false,
-  "version": "1.4.1",
+  "version": "1.4.2",
   "jre": {
     "name": "jsvm",
     "uglify": "jsvm.min",
@@ -109,7 +109,15 @@
       "./jre/src/main/js/org/atomunion/aop/advice/ThrowsAdvice.js",
       "./jre/src/main/js/org/atomunion/aop/framework/AdvisedSupport.js",
       "./jre/src/main/js/org/atomunion/aop/framework/ProxyFactoryBean.js",
-      "./jre/src/main/js/js/lang/reflect/Modifier.js"
+      "./jre/src/main/js/js/lang/reflect/Modifier.js",
+      "./jre/src/main/js/js/lang/CloneNotSupportedException.js",
+      "./jre/src/main/js/js/lang/annotation/Getter.js",
+      "./jre/src/main/js/js/lang/annotation/Setter.js",
+      "./jre/src/main/js/js/lang/IllegalAccessException.js",
+      "./jre/src/main/js/js/lang/IllegalStateException.js",
+      "./jre/src/main/js/js/lang/IndexOutOfBoundsException.js",
+      "./jre/src/main/js/js/lang/UnsupportedOperationException.js",
+      "./jre/src/main/js/js/lang/StringBuffer.js"
     ]
   },
   "target": "prod",
