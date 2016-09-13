@@ -6,6 +6,12 @@
  * Date: Feb 15, 2014
  */
 define(function(require, exports, module) {
+  require("bootstrap!js.test.annotation.After");
+  require("bootstrap!js.test.annotation.AfterClass");
+  require("bootstrap!js.test.annotation.Before");
+  require("bootstrap!js.test.annotation.BeforeClass");
+  require("bootstrap!js.test.annotation.Ignore");
+  require("bootstrap!js.test.annotation.Test");
 
   return Class.forName({
     name: "class js.test.TestCase extends Object",
@@ -64,29 +70,35 @@ define(function(require, exports, module) {
     injectMethods: function() {
       var methods = this.$class.getMethods();
       Object.each(methods, function(i, v, o) {
-        if (v.getAnnotations().contains("@BeforeClass") && (v.getModifiers() & 8) !== 0) {
-          this.getConfigMethods()[0] = v;
 
-        } else if (v.getAnnotations().contains("@AfterClass") && (v.getModifiers() & 8) !== 0) {
-          this.getConfigMethods()[3] = v;
-        } else if (v.getAnnotations().contains("@After")) {
-          this.getConfigMethods()[2] = v;
-
-        } else if (v.getAnnotations().contains("@Before")) {
-          this.getConfigMethods()[1] = v;
-        } else {
-
-          if (v.getAnnotations().contains("@Ignore")) {
-            this.getIgnoreTestMethods().push(v);
-          } else if (v.getAnnotations().contains("@Test")) {
-            this.getTestMethods().push(v);
+        var annotations = v.getAnnotations(),
+          annotation = null;
+        for (var i = 0, len = annotations.length; i < len; i++) {
+          annotation = annotations[i];
+          if (annotation.$class === js.test.annotation.BeforeClass.$class &&
+            (v.getModifiers() & 8) !== 0) {
+            this.getConfigMethods()[0] = v;
+          } else if (annotation.$class === js.test.annotation.AfterClass.$class &&
+            (v.getModifiers() & 8) !== 0) {
+            this.getConfigMethods()[3] = v;
+          } else if (annotation.$class === js.test.annotation.After.$class) {
+            this.getConfigMethods()[2] = v;
+          } else if (annotation.$class === js.test.annotation.Before.$class) {
+            this.getConfigMethods()[1] = v;
+          } else {
+            if (annotation.$class === js.test.annotation.Ignore.$class) {
+              this.getIgnoreTestMethods().push(v);
+            } else if (annotation.$class === js.test.annotation.Test.$class) {
+              this.getTestMethods().push(v);
+            }
           }
-        }
 
-        /*if (v.getName().indexOf("test") === 0) {
-         this.getTestMethods().push(v());
-         }
-         */
+          /*
+          if (v.getName().indexOf("test") === 0) {
+            this.getTestMethods().push(v());
+          }
+          */
+        }
       }, this);
     },
 

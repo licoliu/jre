@@ -13,6 +13,8 @@
 Class.forName({
   name: "public class js.lang.reflect.Modifier extends Object",
 
+  "public static final ANNOTATION": 2048,
+
   /** 表示 abstract 修饰符的 int 的值。 2E10 */
   "public static final ABSTRACT": 1024,
 
@@ -53,6 +55,9 @@ Class.forName({
   /** 如果整数参数包括 interface 修饰符，则返回 true，否则返回 false。 */
   "public static isInterface": function(mod) {
     return (mod & js.lang.reflect.Modifier.INTERFACE) !== 0;
+  },
+  isAnnotation: function() {
+    return (modifiers & js.lang.reflect.Modifier.ANNOTATION) !== 0;
   },
   /** 如果整数参数包括 private 修饰符，则返回 true，否则返回 false。 */
   "public static isPrivate": function(mod) {

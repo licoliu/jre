@@ -50,7 +50,6 @@
               if (!d[k]) {
                 d[k] = {};
               }
-
               if (USEECMA) {
                 Object.defineProperty(d[k], i, {
                   value: m ? s[i][m] : s[i],
@@ -59,7 +58,6 @@
                   configurable: configurable
                 });
               } else {
-
                 d[k][i] = m ? s[i][m] : s[i];
               }
             } else {
@@ -98,7 +96,6 @@
                   d[j][k][t] = m ? s[t][m] : s[t];
                 }
               } else {
-
                 if (USEECMA) {
                   Object.defineProperty(d[j], t, {
                     value: m ? (s[t] ? s[t][m] : null) : s[t],
@@ -107,7 +104,6 @@
                     configurable: configurable
                   });
                 } else {
-
                   d[j][t] = m ? (s[t] ? s[t][m] : null) : s[t];
                 }
               }
@@ -117,8 +113,6 @@
       }
     };
     return function(d, s, k, m, pros) {
-
-
       if (typeof d === 'undefined' || d === null || typeof s === 'undefined' || s === null || typeof d === "number" || typeof s === "number" || typeof d === "string" || typeof s === "string" || typeof d === "boolean" || typeof s === "boolean") {
         return d;
       }
@@ -132,6 +126,7 @@
       return d;
     };
   })();
+
   if (USEECMA) {
     Object.defineProperties(Object, {
       "extend": {
@@ -140,14 +135,12 @@
         enumerable: false,
         configurable: false
       },
-
       "USEECMA": {
         value: USEECMA,
         writable: false,
         enumerable: false,
         configurable: false
       }
-
     });
   } else {
     Object.extend = extend;
@@ -204,6 +197,7 @@ Object
         isInstanceof: function(sub, sup) {
           return sub instanceof sup;
         },
+
         /*
          * extend2 : function(d, s) { if (!Object.isEmpty(d) &&
          * Object.isArray(d)) { for (var i = 0; i < d.length;
@@ -213,6 +207,7 @@ Object
         each: function(obj, fn, scope) {
           return Object.enumerate(obj, fn, scope, false);
         },
+
         enumerate: function(obj, fn, scope, pt) {
           if (Object.isEmpty(obj) || Object.isNumber(obj) || Object.isString(obj) || Object.isBoolean(obj)) {
             return;
@@ -275,15 +270,16 @@ Object
     };
   })();
 
-
   var FEATURE = {
     "CLASS": "class",
     "INTERFACE": "interface",
+    "ANNOTATION": "annotation",
     "CONSTRUCTOR": "constructor",
     "FIELD": "field",
     "METHOD": "method",
     "UNKNOWN": "unknown"
   };
+
   var Attribute = function(name, value, declaringClass, modifiers,
     annotations) {
     this._name = name;
@@ -324,6 +320,7 @@ Object
       this._annotations = annotation;
     }
   };
+
   var convert = function(m, props) {
 
     m = format(m);
@@ -347,19 +344,21 @@ Object
       } else {
         feature = FEATURE.FIELD;
       }
-
     } else {
-
       var index1 = m.indexOf("class ");
       var index2 = m.indexOf("interface ");
+      var index3 = m.indexOf("@interface ");
 
       index = null;
       if (index1 != -1) {
         index = index1;
         feature = FEATURE.CLASS;
-      } else {
+      } else if (index2 != -1) {
         index = index2;
         feature = FEATURE.INTERFACE;
+      } else {
+        index = index3;
+        feature = FEATURE.ANNOTATION;
       }
       modify = m.substring(0, index);
       // FIXME var defs = m.substring(index + 1).split(" ")
@@ -487,9 +486,22 @@ Object
       default:
         break;
     }
-
+    var ans = m.match(regx) || [],
+      an = null,
+      annotations = [],
+      annotation = null;
+    for (var i = 0, len = ans.length; i < len; i++) {
+      an = ans[i];
+      if (an === "@interface") {
+        continue;
+      }
+      annotation = heap.findByName(an.substring(1));
+      if (annotation) {
+        annotations.push(annotation);
+      }
+    }
     return {
-      annotations: m.match(regx) || [],
+      annotations: annotations,
       modifiers: modifiers,
       feature: feature || FEATURE.UNKNOWN,
       name: n,
@@ -499,12 +511,12 @@ Object
   };
 
   var Modifier = function() {};
-
   Object
     .extend(
       Modifier,
       function() {
         return {
+          annotationBit: 2048,
           abstractBit: 1024,
           interfaceBit: 512,
 
@@ -536,6 +548,9 @@ Object
           },
           isInterface: function(modifiers) {
             return (modifiers & Modifier.interfaceBit) !== 0;
+          },
+          isAnnotation: function() {
+            return (modifiers & Modifier.annotationBit) !== 0;
           },
           isFinal: function(modifiers) {
             return (modifiers & Modifier.finalBit) !== 0;
@@ -605,36 +620,65 @@ Object
       return result;
     } : f;
   };
+
   var doAnnotations = function(self, m) {
-    if (Object.isFunction(m.getValue())) {
-      // 方法上的注解
-    } else {
-      // 属性上的注解
-      if (m.getName() && m.getName().length > 1 && m.getName().length != "_") {
-        var name = m.getName().indexOf("_") === 0 ? m.getName()
-          .substring(1) : m.getName();
-        name = name.charAt(0).toUpperCase() + name.substring(1);
-
-        var modifier = Modifier.publicBit + Modifier.writableBit + Modifier.proxyableBit;
-        //(((m.getModifiers() & 8) != 0) ? 8 : 0) + 1;
-
-        if (m.getAnnotations().indexOf("@Getter") != -1) {
-          var getName = "get" + name;
-          if (!self.hasMethod(getName)) {
-            self.addMethod(new Attribute(getName, function() {
-              return this[m.getName()];
-            }, self, modifier, []));
-          }
-        }
-        if (m.getAnnotations().indexOf("@Setter") != -1) {
-          var setName = "set" + name;
-          if (!self.hasMethod(setName)) {
-            self.addMethod(new Attribute(setName, function(value) {
-              this[m.getName()] = value;
-            }, self, modifier, []));
-          }
+    var annotations = m.getAnnotations(),
+      annotation = null,
+      ans = [];
+    for (var i = 0, len = annotations.length; i < len; i++) {
+      annotation = annotations[i];
+      if (Object.isString(annotation)) {
+        annotation = heap.findByName(annotation.substring(1));
+        if (annotation) {
+          ans.push(annotation);
         }
       }
+
+      if (annotation && annotation.methods) {
+        for (var j = 0, length = annotation.methods.length; j < length; j++) {
+          if (annotation.methods[j].getName() === "execute") {
+            annotation.methods[j].getValue().call(self, self, m, Modifier, Attribute);
+            break;
+          }
+        }
+        /*
+        if (self == m) {
+          // 类上的注解
+        } else if (Object.isFunction(m.getValue())) {
+          // 方法上的注解
+        } else {
+          // 属性上的注解
+          if (m.getName() && m.getName().length > 1 && m.getName().length != "_") {
+            var name = m.getName().indexOf("_") === 0 ? m.getName()
+              .substring(1) : m.getName();
+            name = name.charAt(0).toUpperCase() + name.substring(1);
+
+            var modifier = Modifier.publicBit + Modifier.writableBit + Modifier.proxyableBit;
+            //(((m.getModifiers() & 8) != 0) ? 8 : 0) + 1;
+
+            if (m.getAnnotations().indexOf("@Getter") != -1) {
+              var getName = "get" + name;
+              if (!self.hasMethod(getName)) {
+                self.addMethod(new Attribute(getName, function() {
+                  return this[m.getName()];
+                }, self, modifier, []));
+              }
+            }
+            if (m.getAnnotations().indexOf("@Setter") != -1) {
+              var setName = "set" + name;
+              if (!self.hasMethod(setName)) {
+                self.addMethod(new Attribute(setName, function(value) {
+                  this[m.getName()] = value;
+                }, self, modifier, []));
+              }
+            }
+          }
+        }
+        */
+      }
+    }
+    if (ans.length > 0) {
+      m.setAnnotations(ans);
     }
   };
 
@@ -644,6 +688,20 @@ Object
     this.heap = [];
   };
   CodeHeap.prototype = {
+    findByName: function(key) {
+      for (var i = 0, len = this.heap.length; i < len; i++) {
+        if (this.heap[i].value.fullName === key) {
+          return this.heap[i].value || null;
+        }
+      }
+
+      for (var i = 0, len = this.heap.length; i < len; i++) {
+        if (this.heap[i].value.alias === key || this.heap[i].value.name === key) {
+          return this.heap[i].value || null;
+        }
+      }
+      return undefined;
+    },
     find: function(elem) {
       for (var i = 0, len = this.heap.length; i < len; i++) {
         if (this.heap[i].key === elem) {
@@ -712,11 +770,10 @@ Object
           classloader: classloader,
           instanceClass: instanceClass || function() {},
           instance: classConstructor,
-          classConstructor: classConstructor
-
+          classConstructor: classConstructor,
+          $class: $class
         }
       });
-
     }
   };
 
@@ -742,7 +799,6 @@ Object
       classloader, null, null);
 
     switch (fullName) {
-
       case 'Object':
         isRoot = true;
         classConstructor = Object;
@@ -1024,6 +1080,8 @@ Object
       value[name] = classConstructor;
     }, this);
 
+    doAnnotations(this, this);
+
     return this;
   };
   $class.prototype = {
@@ -1103,7 +1161,7 @@ Object
     // 构造器必须公有静态方法必须公有
     addMethod: function(m) {
       if (!Object.isEmpty(m) && Object.isFunction(m.getValue())) {
-        if (m.getAnnotations() && m.getAnnotations().length) {
+        if (m.getAnnotations() && m.getAnnotations().length > 0) {
           doAnnotations(this, m);
         }
         // 不允许更改构造器
@@ -1116,7 +1174,11 @@ Object
         m.setValue(proxy(m));
         m.setDeclaringClass(this);
 
-        if (typeof js !== 'undefined' && !Object.isNull(js) && !Object.isNull(js.lang) && !Object.isNull(js.lang.reflect) && !Object.isNull(js.lang.reflect.Method) && js.lang.reflect.Method.loaded) {
+        if (typeof js !== 'undefined' && !Object.isNull(js) &&
+          !Object.isNull(js.lang) && !Object.isNull(js.lang.reflect) &&
+          !Object.isNull(js.lang.reflect.Method) && js.lang.reflect.Method.loaded &&
+          !Object.isNull(js.lang.reflect.Field) && js.lang.reflect.Field.loaded
+        ) {
           m = new js.lang.reflect.Method(n, m.getValue(),
             this, m.getModifiers(), m.getAnnotations());
         }
@@ -1158,11 +1220,14 @@ Object
     },
     addField: function(m) {
       if (!Object.isEmpty(m) && !Object.isFunction(m.getValue())) {
-        if (m.getAnnotations() && m.getAnnotations().length) {
+        if (m.getAnnotations() && m.getAnnotations().length > 0) {
           doAnnotations(this, m);
         }
         m.setDeclaringClass(this);
-        if (typeof js !== 'undefined' && !Object.isNull(js) && !Object.isNull(js.lang) && !Object.isNull(js.lang.reflect) && !Object.isNull(js.lang.reflect.Field) && js.lang.reflect.Field.loaded) {
+        if (typeof js !== 'undefined' && !Object.isNull(js) &&
+          !Object.isNull(js.lang) && !Object.isNull(js.lang.reflect) &&
+          !Object.isNull(js.lang.reflect.Field) && js.lang.reflect.Field.loaded &&
+          !Object.isNull(js.lang.reflect.Method) && js.lang.reflect.Method.loaded) {
           m = new js.lang.reflect.Field(m.getName(), m
             .getValue(), this, m.getModifiers(), m
             .getAnnotations());
@@ -1807,6 +1872,56 @@ Class.forName({
   "private number": 7,
 
   URIError: function() {}
+});
+Class.forName({
+  name: "@interface js.lang.annotation.Getter",
+  execute: function(self, field, Modifier, Attribute) {
+    if (!field || Object.isFunction(field.getValue())) {
+      throw new Error("ElemenetType must be field in js.lang.annotation.Getter");
+    } else {
+      // 属性上的注解
+      if (field.getName() && field.getName().length > 1 && field.getName().length != "_") {
+        var name = field.getName().indexOf("_") === 0 ? field.getName()
+          .substring(1) : field.getName();
+        name = name.charAt(0).toUpperCase() + name.substring(1);
+
+        var modifier = Modifier.publicBit + Modifier.writableBit + Modifier.proxyableBit;
+        // var modifier = 1 + 256 + 32;
+
+        var getName = "get" + name;
+        if (!self.hasMethod(getName)) {
+          self.addMethod(new Attribute(getName, function() {
+            return this[field.getName()];
+          }, self, modifier, []));
+        }
+      }
+    }
+  }
+});
+Class.forName({
+  name: "@interface js.lang.annotation.Setter",
+  execute: function(self, field, Modifier, Attribute) {
+    if (!field || Object.isFunction(field.getValue())) {
+      throw new Error("ElemenetType must be field in js.lang.annotation.Setter");
+    } else {
+      // 属性上的注解
+      if (field.getName() && field.getName().length > 1 && field.getName().length != "_") {
+        var name = field.getName().indexOf("_") === 0 ? field.getName()
+          .substring(1) : field.getName();
+        name = name.charAt(0).toUpperCase() + name.substring(1);
+
+        var modifier = Modifier.publicBit + Modifier.writableBit + Modifier.proxyableBit;
+        // var modifier = 1 + 256 + 32;
+
+        var setName = "set" + name;
+        if (!self.hasMethod(setName)) {
+          self.addMethod(new Attribute(setName, function(value) {
+            this[field.getName()] = value;
+          }, self, modifier, []));
+        }
+      }
+    }
+  }
 });
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
@@ -4578,6 +4693,8 @@ js.lang.reflect.Method.loaded = true;
 Class.forName({
   name: "public class js.lang.reflect.Modifier extends Object",
 
+  "public static final ANNOTATION": 2048,
+
   /** 表示 abstract 修饰符的 int 的值。 2E10 */
   "public static final ABSTRACT": 1024,
 
@@ -4618,6 +4735,9 @@ Class.forName({
   /** 如果整数参数包括 interface 修饰符，则返回 true，否则返回 false。 */
   "public static isInterface": function(mod) {
     return (mod & js.lang.reflect.Modifier.INTERFACE) !== 0;
+  },
+  isAnnotation: function() {
+    return (modifiers & js.lang.reflect.Modifier.ANNOTATION) !== 0;
   },
   /** 如果整数参数包括 private 修饰符，则返回 true，否则返回 false。 */
   "public static isPrivate": function(mod) {
