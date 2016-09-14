@@ -495,7 +495,7 @@ Object
       if (an === "@interface") {
         continue;
       }
-      annotation = heap.findByName(an.substring(1));
+      annotation = heap.findByName(an);
       if (annotation) {
         annotations.push(annotation);
       }
@@ -627,19 +627,14 @@ Object
     for (var i = 0, len = annotations.length; i < len; i++) {
       annotation = annotations[i];
       if (Object.isString(annotation)) {
-        annotation = heap.findByName(annotation.substring(1));
+        annotation = heap.findByName(annotation);
         if (annotation) {
           ans.push(annotation);
         }
       }
 
-      if (annotation && annotation.methods) {
-        for (var j = 0, length = annotation.methods.length; j < length; j++) {
-          if (annotation.methods[j].getName() === "execute") {
-            annotation.methods[j].getValue().call(self, self, m, Modifier, Attribute);
-            break;
-          }
-        }
+      if (annotation && Object.isFunction(annotation.execute)) {
+        annotation.execute(self, m, Modifier, Attribute);
         /*
         if (self == m) {
           // 类上的注解
@@ -689,14 +684,19 @@ Object
   CodeHeap.prototype = {
     findByName: function(key) {
       for (var i = 0, len = this.heap.length; i < len; i++) {
-        if (this.heap[i].value.fullName === key) {
-          return this.heap[i].value || null;
+        var fullName = new RegExp("(^@" + this.heap[i].value.fullName + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
+        var results = fullName.exec(key);
+        if (results) {
+          return new this.heap[i].value.classConstructor(results[3]) || null;
         }
       }
 
       for (var i = 0, len = this.heap.length; i < len; i++) {
-        if (this.heap[i].value.alias === key || this.heap[i].value.name === key) {
-          return this.heap[i].value || null;
+        var alias = new RegExp("(^@" + this.heap[i].value.alias + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
+        var name = new RegExp("(^@" + this.heap[i].value.name + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
+        var results = alias.exec(key) || name.exec(key);
+        if (results) {
+          return new this.heap[i].value.classConstructor(results[3]) || null;
         }
       }
       return undefined;
@@ -869,20 +869,25 @@ Object
             var i = v.getName();
             if (!classObj.hasField(i)) {
               var value = v.getValue(),
-                modifiers = v.getModifiers();
+                modifiers = v.getModifiers(),
+                annotations = v.getAnnotations(),
+                flag = false;
 
-              value = value ? value.clone() : value;
+              for (var l = 0, len = annotations.lenth; l < len; l++) {
+                if (annotations[l] instanceof org.atomunion.aspect.Resource) {
+                  flag = true;
+                  break;
+                }
+              }
 
+              value = value && !flag ? value.clone() : value;
               if (Object.USEECMA) {
-                Object
-                  .defineProperty(
-                    this,
-                    i, {
-                      value: value,
-                      writable: Modifier.isWritable(modifiers),
-                      enumerable: Modifier.isEnumerable(modifiers),
-                      configurable: Modifier.isConfigurable(modifiers)
-                    });
+                Object.defineProperty(this, i, {
+                  value: value,
+                  writable: Modifier.isWritable(modifiers),
+                  enumerable: Modifier.isEnumerable(modifiers),
+                  configurable: Modifier.isConfigurable(modifiers)
+                });
               } else {
                 this[i] = value;
               }
@@ -902,10 +907,20 @@ Object
 
           // 3.初始化自身定义属性
           Object.each(classObj.getFields(), function(j, v, o) {
-            var i = v.getName();
-            var value = v.getValue(),
-              modifiers = v.getModifiers();
-            value = value ? value.clone() : value;
+            var i = v.getName(),
+              value = v.getValue(),
+              modifiers = v.getModifiers(),
+              annotations = v.getAnnotations(),
+              flag = false;
+
+            for (var l = 0, len = annotations.lenth; l < len; l++) {
+              if (annotations[l] instanceof org.atomunion.aspect.Resource) {
+                flag = true;
+                break;
+              }
+            }
+
+            value = value && !flag ? value.clone() : value;
             if (Object.USEECMA) {
               Object.defineProperty(this, i, {
                 value: value,
@@ -1112,7 +1127,6 @@ Object
   };
   $class.prototype = {
     getClassLoader: function() {
-
       return heap.get(this, "classloader") || (js.lang.ClassLoader ? js.lang.ClassLoader
         .getSystemClassLoader() : null);
     },

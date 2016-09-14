@@ -2,16 +2,29 @@
   define(function(require, exports, module) {
 
     require("bootstrap!org.atomunion.beans.factory.BeanFactory");
+    require("bootstrap!js.util.HashMap");
 
     return Class.forName({
       name: "class org.atomunion.web.context.support.GenericWebApplicationContext extends org.atomunion.beans.factory.BeanFactory",
 
+      "private static instance": null,
+
+      "public static getInstance": function() {
+        var context = org.atomunion.web.context.support.GenericWebApplicationContext;
+        if (context.instance) {
+          return context.instance;
+        }
+
+        context.instance = new context();
+        return context.instance;
+      },
+
       "containsBean": function(name) {
-        return !!this.getBean(name);
+        return !!this.getType(name);
       },
 
       "getBean": function(name) {
-        var type = this.getType(name)
+        var type = this.getType(name);
         return type ? type.newInstance() : null;
       },
 

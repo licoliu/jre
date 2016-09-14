@@ -30,6 +30,8 @@ define(function(require, exports, module) {
   require("test!org.atomunion.aop.framework.TestProxyFactoryBean");
   require("test!org.atomunion.util.TestPatternMatchUtils");
 
+  require("test!org.atomunion.aspect.TestAspect");
+
   new js.test.TestTestCase();
 
   new js.lang.TestObject();
@@ -59,4 +61,6 @@ define(function(require, exports, module) {
   new org.atomunion.web.context.support.TestGenericWebApplicationContext();
   new org.atomunion.aop.framework.TestProxyFactoryBean();
   new org.atomunion.util.TestPatternMatchUtils();
+
+  new org.atomunion.aspect.TestAspect();
 });
