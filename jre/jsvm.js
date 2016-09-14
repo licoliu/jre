@@ -495,7 +495,7 @@ Object
       if (an === "@interface") {
         continue;
       }
-      annotation = heap.findByName(an.substring(1));
+      annotation = heap.findByName(an);
       if (annotation) {
         annotations.push(annotation);
       }
@@ -584,28 +584,27 @@ Object
       // TODO 判断权限private,default,protected,public
       // TODO 判断是否可以被重写final
 
-      var thisClass = this.getClass(),
-        superClass = thisClass.getSuperClass();
-      var $this = isStatic ? thisClass.getClassConstructor() : this;
-      $this.$super = superClass ? (isStatic ? superClass.getClassConstructor() : superClass.getClassConstructor().prototype) : null;
-
+      // var thisClass = this.getClass(),
+      //   superClass = thisClass.getSuperClass();
+      // var $this = isStatic ? thisClass.getClassConstructor() : this;
+      // $this.$super = superClass ? (isStatic ? superClass.getClassConstructor() : superClass.getClassConstructor().prototype) : null;
       //var args = Array.prototype.slice.call(arguments,0).concat([$super,$this]);
 
       // before
       if (!Object.isEmpty(b) && Object.isFunction(b)) {
-        b.apply($this, arguments);
+        b.apply(this, arguments);
       }
 
       var result = null;
       try {
-        result = (!Object.isEmpty(f) && Object.isFunction(f)) ? f.apply($this, arguments) : f;
+        result = (!Object.isEmpty(f) && Object.isFunction(f)) ? f.apply(this, arguments) : f;
       } catch (e) {
         if (Object.isEmpty(t)) {
           throw e;
         } else {
           // throw
           if (Object.isFunction(t)) {
-            t.apply($this, arguments);
+            t.apply(this, arguments);
           }
         }
       }
@@ -614,7 +613,7 @@ Object
       if (!Object.isEmpty(a) && Object.isFunction(a)) {
         var parameter = Array.prototype.slice.call(arguments);
         parameter.unshift(result);
-        a.apply($this, parameter);
+        a.apply(this, parameter);
       }
 
       return result;
@@ -628,19 +627,14 @@ Object
     for (var i = 0, len = annotations.length; i < len; i++) {
       annotation = annotations[i];
       if (Object.isString(annotation)) {
-        annotation = heap.findByName(annotation.substring(1));
+        annotation = heap.findByName(annotation);
         if (annotation) {
           ans.push(annotation);
         }
       }
 
-      if (annotation && annotation.methods) {
-        for (var j = 0, length = annotation.methods.length; j < length; j++) {
-          if (annotation.methods[j].getName() === "execute") {
-            annotation.methods[j].getValue().call(self, self, m, Modifier, Attribute);
-            break;
-          }
-        }
+      if (annotation && Object.isFunction(annotation.execute)) {
+        annotation.execute(self, m, Modifier, Attribute);
         /*
         if (self == m) {
           // 类上的注解
@@ -690,14 +684,19 @@ Object
   CodeHeap.prototype = {
     findByName: function(key) {
       for (var i = 0, len = this.heap.length; i < len; i++) {
-        if (this.heap[i].value.fullName === key) {
-          return this.heap[i].value || null;
+        var fullName = new RegExp("(^@" + this.heap[i].value.fullName + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
+        var results = fullName.exec(key);
+        if (results) {
+          return new this.heap[i].value.classConstructor(results[3]) || null;
         }
       }
 
       for (var i = 0, len = this.heap.length; i < len; i++) {
-        if (this.heap[i].value.alias === key || this.heap[i].value.name === key) {
-          return this.heap[i].value || null;
+        var alias = new RegExp("(^@" + this.heap[i].value.alias + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
+        var name = new RegExp("(^@" + this.heap[i].value.name + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
+        var results = alias.exec(key) || name.exec(key);
+        if (results) {
+          return new this.heap[i].value.classConstructor(results[3]) || null;
         }
       }
       return undefined;
@@ -925,17 +924,32 @@ Object
             constructor2.apply(this, arguments);
           }
 
-          // 5.执行默认初始化方法
+          // 5.设置$super对象
+          sc = classObj.getSuperClass();
+          if (sc) {
+            var $super = new(sc.getClassConstructor())();
+            if (Object.USEECMA) {
+              Object.defineProperty(this, "$super", {
+                value: $super,
+                writable: false,
+                enumerable: false,
+                configurable: false
+              });
+            } else {
+              this.$super = $super;
+            }
+          }
+
+          // 6.执行默认初始化方法
           var initial = classObj.getInitial();
           (initial = initial || this.initial || empty).apply(this,
             arguments);
 
-          // 6.防止用户构造器修改class对象
+          // 7.防止用户构造器修改class对象
           if (!Object.USEECMA && this.$class != classObj) {
             this.$class = classObj;
           }
         };
-
         break;
     }
 
@@ -977,17 +991,29 @@ Object
         }
       }
 
-      var superClass = (fetch(superClassDef, function(name, value) {
-        return value[name];
-      })).$class;
+      var $super = (fetch(superClassDef, function(name, value) {
+          return value[name];
+        })),
+        superClass = $super.$class;
 
       heap.set(this, "superClass", superClass);
+
+      if (Object.USEECMA) {
+        Object.defineProperty(classConstructor, "$super", {
+          value: $super,
+          writable: false,
+          enumerable: false,
+          configurable: false
+        });
+      } else {
+        classConstructor.$super = $super;
+      }
 
       // TODO 判断父类是否final
       if (!isKernel) {
         var instanceClass = heap.get(this, "instanceClass");
-        instanceClass.prototype = ((superClass) ? heap.get(superClass,
-          "instance") : Object).prototype;
+        // $super === heap.get(superClass, "instance")
+        instanceClass.prototype = ((superClass) ? $super : Object).prototype;
 
         if (Object.USEECMA) {
           classConstructor.prototype = Object
