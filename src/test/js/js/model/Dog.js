@@ -10,11 +10,17 @@ define(function(require, exports, module) {
       this.word = word;
     },
     say: function() {
+      this.$super.say();
+
       js.lang.System.out.println("say:" + this.word);
       return this.word;
     },
     sayError: function() {
       throw new js.lang.Exception("我是个哑巴");
+    },
+    "static say": function() {
+      this.$super.say();
+      js.lang.System.out.println("static say: i am dog");
     }
   }).getClassConstructor();
 });

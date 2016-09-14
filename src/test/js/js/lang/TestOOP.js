@@ -11,6 +11,7 @@ define(function(require, exports, module) {
 
   require("test!js.model.Animal");
   require("test!js.model.Dog");
+  require("test!js.model.Taidi");
 
   require("bootstrap!js.test.TestCase");
   require("bootstrap!js.test.Assert");
@@ -20,6 +21,8 @@ define(function(require, exports, module) {
 
   var animal1 = new js.model.Animal("animal1");
   var animal2 = js.model.Animal.$class.newInstance();
+
+  var taidi = new js.model.Taidi("taidi", "嗯~~~");
 
   return Class.forName({
     name: "class js.lang.TestOOP extends js.test.TestCase",
@@ -39,6 +42,14 @@ define(function(require, exports, module) {
       js.test.Assert.assertEquals("clone.say()", c.say(), "汪汪1");
 
       // TODO 进一步测试深拷贝
+    },
+
+    "@Test test$super": function() {
+      taidi.say();
+    },
+
+    "@Test testStatic$super": function() {
+      js.model.Taidi.say();
     }
   }).getClassConstructor();
 

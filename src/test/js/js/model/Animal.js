@@ -14,7 +14,11 @@ define(function(require, exports, module) {
       return this.name;
     },
     say: function() {
+      console.log("i am a animal");
       return "i am a animal";
+    },
+    "static say": function() {
+      js.lang.System.out.println("static say: i am animal");
     }
   }).getClassConstructor();
 });

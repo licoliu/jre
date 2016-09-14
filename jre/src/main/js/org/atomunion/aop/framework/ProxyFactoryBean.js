@@ -66,15 +66,14 @@ define(function(require, exports, module) {
         modifiers = method.getModifiers(),
         isStatic = js.lang.reflect.Modifier.isStatic(modifiers);
 
-
       return function() {
         // TODO 判断权限private,default,protected,public
         // TODO 判断是否可以被重写final
 
-        var thisClass = this.getClass(),
-          superClass = thisClass.getSuperClass();
-        var $this = isStatic ? thisClass.getClassConstructor() : this;
-        $this.$super = superClass ? (isStatic ? superClass.getClassConstructor() : superClass.getClassConstructor().prototype) : null;
+        // var thisClass = this.getClass(),
+        //   superClass = thisClass.getSuperClass();
+        // var $this = isStatic ? thisClass.getClassConstructor() : this;
+        // $this.$super = superClass ? (isStatic ? superClass.getClassConstructor() : superClass.getClassConstructor().prototype) : null;
 
         var args = Array.prototype.slice.call(arguments, 0);
 
@@ -83,14 +82,14 @@ define(function(require, exports, module) {
           for (var bi = 0, length = befores.length; bi < length; bi++) {
             var before = befores[bi];
             if (Object.isFunction(before)) {
-              before.call($this, method, args, $this);
+              before.call(this, method, args, this);
             }
           }
         }
 
         var result = null;
         try {
-          result = (!Object.isEmpty(f) && Object.isFunction(f)) ? f.apply($this, arguments) : f;
+          result = (!Object.isEmpty(f) && Object.isFunction(f)) ? f.apply(this, arguments) : f;
         } catch (e) {
           if (Object.isEmpty(afterThrowings)) {
             throw e;
@@ -99,7 +98,7 @@ define(function(require, exports, module) {
             for (var ti = 0, length = afterThrowings.length; ti < length; ti++) {
               var afterThrowing = afterThrowings[ti];
               if (Object.isFunction(afterThrowing)) {
-                afterThrowing.call($this, method, args, $this, e);
+                afterThrowing.call(this, method, args, this, e);
               }
             }
           }
@@ -110,7 +109,7 @@ define(function(require, exports, module) {
           for (var ai = 0, length = afterReturnings.length; ai < length; ai++) {
             var afterReturning = afterReturnings[ai];
             if (Object.isFunction(afterReturning)) {
-              afterReturning.call($this, result, method, args, $this);
+              afterReturning.call(this, result, method, args, this);
             }
           }
         }
