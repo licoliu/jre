@@ -20,7 +20,7 @@ define(function(require, exports, module) {
   new org.atomunion.aspect.TestAutowire();
 
   return Class.forName({
-    name: "class org.atomunion.aspect.TestAspect extends js.test.TestCase",
+    name: "class org.atomunion.aspect.TestAspect",
 
     "@Resource('org.atomunion.aspect.ComponentBean') componentBean1": null,
     "@Resource('org.atomunion.aspect.ControllerBean') controllerBean1": null,

@@ -9,6 +9,8 @@
 
       "private static instance": null,
 
+      "private beans": new js.util.HashMap(),
+
       "public static getInstance": function() {
         var context = org.atomunion.web.context.support.GenericWebApplicationContext;
         if (context.instance) {
@@ -23,9 +25,27 @@
         return !!this.getType(name);
       },
 
-      "getBean": function(name) {
+      "getBean": function(name, forceNew) {
         var type = this.getType(name);
-        return type ? type.newInstance() : null;
+
+        if (!type) {
+          return null;
+        }
+
+        if (forceNew) {
+          return type.newInstance();
+        }
+
+        var beanName = type.getFullName();
+        if (this.beans.containsKey(beanName)) {
+          return this.beans.get(beanName);
+        } else {
+          var bean = type.newInstance();
+          this.beans.put(beanName, bean);
+          return bean;
+        }
+
+        return null;
       },
 
       "getType": function(name) {

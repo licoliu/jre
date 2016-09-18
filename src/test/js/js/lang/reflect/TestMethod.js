@@ -9,7 +9,7 @@ define(function(require, exports, module) {
 
   return Class
     .forName({
-      name: "class js.lang.reflect.TestMethod extends js.test.TestCase",
+      name: "class js.lang.reflect.TestMethod",
 
       "@Setter @Getter private method": testReflectObject
         .getClass().getMethod("say"),

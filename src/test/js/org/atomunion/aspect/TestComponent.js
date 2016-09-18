@@ -18,7 +18,7 @@ define(function(require, exports, module) {
 
 
   return Class.forName({
-    name: "class org.atomunion.aspect.TestComponent extends js.test.TestCase",
+    name: "class org.atomunion.aspect.TestComponent",
 
     TestComponent: function() {},
 

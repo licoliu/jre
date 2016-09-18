@@ -9,7 +9,7 @@ define(function(require, exports, module) {
   var dog = new js.model.Dog("dog", "汪汪");
 
   return Class.forName({
-    name: "class js.lang.TestObject extends js.test.TestCase",
+    name: "class js.lang.TestObject",
     "@Setter @Getter private obj": dog,
 
     "@Test testIsNull": function() {

@@ -4,7 +4,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.util.ArrayList");
 
   return Class.forName({
-    name: "class js.util.TestArrayList extends js.test.TestCase",
+    name: "class js.util.TestArrayList",
     "@Setter @Getter private list": new js.util.ArrayList(),
 
     "TestArrayList": function() {

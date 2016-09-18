@@ -3,7 +3,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.TestCase");
 
   return Class.forName({
-    name: "class js.lang.TestArray extends js.test.TestCase",
+    name: "class js.lang.TestArray",
     "@Setter @Getter private array": [],
 
     "TestArray": function() {},

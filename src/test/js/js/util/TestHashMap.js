@@ -5,7 +5,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.Assert");
 
   return Class.forName({
-    name: "class js.util.TestHashMap extends js.test.TestCase",
+    name: "class js.util.TestHashMap",
     "@Setter @Getter private map": new js.util.HashMap(),
     TestHashMap: function() {
       for (var i = 0; i < 6; i++) {

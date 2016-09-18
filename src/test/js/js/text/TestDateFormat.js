@@ -15,7 +15,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.Assert");
 
   return Class.forName({
-    name: "class js.text.TestDateFormat extends js.test.TestCase",
+    name: "class js.text.TestDateFormat",
     "@Setter @Getter private format": null,
 
     "@Before public setUp": function() {},

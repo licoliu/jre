@@ -5,7 +5,7 @@ define(function(require, exports, module) {
   require("bootstrap!org.atomunion.util.PatternMatchUtils");
 
   return Class.forName({
-    name: "class org.atomunion.util.TestPatternMatchUtils extends js.test.TestCase",
+    name: "class org.atomunion.util.TestPatternMatchUtils",
 
     "@Before public setUp": function() {},
 

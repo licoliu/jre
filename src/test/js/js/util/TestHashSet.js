@@ -6,7 +6,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.Assert");
 
   return Class.forName({
-    name: "class js.util.TestHashSet extends js.test.TestCase",
+    name: "class js.util.TestHashSet",
     "@Setter @Getter private set": new js.util.HashSet(),
     TestHashSet: function() {
       for (var i = 0; i < 3; i++) {

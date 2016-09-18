@@ -5,7 +5,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.Assert");
 
   return Class.forName({
-    name: "class js.lang.TestStringBuffer extends js.test.TestCase",
+    name: "class js.lang.TestStringBuffer",
     "@Setter @Getter private stringBuffer": new js.lang.StringBuffer(),
 
     "TestStringBuffer": function() {},

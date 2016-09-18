@@ -6,7 +6,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.Assert");
 
   return Class.forName({
-    name: "class js.util.TestList extends js.test.TestCase",
+    name: "class js.util.TestList",
     "@Setter @Getter private list": new js.util.ArrayList(),
     TestList: function() {
       for (var i = 0; i < 3; i++) {

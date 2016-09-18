@@ -7,7 +7,7 @@ define(function(require, exports, module) {
   require("bootstrap!org.atomunion.web.context.support.TestGenericWebApplicationContext");
 
   return Class.forName({
-    name: "class org.atomunion.web.context.support.TestGenericWebApplicationContext extends js.test.TestCase",
+    name: "class org.atomunion.web.context.support.TestGenericWebApplicationContext",
     "@Setter @Getter private context": null,
 
     TestGenericWebApplicationContext: function() {
