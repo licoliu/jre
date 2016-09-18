@@ -4,6 +4,8 @@
     require("bootstrap!org.atomunion.beans.factory.BeanFactory");
     require("bootstrap!js.util.HashMap");
 
+    require("bootstrap!org.atomunion.beans.factory.support.AutowireCapableBeanFactory");
+
     return Class.forName({
       name: "class org.atomunion.web.context.support.GenericWebApplicationContext extends org.atomunion.beans.factory.BeanFactory",
 
@@ -22,7 +24,7 @@
       },
 
       "containsBean": function(name) {
-        return !!this.getType(name);
+        return !!this.getBean(name);
       },
 
       "getBean": function(name, forceNew) {
@@ -37,8 +39,12 @@
         }
 
         var beanName = type.getFullName();
+        var context = org.atomunion.beans.factory.support.AutowireCapableBeanFactory.getInstance();
+
         if (this.beans.containsKey(beanName)) {
           return this.beans.get(beanName);
+        } else if (context.containsBean(this.targetName)) {
+          return context.getBean(this.targetName);
         } else {
           var bean = type.newInstance();
           this.beans.put(beanName, bean);

@@ -22,7 +22,7 @@
       },
 
       "containsBean": function(beanName) {
-        return this.beans.contains(beanName);
+        return this.beans.containsKey(beanName);
       },
 
       "getBean": function(beanName) {

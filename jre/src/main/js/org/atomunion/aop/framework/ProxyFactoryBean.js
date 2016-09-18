@@ -1,7 +1,9 @@
 define(function(require, exports, module) {
 
   require("bootstrap!org.atomunion.aop.framework.AdvisedSupport");
+
   require("bootstrap!org.atomunion.web.context.support.GenericWebApplicationContext");
+
   require("bootstrap!org.atomunion.aop.advice.MethodBeforeAdvice");
   require("bootstrap!org.atomunion.aop.advice.ThrowsAdvice");
   require("bootstrap!org.atomunion.aop.advice.AfterReturningAdvice");
@@ -54,7 +56,7 @@ define(function(require, exports, module) {
       var advisor = null;
 
       for (var i = 0, len = this.interceptorNames.length; i < len; i++) {
-        advisor = new org.atomunion.web.context.support.GenericWebApplicationContext().getBean(this.interceptorNames[i]);
+        advisor = org.atomunion.web.context.support.GenericWebApplicationContext.getInstance().getBean(this.interceptorNames[i]);
         if (advisor) {
           this.addAdvisor(advisor);
         }
@@ -118,7 +120,8 @@ define(function(require, exports, module) {
     },
 
     "private newPrototypeInstance": function() {
-      var targetClass = new org.atomunion.web.context.support.GenericWebApplicationContext().getType(this.targetName);
+      var context = org.atomunion.web.context.support.GenericWebApplicationContext.getInstance();
+      var targetClass = context.getType(this.targetName);
 
       if (!targetClass) {
         throw new js.lang.IllegalAccessException("");
@@ -165,7 +168,8 @@ define(function(require, exports, module) {
         }
       }
 
-      this.singletonInstance = targetClass.newInstance();
+      this.singletonInstance = context.getBean(this.targetName);
+
       return this.singletonInstance;
     }
   }).getClassConstructor();
