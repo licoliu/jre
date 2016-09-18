@@ -25,7 +25,7 @@ define(function(require, exports, module) {
   var taidi = new js.model.Taidi("taidi", "嗯~~~");
 
   return Class.forName({
-    name: "class js.lang.TestOOP extends js.test.TestCase",
+    name: "class js.lang.TestOOP",
     "@Setter @Getter private dog": dog1,
 
     "@Test testConstrator": function() {

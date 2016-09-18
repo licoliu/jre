@@ -32,35 +32,30 @@ define(function(require, exports, module) {
 
   require("test!org.atomunion.aspect.TestAspect");
 
-  new js.test.TestTestCase();
 
-  new js.lang.TestObject();
-  new js.lang.TestOOP();
+  require("bootstrap!js.test.runner.JUnitCore");
 
-  new js.lang.TestStringBuffer();
-  new js.lang.TestArray();
+  var result = js.test.runner.JUnitCore.runClasses([
+    js.test.TestTestCase.$class,
+    js.lang.TestObject.$class,
+    js.lang.TestOOP.$class,
+    js.lang.TestStringBuffer.$class,
+    js.lang.TestArray.$class,
+    js.lang.reflect.TestClass.$class,
+    js.lang.reflect.TestField.$class,
+    js.lang.reflect.TestMethod.$class,
+    js.text.TestDateFormat.$class,
+    js.util.TestMap.$class,
+    js.util.TestHashMap.$class,
+    js.util.TestList.$class,
+    js.util.TestArrayList.$class,
+    js.util.TestHashSet.$class,
+    js.util.TestDate.$class,
+    js.util.TestCalendar.$class,
+    js.util.TestGregorianCalendar.$class,
+    org.atomunion.web.context.support.TestGenericWebApplicationContext.$class,
+    org.atomunion.aop.framework.TestProxyFactoryBean.$class,
+    org.atomunion.util.TestPatternMatchUtils.$class, org.atomunion.aspect.TestAspect.$class
+  ]);
 
-  new js.lang.reflect.TestClass();
-  new js.lang.reflect.TestField();
-  new js.lang.reflect.TestMethod();
-
-  new js.text.TestDateFormat();
-
-  new js.util.TestMap();
-  new js.util.TestHashMap();
-
-  new js.util.TestList();
-  new js.util.TestArrayList();
-
-  new js.util.TestHashSet();
-
-  new js.util.TestDate();
-  new js.util.TestCalendar();
-  new js.util.TestGregorianCalendar();
-
-  new org.atomunion.web.context.support.TestGenericWebApplicationContext();
-  new org.atomunion.aop.framework.TestProxyFactoryBean();
-  new org.atomunion.util.TestPatternMatchUtils();
-
-  new org.atomunion.aspect.TestAspect();
 });

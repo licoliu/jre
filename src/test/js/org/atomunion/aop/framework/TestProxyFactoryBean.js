@@ -12,7 +12,7 @@ define(function(require, exports, module) {
   require("test!org.atomunion.model.advice.ThrowsAdvice");
 
   return Class.forName({
-    name: "class org.atomunion.aop.framework.TestProxyFactoryBean extends js.test.TestCase",
+    name: "class org.atomunion.aop.framework.TestProxyFactoryBean",
     "@Setter @Getter private proxy": null,
 
     TestProxyFactoryBean: function() {

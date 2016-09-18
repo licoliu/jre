@@ -17,7 +17,7 @@
    });
 
    return Class.forName({
-     name: "class org.atomunion.aspect.TestController extends js.test.TestCase",
+     name: "class org.atomunion.aspect.TestController",
 
      TestController: function() {},
 

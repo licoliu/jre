@@ -7,7 +7,7 @@ define(function(require, exports, module) {
   require("test!org.atomunion.aspect.TestComponent");
 
   return Class.forName({
-    name: "class org.atomunion.aspect.TestResource extends js.test.TestCase",
+    name: "class org.atomunion.aspect.TestResource",
 
     "@Resource('org.atomunion.aspect.ComponentBean') private bean": null,
 

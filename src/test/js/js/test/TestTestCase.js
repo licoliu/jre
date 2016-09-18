@@ -13,7 +13,7 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.Assert");
 
   return Class.forName({
-    name: "class js.test.TestTestCase extends js.test.TestCase",
+    name: "class js.test.TestTestCase",
     "@Setter @Getter private calendar": null,
 
     "@Setter @Getter private static staticField": 1,
@@ -45,6 +45,14 @@ define(function(require, exports, module) {
     "@Test public test": function() {
       js.test.TestTestCase.staticField = 11;
       this.field = 22;
+    },
+
+    "@Ignore @Test public test2": function() {
+
+    },
+
+    "@Test @Ignore public test3": function() {
+
     }
   }).getClassConstructor();
 });

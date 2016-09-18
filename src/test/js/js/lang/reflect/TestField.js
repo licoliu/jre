@@ -8,7 +8,7 @@ define(function(require, exports, module) {
   var testReflectObject = new js.model.Dog("dog", "汪汪");
 
   return Class.forName({
-    name: "class js.lang.reflect.TestField extends js.test.TestCase",
+    name: "class js.lang.reflect.TestField",
     "@Setter @Getter private field": testReflectObject.getClass()
       .getField("color"),
     TestField: function() {},
