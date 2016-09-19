@@ -35,7 +35,8 @@ define(function(require, exports, module) {
       js.lang.System.out.println(this.getDog().getAnnotations());
     },
     "@Test testGetPackage": function() {
-      js.lang.System.out.println(this.getDog().getPackage());
+      js.lang.System.out.println(this.getDog().getPackage().getName());
+      js.lang.System.out.println(this.getDog().getPackage().getValue());
     },
     "@Test testGetDeclaredField": function() {
       js.lang.System.out.println(this.getDog().getDeclaredField("color"));

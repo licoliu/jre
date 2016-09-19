@@ -973,7 +973,12 @@ Object
       return name;
     }, this);
 
-    heap.set(this, "packages", packages);
+    var packageName = fullName.split(".").slice(0, -1).join(".");
+    if (typeof js !== 'undefined' && !Object.isNull(js) &&
+      !Object.isNull(js.lang) && !Object.isNull(js.lang.Package)) {
+      heap.set(this, "packages", new js.lang.Package(packageName, packages));
+    }
+
     heap.set(this, "name", name);
 
     if (!isRoot) {

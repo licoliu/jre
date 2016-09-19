@@ -973,7 +973,12 @@ Object
       return name;
     }, this);
 
-    heap.set(this, "packages", packages);
+    var packageName = fullName.split(".").slice(0, -1).join(".");
+    if (typeof js !== 'undefined' && !Object.isNull(js) &&
+      !Object.isNull(js.lang) && !Object.isNull(js.lang.Package)) {
+      heap.set(this, "packages", new js.lang.Package(packageName, packages));
+    }
+
     heap.set(this, "name", name);
 
     if (!isRoot) {
@@ -1449,6 +1454,25 @@ Object
     Object.$class = $class;
   }
 })(this);
+Class.forName({
+  name: "public final class js.lang.Package extends Object",
+  "private _name": null,
+  "private _value": null,
+
+  Package: function(name, value) {
+    this._name = name;
+    this._value = value;
+  },
+
+  getName: function() {
+    return this._name;
+  },
+
+  getValue: function() {
+    return this._value;
+  }
+
+});
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  *
