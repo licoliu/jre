@@ -59,6 +59,7 @@
     "files": [
       "./jre/src/main/js/js/lang/Class.js",
       "./jre/src/main/js/js/lang/Object.js",
+      "./jre/src/main/js/js/lang/Package.js",
       "./jre/src/main/js/js/lang/Array.js",
       "./jre/src/main/js/js/lang/Boolean.js",
       "./jre/src/main/js/js/lang/Function.js",
