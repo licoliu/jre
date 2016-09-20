@@ -289,7 +289,7 @@ Class.forName({
         seajs.use(mainClass);
       } else {
         // this.loadClass(mainClass);
-        $import(mainClass)
+        $import(mainClass);
       }
     }
   }

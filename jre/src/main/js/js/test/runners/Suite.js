@@ -14,6 +14,5 @@ define(function(require, exports, module) {
     }
 
   }).getClassConstructor();
-}
 
 });

@@ -88,7 +88,7 @@ define(function(require, exports, module) {
           len3 = tests.length;
 
         for (; m < len3; m++) {
-          var method = tests[m];
+          method = tests[m];
 
           js.lang.System.out.println(["        --------  Method「", method.getName(), "」  "].join(""));
 

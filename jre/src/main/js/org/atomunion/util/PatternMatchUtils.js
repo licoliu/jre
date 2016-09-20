@@ -17,20 +17,20 @@ define(function(require, exports, module) {
      * @return whether the String matches the given pattern
      */
     "public static simpleMatch": function(pattern, str) {
-      if (pattern == null || str == null) {
+      if (pattern === null || str === null) {
         return false;
       }
       var firstIndex = pattern.indexOf('*');
-      if (firstIndex == -1) {
+      if (firstIndex === -1) {
         return pattern.equals(str);
       }
-      if (firstIndex == 0) {
-        if (pattern.length == 1) {
+      if (firstIndex === 0) {
+        if (pattern.length === 1) {
           return true;
         }
 
         var nextIndex = pattern.indexOf('*', firstIndex + 1);
-        if (nextIndex == -1) {
+        if (nextIndex === -1) {
           return str.endsWith(pattern.substring(1));
         }
 
@@ -40,7 +40,7 @@ define(function(require, exports, module) {
         }
 
         var partIndex = str.indexOf(part);
-        while (partIndex != -1) {
+        while (partIndex !== -1) {
           if (this.simpleMatch(pattern.substring(nextIndex), str.substring(partIndex + part.length))) {
             return true;
           }
@@ -62,7 +62,7 @@ define(function(require, exports, module) {
      * @return whether the String matches any of the given patterns
      */
     "public static simpleMatches": function(patterns, str) {
-      if (patterns != null) {
+      if (patterns !== null) {
         for (var i = 0, len = patterns.length; i < len; i++) {
           var pattern = patterns[i];
           if (this.simpleMatch(pattern, str)) {
