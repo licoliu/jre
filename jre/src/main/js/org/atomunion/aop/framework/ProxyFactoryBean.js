@@ -28,7 +28,7 @@ define(function(require, exports, module) {
       if (this.isSingleton() && this.singletonInstance) {
         return this.getSingletonInstance();
       } else {
-        if (this.targetName == null) {
+        if (this.targetName === null) {
           console.warn("Using non-singleton proxies with singleton targets is often undesirable. " +
             "Enable prototype proxies by setting the 'targetName' property.");
         }
@@ -81,7 +81,7 @@ define(function(require, exports, module) {
 
         // before
         if (!Object.isEmpty(befores)) {
-          for (var bi = 0, length = befores.length; bi < length; bi++) {
+          for (var bi = 0, length1 = befores.length; bi < length1; bi++) {
             var before = befores[bi];
             if (Object.isFunction(before)) {
               before.call(this, method, args, this);
@@ -97,7 +97,7 @@ define(function(require, exports, module) {
             throw e;
           } else {
             // throw
-            for (var ti = 0, length = afterThrowings.length; ti < length; ti++) {
+            for (var ti = 0, length2 = afterThrowings.length; ti < length2; ti++) {
               var afterThrowing = afterThrowings[ti];
               if (Object.isFunction(afterThrowing)) {
                 afterThrowing.call(this, method, args, this, e);
@@ -108,7 +108,7 @@ define(function(require, exports, module) {
 
         // after
         if (!Object.isEmpty(afterReturnings)) {
-          for (var ai = 0, length = afterReturnings.length; ai < length; ai++) {
+          for (var ai = 0, length3 = afterReturnings.length; ai < length3; ai++) {
             var afterReturning = afterReturnings[ai];
             if (Object.isFunction(afterReturning)) {
               afterReturning.call(this, result, method, args, this);
@@ -146,14 +146,14 @@ define(function(require, exports, module) {
 
         if (!Object.isEmpty(befores) || !Object.isEmpty(afterThrowings) || !Object.isEmpty(afterReturnings)) {
           var methods = targetClass.getDeclaredMethods();
-          for (var i = 0, length = methods.length; i < length; i++) {
+          for (var i = 0, length1 = methods.length; i < length1; i++) {
             var method = methods[i],
               modifiers = method.getModifiers(),
               isProxyable = js.lang.reflect.Modifier.isProxyable(modifiers);
 
             if (isProxyable) {
-              for (var j = 0, len = list.length; j < len; j++) {
-                var pointcut = list[j].getPointcut();
+              for (var l = 0, length2 = list.length; l < length2; l++) {
+                var pointcut = list[l].getPointcut();
                 if (pointcut.matches(method, targetClass)) {
                   targetClass.addMethod(new js.lang.reflect.Method(method.getName(),
                     this.newPrototypeMethod(method, befores, afterThrowings, afterReturnings),

@@ -32,7 +32,7 @@ define(function(require, exports, module) {
      * the pointcut matches.
      */
     "public setMappedAnnotations": function(mappedAnnotations) {
-      if (mappedAnnotations != null) {
+      if (mappedAnnotations !== null) {
         if (Object.isString(mappedAnnotations)) {
           this.mappedAnnotations.push(mappedAnnotations);
         } else if (Object.isArray(mappedAnnotations)) {
@@ -42,7 +42,7 @@ define(function(require, exports, module) {
     },
 
     "public setIgnoredAnnotations": function(ignoredAnnotations) {
-      if (ignoredAnnotations != null) {
+      if (ignoredAnnotations !== null) {
         if (Object.isString(ignoredAnnotations)) {
           this.ignoredAnnotations.push(ignoredAnnotations);
         } else if (Object.isArray(ignoredAnnotations)) {
@@ -71,14 +71,22 @@ define(function(require, exports, module) {
     },
 
     "public matches": function(method) {
-      for (var i = 0, len = this.ignoredAnnotations.length; i < len; i++) {
+      var i = 0,
+        len = 0,
+        j = 0,
+        length = 0,
+        annotations = null,
+        annotationClass = null,
+        fullName = null,
+        name = null;
+      for (i = 0, len = this.ignoredAnnotations.length; i < len; i++) {
         var ignoredAnnotation = this.ignoredAnnotations[i];
 
-        var annotations = method.getAnnotations();
-        for (var j = 0, length = annotations.length; j < length; j++) {
-          var annotationClass = annotations[j].getClass(),
-            fullName = annotationClass.getFullName(),
-            name = annotationClass.getName();
+        annotations = method.getAnnotations();
+        for (j = 0, length = annotations.length; j < length; j++) {
+          annotationClass = annotations[j].getClass();
+          fullName = annotationClass.getFullName();
+          name = annotationClass.getName();
 
           if (ignoredAnnotation.equals(fullName) || ignoredAnnotation.equals(name)) {
             return false;
@@ -86,14 +94,13 @@ define(function(require, exports, module) {
         }
       }
 
-      for (var i = 0, len = this.mappedAnnotations.length; i < len; i++) {
+      for (i = 0, len = this.mappedAnnotations.length; i < len; i++) {
         var mappedAnnotation = this.mappedAnnotations[i];
-
-        var annotations = method.getAnnotations();
-        for (var j = 0, length = annotations.length; j < length; j++) {
-          var annotationClass = annotations[j].getClass(),
-            fullName = annotationClass.getFullName(),
-            name = annotationClass.getName();
+        annotations = method.getAnnotations();
+        for (j = 0, length = annotations.length; j < length; j++) {
+          annotationClass = annotations[j].getClass();
+          fullName = annotationClass.getFullName();
+          name = annotationClass.getName();
 
           if (mappedAnnotation.equals(fullName) || mappedAnnotation.equals(name)) {
             return true;

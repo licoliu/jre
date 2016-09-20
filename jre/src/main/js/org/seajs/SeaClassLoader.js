@@ -167,9 +167,9 @@
     var version = js.lang.System.getProperty("version");
     if (version) {
       if (path.indexOf("?") > 0) {
-        path += "&v=" + version
+        path += "&v=" + version;
       } else {
-        path += "?v=" + version
+        path += "?v=" + version;
       }
     }
 
@@ -1020,7 +1020,7 @@
 
     if (!emitData.requested) {
       requestCache ?
-        requestCache[emitData.requestUri] = sendRequest :
+        (requestCache[emitData.requestUri] = sendRequest) :
         sendRequest();
     }
 
@@ -1115,7 +1115,7 @@
 
     meta.uri ? Module.save(meta.uri, meta) :
       // Save information for "saving" work in the script onload event
-      anonymousMeta = meta;
+      (anonymousMeta = meta);
   };
 
   // Save meta data to cachedMods

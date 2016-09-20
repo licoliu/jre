@@ -490,7 +490,7 @@ Object
       an = null,
       annotations = [],
       annotation = null;
-    for (var i = 0, len = ans.length; i < len; i++) {
+    for (var i = 0, length = ans.length; i < length; i++) {
       an = ans[i];
       if (an === "@interface") {
         continue;
@@ -683,18 +683,21 @@ Object
   };
   CodeHeap.prototype = {
     findByName: function(key) {
-      for (var i = 0, len = this.heap.length; i < len; i++) {
+      var results = null,
+        i = 0,
+        len = 0;
+      for (i = 0, len = this.heap.length; i < len; i++) {
         var fullName = new RegExp("(^@" + this.heap[i].value.fullName + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
-        var results = fullName.exec(key);
+        results = fullName.exec(key);
         if (results) {
           return new this.heap[i].value.classConstructor(results[3]) || null;
         }
       }
 
-      for (var i = 0, len = this.heap.length; i < len; i++) {
+      for (i = 0, len = this.heap.length; i < len; i++) {
         var alias = new RegExp("(^@" + this.heap[i].value.alias + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
         var name = new RegExp("(^@" + this.heap[i].value.name + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
-        var results = alias.exec(key) || name.exec(key);
+        results = alias.exec(key) || name.exec(key);
         if (results) {
           return new this.heap[i].value.classConstructor(results[3]) || null;
         }

@@ -25,7 +25,7 @@ define(function(require, exports, module) {
      * the pointcut matches.
      */
     "public setMappedNames": function(mappedNames) {
-      if (mappedNames != null) {
+      if (mappedNames !== null) {
         if (Object.isString(mappedNames)) {
           this.mappedNames.push(mappedNames);
         } else if (Object.isArray(mappedNames)) {

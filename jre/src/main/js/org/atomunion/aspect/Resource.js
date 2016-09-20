@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
 
-  require("bootstrap!org.atomunion.beans.factory.support.AutowireCapableBeanFactory")
+  require("bootstrap!org.atomunion.beans.factory.support.AutowireCapableBeanFactory");
 
   Class.forName({
     name: "@interface org.atomunion.aspect.Resource",
