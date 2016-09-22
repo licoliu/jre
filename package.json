@@ -14,7 +14,7 @@
   "artifact": "jre",
   "license": "MIT",
   "debug": false,
-  "version": "1.4.7",
+  "version": "1.4.8",
   "jre": {
     "name": "jsvm",
     "uglify": "jsvm.min",
@@ -64,7 +64,8 @@
       "./jre/src/main/js/js/lang/IllegalStateException.js",
       "./jre/src/main/js/js/lang/IndexOutOfBoundsException.js",
       "./jre/src/main/js/js/lang/UnsupportedOperationException.js",
-      "./jre/src/main/js/js/lang/StringBuffer.js"
+      "./jre/src/main/js/js/lang/StringBuffer.js",
+      "./jre/src/main/js/js/lang/AsynchronousCallException.js"
     ]
   },
   "target": "prod",

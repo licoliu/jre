@@ -2,7 +2,7 @@
   "group": "js",
   "artifact": "jre",
   "name": "jre",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "title": "jre",
   "description": "关于javascript的继承框架，类定义，类加载器，集合框架，反射机制，注解，AOP, 单元测试框架，常用包等。",
   "license": "MIT",
@@ -102,7 +102,8 @@
       "./jre/src/main/js/js/lang/IllegalStateException.js",
       "./jre/src/main/js/js/lang/IndexOutOfBoundsException.js",
       "./jre/src/main/js/js/lang/UnsupportedOperationException.js",
-      "./jre/src/main/js/js/lang/StringBuffer.js"
+      "./jre/src/main/js/js/lang/StringBuffer.js",
+      "./jre/src/main/js/js/lang/AsynchronousCallException.js"
     ]
   },
   "site": {}

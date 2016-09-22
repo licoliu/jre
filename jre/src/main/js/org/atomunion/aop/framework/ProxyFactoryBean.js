@@ -91,7 +91,20 @@ define(function(require, exports, module) {
 
         var result = null;
         try {
-          result = (!Object.isEmpty(f) && Object.isFunction(f)) ? f.apply(this, arguments) : f;
+          result = (!Object.isEmpty(f) && Object.isFunction(f)) ? f.apply(this, args) : f;
+          if (result && result.$promise && Object.isFunction(result.$promise.error)) {
+            var scope = this;
+            result.$promise.error(function(response) {
+              if (!Object.isEmpty(afterThrowings)) {
+                for (var ti = 0, length2 = afterThrowings.length; ti < length2; ti++) {
+                  var afterThrowing = afterThrowings[ti];
+                  if (Object.isFunction(afterThrowing)) {
+                    afterThrowing.call(scope, method, args, scope, new js.lang.AsynchronousCallException("asynchronous " + method.getName() + " call error", method.getDeclaringClass().getFullName(), null, response), result);
+                  }
+                }
+              }
+            });
+          }
         } catch (e) {
           if (Object.isEmpty(afterThrowings)) {
             throw e;
