@@ -346,8 +346,8 @@ Object
       }
     } else {
       var index1 = m.indexOf("class ");
-      var index2 = m.indexOf("interface ");
-      var index3 = m.indexOf("@interface ");
+      var index2 = m.indexOf("@interface ");
+      var index3 = m.indexOf("interface ");
 
       index = null;
       if (index1 != -1) {
@@ -355,10 +355,10 @@ Object
         feature = FEATURE.CLASS;
       } else if (index2 != -1) {
         index = index2;
-        feature = FEATURE.INTERFACE;
+        feature = FEATURE.ANNOTATION;
       } else {
         index = index3;
-        feature = FEATURE.ANNOTATION;
+        feature = FEATURE.INTERFACE;
       }
       modify = m.substring(0, index);
       // FIXME var defs = m.substring(index + 1).split(" ")
@@ -685,23 +685,38 @@ Object
     findByName: function(key) {
       var results = null,
         i = 0,
-        len = 0;
+        len = 0,
+        hp = null,
+        _$class = null,
+        _value = null;
+
       for (i = 0, len = this.heap.length; i < len; i++) {
-        var fullName = new RegExp("(^@" + this.heap[i].value.fullName + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
-        results = fullName.exec(key);
-        if (results) {
-          return new this.heap[i].value.classConstructor(results[3]) || null;
+        hp = this.heap[i];
+        _$class = hp.key;
+        _value = hp.value;
+        if (_$class.isAnnotation()) {
+          var fullName = new RegExp("(^@" + _value.fullName + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
+          results = fullName.exec(key);
+          if (results) {
+            return new _value.classConstructor(results[3]) || null;
+          }
         }
       }
 
-      for (i = 0, len = this.heap.length; i < len; i++) {
-        var alias = new RegExp("(^@" + this.heap[i].value.alias + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
-        var name = new RegExp("(^@" + this.heap[i].value.name + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
-        results = alias.exec(key) || name.exec(key);
-        if (results) {
-          return new this.heap[i].value.classConstructor(results[3]) || null;
+      for (i = 0; i < len; i++) {
+        hp = this.heap[i];
+        _$class = hp.key;
+        _value = hp.value;
+        if (_$class.isAnnotation()) {
+          var alias = new RegExp("(^@" + _value.alias + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
+          var name = new RegExp("(^@" + _value.name + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
+          results = alias.exec(key) || name.exec(key);
+          if (results) {
+            return new _value.classConstructor(results[3]) || null;
+          }
         }
       }
+
       return undefined;
     },
     find: function(elem) {
@@ -1318,8 +1333,7 @@ Object
     },
 
     isInterface: function() {
-      // TODO
-      return heap.get(this, "feature") === "interface";
+      return heap.get(this, "feature") === FEATURE.INTERFACE;
     },
 
     isArray: function() {
@@ -1331,8 +1345,7 @@ Object
       return false;
     },
     isAnnotation: function() {
-      // TODO
-      return false;
+      return heap.get(this, "feature") === FEATURE.ANNOTATION;
     }
   };
 

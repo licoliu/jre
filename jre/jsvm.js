@@ -346,8 +346,8 @@ Object
       }
     } else {
       var index1 = m.indexOf("class ");
-      var index2 = m.indexOf("interface ");
-      var index3 = m.indexOf("@interface ");
+      var index2 = m.indexOf("@interface ");
+      var index3 = m.indexOf("interface ");
 
       index = null;
       if (index1 != -1) {
@@ -355,10 +355,10 @@ Object
         feature = FEATURE.CLASS;
       } else if (index2 != -1) {
         index = index2;
-        feature = FEATURE.INTERFACE;
+        feature = FEATURE.ANNOTATION;
       } else {
         index = index3;
-        feature = FEATURE.ANNOTATION;
+        feature = FEATURE.INTERFACE;
       }
       modify = m.substring(0, index);
       // FIXME var defs = m.substring(index + 1).split(" ")
@@ -685,23 +685,38 @@ Object
     findByName: function(key) {
       var results = null,
         i = 0,
-        len = 0;
+        len = 0,
+        hp = null,
+        _$class = null,
+        _value = null;
+
       for (i = 0, len = this.heap.length; i < len; i++) {
-        var fullName = new RegExp("(^@" + this.heap[i].value.fullName + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
-        results = fullName.exec(key);
-        if (results) {
-          return new this.heap[i].value.classConstructor(results[3]) || null;
+        hp = this.heap[i];
+        _$class = hp.key;
+        _value = hp.value;
+        if (_$class.isAnnotation()) {
+          var fullName = new RegExp("(^@" + _value.fullName + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
+          results = fullName.exec(key);
+          if (results) {
+            return new _value.classConstructor(results[3]) || null;
+          }
         }
       }
 
-      for (i = 0, len = this.heap.length; i < len; i++) {
-        var alias = new RegExp("(^@" + this.heap[i].value.alias + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
-        var name = new RegExp("(^@" + this.heap[i].value.name + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
-        results = alias.exec(key) || name.exec(key);
-        if (results) {
-          return new this.heap[i].value.classConstructor(results[3]) || null;
+      for (i = 0; i < len; i++) {
+        hp = this.heap[i];
+        _$class = hp.key;
+        _value = hp.value;
+        if (_$class.isAnnotation()) {
+          var alias = new RegExp("(^@" + _value.alias + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
+          var name = new RegExp("(^@" + _value.name + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
+          results = alias.exec(key) || name.exec(key);
+          if (results) {
+            return new _value.classConstructor(results[3]) || null;
+          }
         }
       }
+
       return undefined;
     },
     find: function(elem) {
@@ -872,20 +887,25 @@ Object
             var i = v.getName();
             if (!classObj.hasField(i)) {
               var value = v.getValue(),
-                modifiers = v.getModifiers();
+                modifiers = v.getModifiers(),
+                annotations = v.getAnnotations(),
+                flag = false;
 
-              value = value ? value.clone() : value;
+              for (var l = 0, len = annotations.lenth; l < len; l++) {
+                if (annotations[l] instanceof org.atomunion.aspect.Resource) {
+                  flag = true;
+                  break;
+                }
+              }
 
+              value = value && !flag ? value.clone() : value;
               if (Object.USEECMA) {
-                Object
-                  .defineProperty(
-                    this,
-                    i, {
-                      value: value,
-                      writable: Modifier.isWritable(modifiers),
-                      enumerable: Modifier.isEnumerable(modifiers),
-                      configurable: Modifier.isConfigurable(modifiers)
-                    });
+                Object.defineProperty(this, i, {
+                  value: value,
+                  writable: Modifier.isWritable(modifiers),
+                  enumerable: Modifier.isEnumerable(modifiers),
+                  configurable: Modifier.isConfigurable(modifiers)
+                });
               } else {
                 this[i] = value;
               }
@@ -905,10 +925,20 @@ Object
 
           // 3.初始化自身定义属性
           Object.each(classObj.getFields(), function(j, v, o) {
-            var i = v.getName();
-            var value = v.getValue(),
-              modifiers = v.getModifiers();
-            value = value ? value.clone() : value;
+            var i = v.getName(),
+              value = v.getValue(),
+              modifiers = v.getModifiers(),
+              annotations = v.getAnnotations(),
+              flag = false;
+
+            for (var l = 0, len = annotations.lenth; l < len; l++) {
+              if (annotations[l] instanceof org.atomunion.aspect.Resource) {
+                flag = true;
+                break;
+              }
+            }
+
+            value = value && !flag ? value.clone() : value;
             if (Object.USEECMA) {
               Object.defineProperty(this, i, {
                 value: value,
@@ -1120,7 +1150,6 @@ Object
   };
   $class.prototype = {
     getClassLoader: function() {
-
       return heap.get(this, "classloader") || (js.lang.ClassLoader ? js.lang.ClassLoader
         .getSystemClassLoader() : null);
     },
@@ -1304,8 +1333,7 @@ Object
     },
 
     isInterface: function() {
-      // TODO
-      return heap.get(this, "feature") === "interface";
+      return heap.get(this, "feature") === FEATURE.INTERFACE;
     },
 
     isArray: function() {
@@ -1317,8 +1345,7 @@ Object
       return false;
     },
     isAnnotation: function() {
-      // TODO
-      return false;
+      return heap.get(this, "feature") === FEATURE.ANNOTATION;
     }
   };
 
@@ -4039,6 +4066,32 @@ Class.forName({
 })(this);
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
+ * 
+ * Copyright 2008, 2014 Atom Union, Inc. Released under the MIT license
+ * 
+ * Date: Feb 12, 2014
+ */
+
+Class.forName({
+  name: "class js.lang.NullPointerException extends js.lang.Exception",
+  "private name": "js.lang.NullPointerException",
+  "private number": 107
+});
+/*
+ * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
+ * 
+ * Copyright 2008, 2014 Atom Union, Inc. Released under the MIT license
+ * 
+ * Date: Feb 12, 2014
+ */
+Class.forName({
+  name: "class js.lang.IllegalArgumentException extends js.lang.Exception",
+  "private name": "js.lang.IllegalArgumentException", // 错误名
+  "private number": 102
+    // 错误号
+});
+/*
+ * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  *
  * Copyright 2008, 2014 Atom Union, Inc. Released under the MIT license
  *
@@ -4597,32 +4650,6 @@ Class.forName({
     js.dom.Document.ready(loader.main, loader);
   }
 })(this);
-/*
- * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
- * 
- * Copyright 2008, 2014 Atom Union, Inc. Released under the MIT license
- * 
- * Date: Feb 12, 2014
- */
-
-Class.forName({
-  name: "class js.lang.NullPointerException extends js.lang.Exception",
-  "private name": "js.lang.NullPointerException",
-  "private number": 107
-});
-/*
- * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
- * 
- * Copyright 2008, 2014 Atom Union, Inc. Released under the MIT license
- * 
- * Date: Feb 12, 2014
- */
-Class.forName({
-  name: "class js.lang.IllegalArgumentException extends js.lang.Exception",
-  "private name": "js.lang.IllegalArgumentException", // 错误名
-  "private number": 102
-    // 错误号
-});
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
  * 

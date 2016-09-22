@@ -1,6 +1,7 @@
 define(function(require, exports, module) {
 
   require("bootstrap!js.test.TestCase");
+  require("bootstrap!js.test.Assert");
 
   return Class.forName({
     name: "class js.lang.TestArray",

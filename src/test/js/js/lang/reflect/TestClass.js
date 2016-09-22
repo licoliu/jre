@@ -2,8 +2,11 @@ define(function(require, exports, module) {
 
   require("test!js.model.Animal");
   require("test!js.model.Dog");
+  require("test!js.model.Bean");
 
   require("bootstrap!js.test.TestCase");
+  require("bootstrap!js.test.Assert");
+
   require("bootstrap!js.lang.reflect.Method");
   require("bootstrap!js.lang.reflect.Field");
 
@@ -83,6 +86,10 @@ define(function(require, exports, module) {
     "@Test testNewInstance": function() {
       var c = this.getDog().newInstance();
       js.lang.System.out.println(c.getColor());
+    },
+    "@Test testIsAnnotation": function() {
+      js.test.Assert.assertTrue("类js.lang.Class中的isAnnotation方法测试不通过", !this.getDog().isAnnotation());
+      js.test.Assert.assertTrue("类js.lang.Class中的isAnnotation方法测试不通过", js.model.Bean.$class.isAnnotation());
     }
   }).getClassConstructor();
 });

@@ -4,6 +4,7 @@ define(function(require, exports, module) {
   require("test!js.model.Dog");
 
   require("bootstrap!js.test.TestCase");
+  require("bootstrap!js.test.Assert");
 
   var testReflectObject = new js.model.Dog("dog", "汪汪");
 
