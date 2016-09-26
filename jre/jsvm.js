@@ -4562,6 +4562,8 @@ Class.forName({
     path = null,
     mainClass = null,
     skin = null,
+    loglevel = null,
+    target = null,
     immediately = true,
     servletpath = null;
 
@@ -4574,7 +4576,9 @@ Class.forName({
       v = script.getAttribute("version"),
       main = script.getAttribute("main"),
       im = script.getAttribute("immediately"),
-      s = script.getAttribute("skin");
+      s = script.getAttribute("skin"),
+      t = script.getAttribute("target"),
+      ll = script.getAttribute("loglevel");
 
     if (jsvm && jsvm === 'true') {
       if (sp) {
@@ -4605,6 +4609,8 @@ Class.forName({
       }
       skin = s || 'default';
       version = v;
+      target = t || 'local';
+      loglevel = ll || 'error';
       break;
     }
   }
@@ -4640,6 +4646,8 @@ Class.forName({
   js.lang.System.setProperty("main", mainClass);
   js.lang.System.setProperty("debug", isDebug);
   js.lang.System.setProperty("version", version);
+  js.lang.System.setProperty("loglevel", loglevel);
+  js.lang.System.setProperty("target", target);
   js.lang.System.setProperty("servletpath", servletpath);
   js.lang.System.setProperty("skin", skin);
   js.lang.System.setProperty("immediately", immediately);
