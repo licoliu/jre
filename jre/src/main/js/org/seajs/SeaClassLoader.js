@@ -5,17 +5,17 @@
  *
  * Date: Feb 14, 2014
  */
-/**
- * Sea.js 3.0.0 | seajs.org/LICENSE.md
- */
 
-/**
- * @namespace org
+/** 
+ * @class org.seajs.SeaClassLoader
+ * @extends {js.lang.Object} 
+ * @description Sea.js 3.0.0 | seajs.org/LICENSE.md
+ *
+ * @author lico
+ * @version 0.1.1
+ * @since 0.0.1
  */
-/**
- * @namespace org.seajs
- */
-(function(global, undefined) {
+(function(global, undefined) /** @lends org.seajs.SeaClassLoader.prototype */ {
 
   // Avoid conflicting when `sea.js` is loaded multiple times
   if (global.seajs) {

@@ -1,19 +1,32 @@
-/**
- * Utility methods for simple pattern matching, in particular for
- * typical "xxx*", "*xxx" and "*xxx*" pattern styles.
- *
- * @author lico
- */
 define(function(require, exports, module) {
-  return Class.forName({
+
+  /** 
+   * @abstract
+   * @public
+   * @class org.atomunion.util.PatternMatchUtils
+   * @extends {js.lang.Object}
+   * @description 
+   * <p>&nbsp;&nbsp;&nbsp;&nbsp;
+   * Utility methods for simple pattern matching, in particular for typical "xxx*", "*xxx" and "*xxx*" pattern styles.
+   * </p>
+   *
+   * @author lico
+   * @version 0.1.1
+   * @since 0.0.1
+   */
+  return Class.forName( /** @lends org.atomunion.util.PatternMatchUtils.prototype */ {
     name: "public abstract class org.atomunion.util.PatternMatchUtils extends Object",
 
     /**
-     * Match a String against the given pattern, supporting the following simple
-     * pattern styles: "xxx*", "*xxx", "*xxx*" and "xxx*yyy" matches (with an
-     * arbitrary number of pattern parts), as well as direct equality.
-     * @param pattern the pattern to match against
-     * @param str the String to match
+     * @name org.atomunion.util.PatternMatchUtils.simpleMatch
+     * @function
+     * @public 
+     * @static
+     * @summary Match a String against the given pattern, supporting the following simple pattern styles: "xxx*", "*xxx", "*xxx*" and "xxx*yyy" matches (with an arbitrary number of pattern parts), as well as direct equality.
+     * @description Match a String against the given pattern, supporting the following simple pattern styles: "xxx*", "*xxx", "*xxx*" and "xxx*yyy" matches (with an arbitrary number of pattern parts), as well as direct equality.
+     *
+     * @param {js.lang.String} pattern - the pattern to match against
+     * @param {js.lang.String} str - the String to match
      * @return whether the String matches the given pattern
      */
     "public static simpleMatch": function(pattern, str) {
@@ -54,11 +67,15 @@ define(function(require, exports, module) {
     },
 
     /**
-     * Match a String against the given patterns, supporting the following simple
-     * pattern styles: "xxx*", "*xxx", "*xxx*" and "xxx*yyy" matches (with an
-     * arbitrary number of pattern parts), as well as direct equality.
-     * @param patterns the patterns to match against
-     * @param str the String to match
+     * @name org.atomunion.util.PatternMatchUtils.simpleMatches
+     * @function
+     * @public 
+     * @static
+     * @summary Match a String against the given patterns, supporting the following simple pattern styles: "xxx*", "*xxx", "*xxx*" and "xxx*yyy" matches (with an arbitrary number of pattern parts), as well as direct equality.
+     * @description Match a String against the given patterns, supporting the following simple pattern styles: "xxx*", "*xxx", "*xxx*" and "xxx*yyy" matches (with an arbitrary number of pattern parts), as well as direct equality.
+     *
+     * @param {js.lang.String} patterns - the patterns to match against
+     * @param {js.lang.String} str - the String to match
      * @return whether the String matches any of the given patterns
      */
     "public static simpleMatches": function(patterns, str) {

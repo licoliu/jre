@@ -13,7 +13,18 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.annotation.Ignore");
   require("bootstrap!js.test.annotation.Test");
 
-  return Class.forName({
+  /** 
+   * @class js.test.TestCase
+   * @extends {js.lang.Object}
+   * @description 
+   * <p>&nbsp;&nbsp;&nbsp;&nbsp;
+   * </p><br/>
+   *
+   * @author lico
+   * @version 0.1.1
+   * @since 0.0.1
+   */
+  return Class.forName( /** @lends js.test.TestCase.prototype */ {
     name: "class js.test.TestCase extends Object",
     "@Setter @Getter private _testMethods": [],
     "@Setter @Getter private _ignoreTestMethods": [],
@@ -71,7 +82,7 @@ define(function(require, exports, module) {
       var methods = this.$class.getMethods();
       Object.each(methods, function(j, v, o) {
 
-        var annotations = v.getAnnotations(),
+        var annotations = v.getDeclaredAnnotations(),
           annotation = null;
         for (var i = 0, len = annotations.length; i < len; i++) {
           annotation = annotations[i];

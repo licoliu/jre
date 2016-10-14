@@ -9,68 +9,159 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.util.Calendar");
 
+  /** 
+   * @class js.util.GregorianCalendar
+   * @extends {js.util.Calendar}
+   * @description 
+   * <p>&nbsp;&nbsp;&nbsp;&nbsp;
+   * GregorianCalendar is a concrete subclass of Calendar and provides the standard calendar system used by most of the world.
+   * </p><br/>
+   *
+   * @author lico
+   * @version 0.1.1
+   * @since 0.0.1
+   */
   return Class
-    .forName({
-      name: "abstract class js.util.GregorianCalendar extends js.util.Calendar",
+    .forName( /** @lends js.util.GregorianCalendar.prototype */ {
+      name: "class js.util.GregorianCalendar extends js.util.Calendar",
 
-      /**
-       * Value of the <code>ERA</code> field indicating the period
-       * before the common era (before Christ), also known as BCE. The
-       * sequence of years at the transition from <code>BC</code> to
-       * <code>AD</code> is ..., 2 BC, 1 BC, 1 AD, 2 AD,...
+      /** 
+       * @name js.util.GregorianCalendar.BC
+       * @public
+       * @static
+       * @constant
+       * @property {js.lang.Number} Value of the <code>ERA</code> field indicating the period before the common era (before Christ), also known as BCE. The sequence of years at the transition from <code>BC</code> to <code>AD</code> is ..., 2 BC, 1 BC, 1 AD, 2 AD,...
        *
        * @see #ERA
        */
       "public static final BC": 0,
 
-      /**
-       * Value of the {@link #ERA} field indicating the period before the
-       * common era, the same value as {@link #BC}.
+      /** 
+       * @name js.util.GregorianCalendar.BCE
+       * @public
+       * @static
+       * @constant
+       * @property {js.lang.Number} Value of the {@link #ERA} field indicating the period before the common era, the same value as {@link #BC}.
        *
        * @see #CE
        */
-      "static final BCE": 0,
+      "public static final BCE": 0,
 
-      /**
-       * Value of the <code>ERA</code> field indicating the common era
-       * (Anno Domini), also known as CE. The sequence of years at the
-       * transition from <code>BC</code> to <code>AD</code> is ..., 2
-       * BC, 1 BC, 1 AD, 2 AD,...
+      /** 
+       * @name js.util.GregorianCalendar.AD
+       * @public
+       * @static
+       * @constant
+       * @property {js.lang.Number} Value of the <code>ERA</code> field indicating the common era (Anno Domini), also known as CE. The sequence of years at the transition from <code>BC</code> to <code>AD</code> is ..., 2 BC, 1 BC, 1 AD, 2 AD,...
        *
        * @see #ERA
        */
       "public static final AD": 1,
 
-      /**
-       * Value of the {@link #ERA} field indicating the common era, the
-       * same value as {@link #AD}.
+      /** 
+       * @name js.util.GregorianCalendar.CE
+       * @public
+       * @static
+       * @constant
+       * @property {js.lang.Number} Value of the {@link #ERA} field indicating the common era, the same value as {@link #AD}.
        *
        * @see #BCE
        */
-      "static final CE": 1,
+      "public static final CE": 1,
 
+      /** 
+       * @name js.util.GregorianCalendar.EPOCH_OFFSET
+       * @public
+       * @static
+       * @constant
+       * @property {js.lang.Number} 
+       */
       "private static final EPOCH_OFFSET": 719163, // Fixed date of
+
       // January 1,
       // 1970
       // (Gregorian)
+      /** 
+       * @name js.util.GregorianCalendar.EPOCH_YEAR
+       * @public
+       * @static
+       * @constant
+       * @property {js.lang.Number} 
+       */
       "private static final EPOCH_YEAR": 1970,
 
+      /** 
+       * @name js.util.GregorianCalendar.MONTH_LENGTH
+       * @public
+       * @static
+       * @constant
+       * @property {js.lang.Number} 
+       */
       "static final MONTH_LENGTH": [31, 28, 31, 30, 31, 30, 31, 31, 30,
         31, 30, 31
-      ], // 0-based
+      ],
+
+      /** 
+       * @name js.util.GregorianCalendar.LEAP_MONTH_LENGTH
+       * @public
+       * @static
+       * @constant
+       * @property {js.lang.Number} 
+       */
+      // 0-based
       "static final LEAP_MONTH_LENGTH": [31, 29, 31, 30, 31, 30, 31,
         31, 30, 31, 30, 31
-      ], // 0-based
+      ],
 
+      /** 
+       * @name js.util.GregorianCalendar.ONE_SECOND
+       * @public
+       * @static
+       * @constant
+       * @property {js.lang.Number} 
+       */
+      // 0-based
       // Useful millisecond constants. Although ONE_DAY and ONE_WEEK can
       // fit
       // into ints, they must be longs in order to prevent arithmetic
       // overflow
       // when performing (bug 4173516).
       "private static final ONE_SECOND": 1000,
+
+      /** 
+       * @name js.util.GregorianCalendar.ONE_MINUTE
+       * @public
+       * @static
+       * @constant
+       * @property {js.lang.Number} 
+       */
       "private static final ONE_MINUTE": 60 * 1000,
+
+      /** 
+       * @name js.util.GregorianCalendar.ONE_HOUR
+       * @public
+       * @static
+       * @constant
+       * @property {js.lang.Number} 
+       */
       "private static final ONE_HOUR": 60 * 60 * 1000,
+
+      /** 
+       * @name js.util.GregorianCalendar.ONE_DAY
+       * @public
+       * @static
+       * @constant
+       * @property {js.lang.Number} 
+       */
       "private static final ONE_DAY ": 24 * 60 * 60 * 1000,
+
+      /** 
+       * @name js.util.GregorianCalendar.ONE_WEEK
+       * @public
+       * @static
+       * @constant
+       * @property {js.lang.Number} 
+       */
       "private static final ONE_WEEK": 7 * 24 * 60 * 60 * 1000,
 
       /*
@@ -82,6 +173,13 @@ define(function(require, exports, module) {
        * HOUR 0 0 11 11 HOUR_OF_DAY 0 0 23 23 MINUTE 0 0 59 59 SECOND 0 0
        * 59 59 MILLISECOND 0 0 999 999 </pre> *: depends on the Gregorian
        * change date
+       */
+      /** 
+       * @name js.util.GregorianCalendar.MIN_VALUES
+       * @public
+       * @static
+       * @constant
+       * @property {js.lang.Number} 
        */
       "static final MIN_VALUES": [0, 1, // YEAR
         js.util.Calendar.JANUARY, // MONTH
@@ -101,6 +199,14 @@ define(function(require, exports, module) {
         // compatibility)
         0
       ],
+
+      /** 
+       * @name js.util.GregorianCalendar.LEAST_MAX_VALUES
+       * @public
+       * @static
+       * @constant
+       * @property {js.lang.Number} 
+       */
       "static final LEAST_MAX_VALUES": [1, 292269054, // YEAR
         js.util.Calendar.DECEMBER, // MONTH
         52, // WEEK_OF_YEAR
@@ -118,6 +224,14 @@ define(function(require, exports, module) {
         14 * 60 * 60 * 1000, // ZONE_OFFSET
         20 * 60 * 1000 // DST_OFFSET (historical least maximum)
       ],
+
+      /** 
+       * @name js.util.GregorianCalendar.MAX_VALUES
+       * @public
+       * @static
+       * @constant
+       * @property {js.lang.Number} 
+       */
       "static final MAX_VALUES": [1, 292278994, // YEAR
         js.util.Calendar.DECEMBER, // MONTH
         53, // WEEK_OF_YEAR
@@ -365,6 +479,22 @@ define(function(require, exports, module) {
         this.setFieldsComputed();
       },
 
+      /** 
+       * @function
+       * @public 
+       * @summary Adds the specified (signed) amount of time to the given calendar field, based on the calendar's rules.
+       * @description 
+       * <p>
+       * Adds the specified (signed) amount of time to the given calendar field, based on the calendar's rules.
+       * <ul>
+       * <li>Add rule 1. The value of field after the call minus the value of field before the call is amount, modulo any overflow that has occurred in field. Overflow occurs when a field value exceeds its range and, as a result, the next larger field is incremented or decremented and the field value is adjusted back into its range.</li>
+       * <li>Add rule 2. If a smaller field is expected to be invariant, but it is impossible for it to be equal to its prior value because of changes in its minimum or maximum after field is changed, then its value is adjusted to be as close as possible to its expected value. A smaller field represents a smaller unit of time. HOUR is a smaller field than DAY_OF_MONTH. No adjustment is made to smaller fields that are not expected to be invariant. The calendar system determines what fields are expected to be invariant.</li>
+       * </ul>
+       * </p>
+       *
+       * @param {js.lang.Number} field - the calendar field.
+       * @param {js.lang.Number} amount - the amount of date or time to be added to the field.
+       */
       "add": function(field, amount) {
         var Calendar = js.util.Calendar,
           GregorianCalendar = js.util.GregorianCalendar;

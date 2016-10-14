@@ -9,7 +9,18 @@
  */
 define(function(require, exports, module) {
 
-  return Class.forName({
+  /** 
+   * @class js.test.AssertionError
+   * @extends {js.lang.Error}
+   * @description 
+   * <p>&nbsp;&nbsp;&nbsp;&nbsp;
+   * </p><br/>
+   *
+   * @author lico
+   * @version 0.1.1
+   * @since 0.0.1
+   */
+  return Class.forName( /** @lends js.test.AssertionError.prototype */ {
     name: "class js.test.AssertionError extends js.lang.Error",
     "private name": "js.test.AssertionError", // 错误名
     "private number": -1

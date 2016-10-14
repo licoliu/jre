@@ -3,13 +3,13 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.TestCase");
   require("bootstrap!js.test.Assert");
 
-  require("bootstrap!org.atomunion.aspect.Autowire");
-  require("test!org.atomunion.aspect.TestComponent");
+  require("bootstrap!org.atomunion.stereotype.Autowire");
+  require("test!org.atomunion.stereotype.TestComponent");
 
   return Class.forName({
-    name: "class org.atomunion.aspect.TestAutowire",
+    name: "class org.atomunion.stereotype.TestAutowire",
 
-    "@Autowire('org.atomunion.aspect.ComponentBean') private bean": null,
+    "@Autowire('org.atomunion.stereotype.ComponentBean') private bean": null,
 
     TestAutowire: function() {},
     "@Before public setUp": function() {},
@@ -18,7 +18,7 @@ define(function(require, exports, module) {
 
     "@Test public testAutowire": function() {
       js.test.Assert.assertTrue("", this.bean);
-      js.test.Assert.assertTrue("", this.bean.getClass() === org.atomunion.aspect.ComponentBean.$class);
+      js.test.Assert.assertTrue("", this.bean.getClass() === org.atomunion.stereotype.ComponentBean.$class);
     }
 
   });

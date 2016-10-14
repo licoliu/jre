@@ -83,7 +83,7 @@ Class.forName({
    *            passed to the callback; the first contains the URLs
    *            that have been properly loaded, and the second the
    *            failed ones.
-   * @param {Object}
+   * @param {js.lang.Object}
    *            [$scope] The $scope ("this" reference) to be used for
    *            the callback call. Default to {@link Mclipse}.
    * @param {Boolean}

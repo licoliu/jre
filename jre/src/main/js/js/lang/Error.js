@@ -7,7 +7,27 @@
  *
  * Date: 2014年6月25日
  */
-Class.forName({
+
+/**
+ * @class js.lang.Error 
+ * @extends {js.lang.Object}
+ * @alias Error
+ * @description 
+ * <p>&nbsp;&nbsp;&nbsp;&nbsp;
+ * The Error constructor creates an error object. Instances of Error objects are thrown when runtime errors occur.
+ * </p><p>&nbsp;&nbsp;&nbsp;&nbsp;
+ * The Error object can also be used as a base object for user-defined exceptions. See below for standard built-in error types.
+ * </p><p>&nbsp;&nbsp;&nbsp;&nbsp;
+ * Runtime errors result in new Error objects being created and thrown.
+ * </p><p>&nbsp;&nbsp;&nbsp;&nbsp;
+ * This page documents the use of the Error object itself and its use as a constructor function. For a list of properties and methods inherited by Error instances, see Error.prototype.
+ * </p>
+ *
+ * @author lico
+ * @version 0.1.1
+ * @since 0.0.1
+ */
+Class.forName( /** @lends js.lang.Error.prototype */ {
   name: "class Error",
   alias: "js.lang.Error",
 
@@ -20,6 +40,7 @@ Class.forName({
     this.stack = stack;
     this.lineNumber = lineNumber;
   },
+
   'static init': function() {
     var methods = {},
       __methods = js.lang.Throwable.$class.getMethods(),

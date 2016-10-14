@@ -10,9 +10,32 @@ define(function(require, exports, module) {
 
   require("bootstrap!org.atomunion.web.context.support.GenericWebApplicationContext");
 
-  return Class.forName({
+  /** 
+   * @class js.test.runner.JUnitCore
+   * @extends {js.lang.Object}
+   * @description 
+   * <p>&nbsp;&nbsp;&nbsp;&nbsp;
+   * JUnitCore is a facade for running tests. It supports running JUnit 4 tests, JUnit 3.8.x tests, and mixtures. To run tests from the command line, run java org.junit.runner.JUnitCore TestClass1 TestClass2 .... For one-shot test runs, use the static method runClasses(Class[]). If you want to add special listeners, create an instance of JUnitCore first and use it to run the tests.
+   * </p><br/>
+   *
+   * @author lico
+   * @version 0.1.1
+   * @since 0.0.1
+   */
+  return Class.forName( /** @lends js.test.runner.JUnitCore.prototype */ {
     name: "class js.test.runner.JUnitCore extends Object",
 
+
+    /** 
+     * @name js.test.runner.JUnitCore.main
+     * @function
+     * @public 
+     * @static
+     * @summary Run the tests contained in the classes named in the args.
+     * @description Run the tests contained in the classes named in the args. If all tests run successfully, exit with a status of 0. Otherwise exit with a status of 1. Write feedback while tests are running and write stack traces for all failed tests after the tests all complete.
+     *
+     * @param {js.lang.Array} args - names of classes in which to find tests to run
+     */
     "static main": function(args) {
       var context = org.atomunion.web.context.support.GenericWebApplicationContext.getInstance();
       var classes = [];
@@ -25,6 +48,17 @@ define(function(require, exports, module) {
       return js.test.runner.JUnitCore.runClasses(classes);
     },
 
+    /** 
+     * @name js.test.runner.JUnitCore.runClasses
+     * @function
+     * @public 
+     * @static
+     * @summary Run the tests contained in classes.
+     * @description Run the tests contained in classes. Write feedback while the tests are running and write stack traces for all failed tests after all tests complete. This is similar to main(String[]), but intended to be used programmatically.
+     *
+     * @param {js.lang.Class} classes - Classes in which to find tests
+     * @return {js.test.runner.Result} a Result describing the details of the test run and the failed tests.
+     */
     "static runClasses": function(classes) {
 
       var result = new js.test.runner.Result();
@@ -47,7 +81,7 @@ define(function(require, exports, module) {
 
         for (var j = 0, length = methods.length; j < length; j++) {
           method = methods[j];
-          var annotations = method.getAnnotations(),
+          var annotations = method.getDeclaredAnnotations(),
             annotation = null,
             flag = false;
           for (var l = 0, len2 = annotations.length; l < len2; l++) {
@@ -140,6 +174,15 @@ define(function(require, exports, module) {
       return result;
     },
 
+    /** 
+     * @function
+     * @public 
+     * @summary Run all the tests in classes.
+     * @description Run all the tests in classes.
+     *
+     * @param {js.lang.Class} classes - the classes containing tests
+     * @return {js.test.runner.Result} a Result describing the details of the test run and the failed tests.
+     */
     "run": function(classes) {
       return js.test.runner.JUnitCore.runClasses(classes);
     }

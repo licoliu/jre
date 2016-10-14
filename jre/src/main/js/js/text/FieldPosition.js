@@ -9,8 +9,20 @@
  */
 define(function(require, exports, module) {
 
+  /** 
+   * @class js.text.FieldPosition
+   * @extends {js.lang.Object}
+   * @description 
+   * <p>&nbsp;&nbsp;&nbsp;&nbsp;
+   * </p><p>&nbsp;&nbsp;&nbsp;&nbsp;
+   * </p><br/>
+   *
+   * @author lico
+   * @version 0.1.1
+   * @since 0.0.1
+   */
   return Class
-    .forName({
+    .forName( /** @lends js.text.FieldPosition.prototype */ {
       name: "public class js.text.FieldPosition extends Object",
 
       /**

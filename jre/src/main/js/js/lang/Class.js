@@ -10,6 +10,13 @@
  * @namespace js
  */
 /**
+ * @namespace atom
+ */
+/**
+ * @namespace org
+ */
+
+/**
  * @namespace js.awt
  */
 /**
@@ -32,6 +39,72 @@
  */
 /**
  * @namespace js.util
+ */
+/**
+ * @namespace atom.misc
+ */
+/**
+ * @namespace org.aopalliance
+ */
+/**
+ * @namespace org.atomunion
+ */
+/**
+ * @namespace org.seajs
+ */
+
+/**
+ * @namespace js.lang.reflect
+ */
+/**
+ * @namespace js.lang.annotation
+ */
+/**
+ * @namespace js.test.annotation
+ */
+/**
+ * @namespace js.test.runner
+ */
+/**
+ * @namespace js.test.runners
+ */
+/**
+ * @namespace org.aopalliance.aop
+ */
+/**
+ * @namespace org.atomunion.aop
+ */
+/**
+ * @namespace org.atomunion.beans
+ */
+/**
+ * @namespace org.atomunion.stereotype
+ */
+/**
+ * @namespace org.atomunion.util
+ */
+/**
+ * @namespace org.atomunion.web
+ */
+
+/**
+ * @namespace org.atomunion.aop.framework
+ */
+/**
+ * @namespace org.atomunion.aop.support
+ */
+/**
+ * @namespace org.atomunion.beans.factory
+ */
+/**
+ * @namespace org.atomunion.web.context
+ */
+
+/**
+ * @namespace org.atomunion.beans.factory.support
+ */
+/**
+ * @namespace org.atomunion.web.context.support
  */
 
 (function(global) {
@@ -152,48 +225,178 @@ Object
   .extend(
     Object,
     function() {
+      /** @lends js.lang.Object.prototype */
       return {
-        // TODO 增加isNull和isEmpty的区分
+        /** 
+         * @memberof js.lang.Object
+         * @function
+         * @public 
+         * @static
+         * @summary Determines whether the specified object is null(undefined). 
+         * @description Determines whether the specified object is null(undefined). 
+         *
+         * @param {js.lang.Object} v - The object to determine.
+         * @return {js.lang.Boolean} A Boolean indicating whether or not the specified object is null(undefined).
+         */
         isNull: function(v) {
           return typeof v === 'undefined' || v === null;
         },
 
+        /** 
+         * @memberof js.lang.Object
+         * @function
+         * @public 
+         * @static
+         * @summary Determines whether the specified object is empty. 
+         * @description 
+         * <p>
+         * Determines whether the specified object is empty. The Criteria for judgment is:
+         * <ul>
+         * <li>the specified is null(undefined)</li>
+         * <li>the specified is a array, and it's length is 0.</li>
+         * <li>the specified is a string, and it's length is 0 after any leading and trailing whitespace removed</li>
+         * </ul>
+         * </p>
+         *
+         * @param {js.lang.Object} v - The object to determine.
+         * @return {js.lang.Boolean} A Boolean indicating whether or not the specified object is empty.
+         */
         isEmpty: function(v) {
           return typeof v === 'undefined' || v === null || ((Object.isArray(v) && !v.length)) || (Object.isString(v) && !(v.trim ? v.trim() : v.replace(/^\s+|\s+$/g, "")));
         },
 
+        /** 
+         * @memberof js.lang.Object
+         * @function
+         * @public 
+         * @static
+         * @summary Determines whether the specified object is an array. 
+         * @description Determines whether the specified object is an array.
+         *
+         * @param {js.lang.Object} v - The object to determine.
+         * @return {js.lang.Boolean} A Boolean indicating whether or not the specified object is an array.
+         */
         isArray: function(v) {
           return Object.prototype.toString.apply(v) === "[object Array]";
         },
 
+        /** 
+         * @memberof js.lang.Object
+         * @function
+         * @public
+         * @static 
+         * @summary Determines whether the specified object is a date. 
+         * @description Determines whether the specified object is a date. 
+         *
+         * @param {js.lang.Object} v - The object to determine.
+         * @return {js.lang.Boolean} A Boolean indicating whether or not the specified object is a date.
+         */
         isDate: function(v) {
           return Object.prototype.toString.apply(v) === "[object Date]";
         },
 
-        isObject: function(v) {
+        /** 
+         * @memberof js.lang.Object
+         * @function
+         * @public 
+         * @static
+         * @summary Determines whether the specified object is a narrow object.
+         * @description Determines whether the specified object is a narrow object.
+         *
+         * @param {js.lang.Object} v - The object to determine.
+         * @return {js.lang.Boolean} A Boolean indicating whether or not the specified object is a narrow object.
+         */
+        isNarrowObject: function(v) {
           return !!v && Object.prototype.toString.call(v) === "[object Object]";
         },
 
+        /** 
+         * @memberof js.lang.Object
+         * @function
+         * @public
+         * @static 
+         * @summary Determines whether the specified object is a function.
+         * @description Determines whether the specified object is a function.
+         *
+         * @param {js.lang.Object} v - The object to determine.
+         * @return {js.lang.Boolean} A Boolean indicating whether or not the specified object is a function.
+         */
         isFunction: function(v) {
           return Object.prototype.toString.apply(v) === "[object Function]";
         },
 
+        /** 
+         * @memberof js.lang.Object
+         * @function
+         * @public
+         * @static 
+         * @summary Determines whether the specified object is a number.
+         * @description Determines whether the specified object is a number.
+         *
+         * @param {js.lang.Object} v - The object to determine.
+         * @return {js.lang.Boolean} A Boolean indicating whether or not the specified object is a number.
+         */
         isNumber: function(v) {
           return typeof v === "number" && isFinite(v);
         },
 
+        /** 
+         * @memberof js.lang.Object
+         * @function
+         * @public 
+         * @static
+         * @summary Determines whether the specified object is a string.
+         * @description Determines whether the specified object is a string.
+         *
+         * @param {js.lang.Object} v - The object to determine.
+         * @return {js.lang.Boolean} A Boolean indicating whether or not the specified object is a string.
+         */
         isString: function(v) {
           return typeof v === "string";
         },
 
+        /** 
+         * @memberof js.lang.Object
+         * @function
+         * @public 
+         * @static
+         * @summary Determines whether the specified object is a Boolean object.
+         * @description Determines whether the specified object is a Boolean object.
+         *
+         * @param {js.lang.Object} v - The object to determine.
+         * @return {js.lang.Boolean} A Boolean indicating whether or not the specified object is a Boolean object.
+         */
         isBoolean: function(v) {
           return typeof v === "boolean";
         },
 
+        /** 
+         * @memberof js.lang.Object
+         * @function
+         * @public 
+         * @static
+         * @summary Determines whether the specified object has already been defined.
+         * @description Determines whether the specified object has already been defined.
+         *
+         * @param {js.lang.Object} v - The object to determine.
+         * @return {js.lang.Boolean} A Boolean indicating whether or not the specified object has already been defined.
+         */
         isDefined: function(v) {
           return typeof v !== "undefined";
         },
 
+        /** 
+         * @memberof js.lang.Object
+         * @function
+         * @public 
+         * @static
+         * @summary 
+         * @description 
+         *
+         * @param {js.lang.Object} sub - The object to determine.
+         * @param {js.lang.Class} sup - The type of a class.
+         * @return {js.lang.Boolean} Determines whether the specified object is the specified class type.
+         */
         isInstanceof: function(sub, sup) {
           return sub instanceof sup;
         },
@@ -204,18 +407,55 @@ Object
          * i++) { Object.each(s, function(j, v, o) {
          * d[i].prototype[j] = v.value; }); } } return d; },
          */
-        each: function(obj, fn, scope) {
-          return Object.enumerate(obj, fn, scope, false);
+        /** 
+         * @memberof js.lang.Object
+         * @function
+         * @public 
+         * @static
+         * @summary When called it iterates over the enumerated properties that are part of the specified object.
+         * @description 
+         * This method is designed to enumerate looping constructs concise and less error-prone. 
+         * When called it iterates over the enumerated properties that are part of the specified object. 
+         * Each time the callback runs, it is passed the current loop iteration. 
+         * More importantly, the callback is fired in the context of the specified scope, so the keyword this refers to it.
+         * You can stop the loop from within the callback function by returning false.
+         *
+         * @param {js.lang.Object} obj - The object to enumerate.
+         * @param {js.lang.Function} callback - the callback is fired when executing the loop.
+         * @param {js.lang.Object} scope - the context of the callback execution.
+         * @return {js.lang.String|js.lang.Boolean|js.lang.Number} the key index when exits the loop.
+         */
+        each: function(obj, callback, scope) {
+          return Object.enumerate(obj, callback, scope, false);
         },
 
-        enumerate: function(obj, fn, scope, pt) {
+        /** 
+         * @memberof js.lang.Object
+         * @function
+         * @public 
+         * @static
+         * @summary When called it iterates over the enumerated properties that are part of the specified object.
+         * @description 
+         * This method is designed to enumerate looping constructs concise and less error-prone. 
+         * When called it iterates over the enumerated properties that are part of the specified object. 
+         * Each time the callback runs, it is passed the current loop iteration. 
+         * More importantly, the callback is fired in the context of the specified scope, so the keyword this refers to it.
+         * You can stop the loop from within the callback function by returning false.
+         *
+         * @param {js.lang.Object} obj - The object to enumerate.
+         * @param {js.lang.Function} callback - the callback is fired when executing the loop.
+         * @param {js.lang.Object} scope - the context of the callback execution.
+         * @param {js.lang.Boolean} pt - whether the specified object has a property as a direct property of that object; unlike the in operator, does not check down the object's prototype chain.
+         * @return {js.lang.String|js.lang.Boolean|js.lang.Number} the key index when exits the loop.
+         */
+        enumerate: function(obj, callback, scope, pt) {
           if (Object.isEmpty(obj) || Object.isNumber(obj) || Object.isString(obj) || Object.isBoolean(obj)) {
             return;
           }
           if (Object.isArray(obj)) {
             for (var i = 0, len = obj.length; i < len; i++) {
 
-              if (fn
+              if (callback
                 .call(scope || obj[i], i, obj[i],
                   obj) === false) {
                 return i;
@@ -224,7 +464,7 @@ Object
           } else {
             for (var p in obj) {
               if (pt || obj.hasOwnProperty(p)) {
-                if (fn.call(scope || obj[p], p, obj[p],
+                if (callback.call(scope || obj[p], p, obj[p],
                     obj) === false) {
                   return p;
                 }
@@ -313,7 +553,7 @@ Object
     setModifiers: function(modifiers) {
       this._modifiers = modifiers;
     },
-    getAnnotations: function() {
+    getDeclaredAnnotations: function() {
       return this._annotations;
     },
     setAnnotations: function(annotation) {
@@ -549,7 +789,7 @@ Object
           isInterface: function(modifiers) {
             return (modifiers & Modifier.interfaceBit) !== 0;
           },
-          isAnnotation: function() {
+          isAnnotation: function(modifiers) {
             return (modifiers & Modifier.annotationBit) !== 0;
           },
           isFinal: function(modifiers) {
@@ -621,7 +861,7 @@ Object
   };
 
   var doAnnotations = function(self, m) {
-    var annotations = m.getAnnotations(),
+    var annotations = m.getDeclaredAnnotations(),
       annotation = null,
       ans = [];
     for (var i = 0, len = annotations.length; i < len; i++) {
@@ -650,7 +890,7 @@ Object
             var modifier = Modifier.publicBit + Modifier.writableBit + Modifier.proxyableBit;
             //(((m.getModifiers() & 8) != 0) ? 8 : 0) + 1;
 
-            if (m.getAnnotations().indexOf("@Getter") != -1) {
+            if (m.getDeclaredAnnotations().indexOf("@Getter") != -1) {
               var getName = "get" + name;
               if (!self.hasMethod(getName)) {
                 self.addMethod(new Attribute(getName, function() {
@@ -658,7 +898,7 @@ Object
                 }, self, modifier, []));
               }
             }
-            if (m.getAnnotations().indexOf("@Setter") != -1) {
+            if (m.getDeclaredAnnotations().indexOf("@Setter") != -1) {
               var setName = "set" + name;
               if (!self.hasMethod(setName)) {
                 self.addMethod(new Attribute(setName, function(value) {
@@ -796,6 +1036,27 @@ Object
 
   var heap = new CodeHeap();
 
+  /** 
+   * @class js.lang.Class
+   * @extends {js.lang.Object}
+   * @alias Class
+   * @description 
+   * <p>&nbsp;&nbsp;&nbsp;&nbsp;
+   * Instances of the class Class represent classes and interfaces in a running Java application. An enum is a kind of class and an annotation is a kind of interface. Every array also belongs to a class that is reflected as a Class object that is shared by all arrays with the same element type and number of dimensions. The primitive Java types (boolean, byte, char, short, int, long, float, and double), and the keyword void are also represented as Class objects.
+   * </p><p>&nbsp;&nbsp;&nbsp;&nbsp;
+   * Class has no public constructor. Instead Class objects are constructed automatically by the js engine as classes are loaded and by calls to the defineClass method in the class loader.
+   * </p><p>&nbsp;&nbsp;&nbsp;&nbsp;
+   * The following example uses a Class object to print the class name of an object:
+   * <code>System.out.println("The class of " + obj + " is " + obj.getClass().getName());</code>
+   * </p><p>&nbsp;&nbsp;&nbsp;&nbsp; 
+   * It is also possible to get the Class object for a named type (or for void) using a class literal. For example:
+   * <code>System.out.println("The name of class Foo is: "+Foo.class.getName());</code>
+   * </p><br/>
+   *
+   * @author lico
+   * @version 0.1.1
+   * @since 0.0.1
+   */
   var $class = function(classDef, classloader) {
     // TODO 判断extend合法,判断name合法+判断类是否已经存在 class xxx extends yyy
     // implements
@@ -888,17 +1149,18 @@ Object
             if (!classObj.hasField(i)) {
               var value = v.getValue(),
                 modifiers = v.getModifiers(),
-                annotations = v.getAnnotations(),
+                annotations = v.getDeclaredAnnotations(),
                 flag = false;
 
               for (var l = 0, len = annotations.lenth; l < len; l++) {
-                if (annotations[l] instanceof org.atomunion.aspect.Resource) {
+                if (annotations[l] instanceof org.atomunion.stereotype.Resource) {
                   flag = true;
                   break;
                 }
               }
 
               value = value && !flag ? value.clone() : value;
+
               if (Object.USEECMA) {
                 Object.defineProperty(this, i, {
                   value: value,
@@ -928,11 +1190,11 @@ Object
             var i = v.getName(),
               value = v.getValue(),
               modifiers = v.getModifiers(),
-              annotations = v.getAnnotations(),
+              annotations = v.getDeclaredAnnotations(),
               flag = false;
 
             for (var l = 0, len = annotations.lenth; l < len; l++) {
-              if (annotations[l] instanceof org.atomunion.aspect.Resource) {
+              if (annotations[l] instanceof org.atomunion.stereotype.Resource) {
                 flag = true;
                 break;
               }
@@ -1067,7 +1329,6 @@ Object
 
         } else {
           classConstructor.prototype = new instanceClass();
-
           classConstructor.prototype.constructor = classConstructor;
         }
 
@@ -1087,7 +1348,6 @@ Object
                   configurable: Modifier.isConfigurable(modifiers)
                 });
           } else {
-
             classConstructor.prototype.toString = Object.$class
               .getMethod("toString").getValue();
           }
@@ -1148,7 +1408,17 @@ Object
 
     return this;
   };
+
   $class.prototype = {
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Returns the class loader for the class.
+     * @description Returns the class loader for the class. Some implementations may use null to represent the bootstrap class loader. This method will return null in such implementations if this class was loaded by the bootstrap class loader. If this object represents a primitive type or void, null is returned.
+     *
+     * @return {js.lang.ClassLoader} the class loader that loaded the class or interface represented by this object.
+     */
     getClassLoader: function() {
       return heap.get(this, "classloader") || (js.lang.ClassLoader ? js.lang.ClassLoader
         .getSystemClassLoader() : null);
@@ -1157,25 +1427,93 @@ Object
     getClassConstructor: function() {
       return heap.get(this, "classConstructor");
     },
+
     getConstructor: function() {
       return heap.get(this, "constructor2");
     },
+
     getInitial: function() {
       return heap.get(this, "initial");
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Gets the package for this class.
+     * @description 
+     * <p>
+     * Gets the package for this class. The class loader of this class is used to find the package. If the class was loaded by the bootstrap class loader the set of packages loaded from CLASSPATH is searched to find the package of the class. Null is returned if no package object was created by the class loader of this class.
+     * </p><p>
+     * Packages have attributes for versions and specifications only if the information was defined in the manifests that accompany the classes, and if the class loader created the package instance with the attributes from the manifest.
+     * </p>
+     *
+     * @return {js.lang.Package} the package of the class, or null if no package information is available from the archive or codebase.
+     */
     getPackage: function() {
       return heap.get(this, "packages");
     },
 
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Returns a Field object that reflects the specified declared field of the class or interface represented by this Class object.
+     * @description Returns a Field object that reflects the specified declared field of the class or interface represented by this Class object. The name parameter is a String that specifies the simple name of the desired field. If this Class object represents an array type, then this method does not find the length field of the array type.
+     *
+     * @param {js.lang.String} name - the name of the field
+     * @return {js.lang.reflect.Field} the Field object for the specified field in this class
+     */
     getDeclaredField: function(name) {
       return this.getField(name);
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Returns an array of Field objects reflecting all the fields declared by the class or interface represented by this Class object.
+     * @description 
+     * <p>
+     * Returns an array of Field objects reflecting all the fields declared by the class or interface represented by this Class object. This includes public, protected, default (package) access, and private fields, but excludes inherited fields.
+     * </p><p>
+     * If this Class object represents a class or interface with no declared fields, then this method returns an array of length 0.
+     * </p><p>
+     * If this Class object represents an array type, a primitive type, or void, then this method returns an array of length 0.
+     * </p><p>
+     * The elements in the returned array are not sorted and are not in any particular order.
+     * </p>
+     *
+     * @return {js.lang.Array} the array of Field objects representing all the declared fields of this class
+     */
     getDeclaredFields: function() {
       return this.getFields();
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Wither this class has the field with the specified name or not.
+     * @description 
+     *
+     * @param {js.lang.String} name - the name of the field 
+     * @return {js.lang.Boolean} true if this class has the field with the specified name.
+     */
     hasField: function(name) {
       return Object.isDefined(heap.get(this, "fields", name));
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Returns a Field object that reflects the specified public member field of the class or interface represented by this Class object.
+     * @description 
+     *
+     * @param {js.lang.String} name - the field name
+     * @return {js.lang.reflect.Field} the Field object of this class specified by name
+     */
     getField: function(name) {
       var v = heap.get(this, "fields", name);
       if (Object.isDefined(v)) {
@@ -1183,18 +1521,71 @@ Object
       }
       throw new js.lang.NoSuchFieldException();
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Returns an array containing Field objects reflecting all the accessible public fields of the class or interface represented by this Class object.
+     * @description 
+     *
+     * @return {js.lang.Array} the array of Field objects representing the public fields
+     */
     getFields: function() {
       return heap.get(this, "fields");
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary 
+     * @description Returns a Method object that reflects the specified declared method of the class or interface represented by this Class object. The name parameter is a String that specifies the simple name of the desired method, and the parameterTypes parameter is an array of Class objects that identify the method's formal parameter types, in declared order. If more than one method with the same parameter types is declared in a class, and one of these methods has a return type that is more specific than any of the others, that method is returned; otherwise one of the methods is chosen arbitrarily. If the name is "<init>"or "<clinit>" a NoSuchMethodException is raised. If this Class object represents an array type, then this method does not find the clone() method.
+     *
+     * @param {js.lang.String} name - the name of the method
+     * @return {js.lang.reflect.Method} the Method object for the method of this class matching the specified name and parameters
+     */
     getDeclaredMethod: function(name) {
       return this.getMethod(name);
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Returns an array containing Method objects reflecting all the declared methods of the class or interface represented by this Class object, including public, protected, default (package) access, and private methods, but excluding inherited methods.
+     * @description 
+     *
+     * @return {js.lang.Array} the array of Method objects representing all the declared methods of this class
+     */
     getDeclaredMethods: function() {
       return this.getMethods();
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Wither this class has the method with the specified name or not.
+     * @description 
+     *
+     * @param {js.lang.String} name - the name of the method 
+     * @return {js.lang.Boolean} true if this class has the method with the specified name.
+     */
     hasMethod: function(name) {
       return Object.isDefined(heap.get(this, "methods", name));
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Returns a Method object that reflects the specified public member method of the class or interface represented by this Class object.
+     * @description 
+     *
+     * @param {js.lang.String} name - the name of the method
+     * @return {js.lang.reflect.Method} the Method object that matches the specified name and parameterTypes
+     */
     getMethod: function(name) {
       var v = heap.get(this, "methods", name);
       if (Object.isDefined(v)) {
@@ -1202,29 +1593,110 @@ Object
       }
       throw new js.lang.NoSuchMethodException();
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Returns an array containing Method objects reflecting all the public methods of the class or interface represented by this Class object, including those declared by the class or interface and those inherited from superclasses and superinterfaces.
+     * @description 
+     *
+     * @return {js.lang.Array} the array of Method objects representing the public methods of this class
+     */
     getMethods: function() {
       return heap.get(this, "methods");
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Returns the name of the entity (class, interface, array class, primitive type, or void) represented by this Class object, as a String.
+     * @description 
+     *
+     * @return {js.lang.String} the name of the class or interface represented by this object.
+     */
     getName: function() {
       return heap.get(this, "name");
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summaryReturns the full name of the entity (class, interface, array class, primitive type, or void) represented by this Class object, as a String. 
+     * @description 
+     *
+     * @return {js.lang.String} the full name of the class or interface represented by this object.
+     */
     getFullName: function() {
       return heap.get(this, "fullName");
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Returns the Class representing the superclass of the entity (class, interface, primitive type or void) represented by this Class.
+     * @description Returns the Class representing the superclass of the entity (class, interface, primitive type or void) represented by this Class. If this Class represents either the Object class, an interface, a primitive type, or void, then null is returned. If this object represents an array class then the Class object representing the Object class is returned.
+     *
+     * @return {js.lang.Class} the superclass of the class represented by this object.
+     */
     getSuperClass: function() {
       return heap.get(this, "superClass");
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Returns the modifiers for this class or interface, encoded in an number.
+     * @description 
+     *
+     * @return {js.lang.Number} the number representing the modifiers for this class
+     */
     getModifiers: function() {
       return heap.get(this, "modifiers");
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Returns annotations that are present on this element.
+     * @description 
+     *
+     * @return {js.lang.Array} annotations present on this element
+     */
     getAnnotations: function() {
       return heap.get(this, "annotations");
     },
 
-    // 构造器必须公有静态方法必须公有
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Returns annotations that are directly present on this element.
+     * @description Returns annotations that are directly present on this element. This method ignores inherited annotations. If there are no annotations directly present on this element, the return value is an array of length 0. The caller of this method is free to modify the returned array; it will have no effect on the arrays returned to other callers.
+     *
+     * @return {js.lang.Array} annotations directly present on this element
+     */
+    getDeclaredAnnotations: function() {
+      return heap.get(this, "annotations");
+    },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Adding the specified method for this class dynamicly.
+     * @description Adding the specified method for this class dynamicly.
+     *
+     * @param {js.lang.reflect.Method} m - the specified method
+     */
     addMethod: function(m) {
       if (!Object.isEmpty(m) && Object.isFunction(m.getValue())) {
-        if (m.getAnnotations() && m.getAnnotations().length > 0) {
+        if (m.getDeclaredAnnotations() && m.getDeclaredAnnotations().length > 0) {
           doAnnotations(this, m);
         }
         // 不允许更改构造器
@@ -1243,7 +1715,7 @@ Object
           !Object.isNull(js.lang.reflect.Field) && js.lang.reflect.Field.loaded
         ) {
           m = new js.lang.reflect.Method(n, m.getValue(),
-            this, m.getModifiers(), m.getAnnotations());
+            this, m.getModifiers(), m.getDeclaredAnnotations());
         }
         var modifiers = m.getModifiers(),
           isStatic = Modifier.isStatic(modifiers);
@@ -1281,78 +1753,184 @@ Object
         }
       }
     },
-    addField: function(m) {
-      if (!Object.isEmpty(m) && !Object.isFunction(m.getValue())) {
-        if (m.getAnnotations() && m.getAnnotations().length > 0) {
-          doAnnotations(this, m);
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Adding the specified field for this class dynamicly.
+     * @description Adding the specified field for this class dynamicly.
+     *
+     * @param {js.lang.reflect.Field} f - the specified field
+     */
+    addField: function(f) {
+      if (!Object.isEmpty(f) && !Object.isFunction(f.getValue())) {
+        if (f.getDeclaredAnnotations() && f.getDeclaredAnnotations().length > 0) {
+          doAnnotations(this, f);
         }
-        m.setDeclaringClass(this);
+        f.setDeclaringClass(this);
         if (typeof js !== 'undefined' && !Object.isNull(js) &&
           !Object.isNull(js.lang) && !Object.isNull(js.lang.reflect) &&
           !Object.isNull(js.lang.reflect.Field) && js.lang.reflect.Field.loaded &&
           !Object.isNull(js.lang.reflect.Method) && js.lang.reflect.Method.loaded) {
-          m = new js.lang.reflect.Field(m.getName(), m
-            .getValue(), this, m.getModifiers(), m
-            .getAnnotations());
+          f = new js.lang.reflect.Field(f.getName(), f
+            .getValue(), this, f.getModifiers(), f
+            .getDeclaredAnnotations());
         }
-        var modifiers = m.getModifiers(),
+        var modifiers = f.getModifiers(),
           isStatic = Modifier.isStatic(modifiers);
         if (isStatic) {
           if (Object.USEECMA) {
-            Object.defineProperty(this.getClassConstructor(), m
+            Object.defineProperty(this.getClassConstructor(), f
               .getName(), {
-                value: m.getValue(),
+                value: f.getValue(),
 
                 writable: Modifier.isWritable(modifiers),
                 enumerable: Modifier.isEnumerable(modifiers),
                 configurable: Modifier.isConfigurable(modifiers)
               });
           } else {
-            this.getClassConstructor()[m.getName()] = m.getValue();
+            this.getClassConstructor()[f.getName()] = f.getValue();
           }
         }
-        this.getFields().push(m);
+        this.getFields().push(f);
       }
     },
+
     getInstance: function() {
       return heap.get(this, "instance");
     },
+
     isInstance: function(obj) {
       return Object.isNull(obj) ? false : obj.getClass() == this;
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Creates a new instance of the class represented by this Class object.
+     * @description 
+     *
+     * @return {js.lang.Object} a newly allocated instance of the class represented by this object.
+     */
     newInstance: function() {
       return new(heap.get(this, "classConstructor"))();
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary return itself
+     * @description 
+     *
+     * @return {js.lang.Class} itself
+     */
     clone: function() {
       return this;
     },
 
-    isAssignableFrom: function() {
-      // TODO
-      return false;
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Determines if the class or interface represented by this Class object is either the same as, or is a superclass or superinterface of, the class or interface represented by the specified Class parameter.
+     * @description 
+     *
+     * @param {js.lang.Class} cls - the Class object to be checked
+     * @return {js.lang.Boolean} the boolean value indicating whether objects of the type cls can be assigned to objects of this class
+     */
+    isAssignableFrom: function(cls) {
+      var cls2 = this;
+      while (cls && cls2 && cls !== cls2) {
+        cls2 = cls2.getSuperClass();
+      }
+      return cls !== cls2;
     },
 
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Determines if the specified Class object represents an interface type.
+     * @description 
+     *
+     * @return {js.lang.Boolean} true if this object represents an interface; false otherwise.
+     */
     isInterface: function() {
       return heap.get(this, "feature") === FEATURE.INTERFACE;
     },
 
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Determines if this Class object represents an array class.
+     * @description 
+     *
+     * @return {js.lang.Boolean} true if this object represents an array class; false otherwise.
+     */
     isArray: function() {
-      // TODO
-      return false;
+      return this === js.lang.Array.$class;
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Determines if the specified Class object represents a primitive type.
+     * @description 
+     *
+     * @return {js.lang.Boolean} true if and only if this class represents a primitive type
+     */
     isPrimitive: function() {
       // TODO
       return false;
     },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Returns true if this Class object represents an annotation type. Note that if this method returns true, isInterface() would also return true, as all annotation types are also interfaces.
+     * @description 
+     *
+     * @return {js.lang.Boolean} true if this class object represents an annotation type; false otherwise
+     */
     isAnnotation: function() {
       return heap.get(this, "feature") === FEATURE.ANNOTATION;
     }
   };
 
-  Class = function() {};
-  Class.forName = function(cls, classloader) {
+  global.Class = $class;
+
+  /** 
+   * @name js.lang.Class.forName
+   * @function
+   * @public 
+   * @static 
+   * @summary Returns the Class object associated with the class or interface with the given class definition.
+   * @description 
+   * 
+   * @param {js.lang.Object} cls - class definition
+   * @param {js.lang.ClassLoader} class loader
+   * @return {js.lang.Class} the Class object for the class with the specified name.
+   */
+  global.Class.forName = function(cls, classloader) {
     return new $class(cls, classloader);
   };
+
+  if (Object.isNull(global.js)) {
+    global.js = {};
+  }
+  if (Object.isNull(global.js.lang)) {
+    global.js.lang = {};
+  }
+  if (Object.isNull(global.js.lang.Class)) {
+    global.js.lang.Class = Class;
+  }
+
 })(this);
 
 // TODO

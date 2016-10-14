@@ -4,11 +4,35 @@ define(function(require, exports, module) {
 
   require("bootstrap!org.atomunion.web.context.support.GenericWebApplicationContext");
 
-  require("bootstrap!org.atomunion.aop.advice.MethodBeforeAdvice");
-  require("bootstrap!org.atomunion.aop.advice.ThrowsAdvice");
-  require("bootstrap!org.atomunion.aop.advice.AfterReturningAdvice");
+  require("bootstrap!org.atomunion.aop.MethodBeforeAdvice");
+  require("bootstrap!org.atomunion.aop.ThrowsAdvice");
+  require("bootstrap!org.atomunion.aop.AfterReturningAdvice");
 
-  return Class.forName({
+  /** 
+   * @class org.atomunion.aop.framework.ProxyFactoryBean
+   * @extends {org.atomunion.aop.framework.AdvisedSupport}
+   * @description 
+   * <p>&nbsp;&nbsp;&nbsp;&nbsp;
+   * FactoryBean implementation that builds an AOP proxy based on beans in Spring BeanFactory.
+   * </p>
+   * <p>&nbsp;&nbsp;&nbsp;&nbsp;
+   * MethodInterceptors and Advisors are identified by a list of bean names in the current bean factory, specified through the "interceptorNames" property. The last entry in the list can be the name of a target bean or a TargetSource; however, it is normally preferable to use the "targetName"/"target"/"targetSource" properties instead.
+   * </p>
+   * <p>&nbsp;&nbsp;&nbsp;&nbsp;
+   * Global interceptors and advisors can be added at the factory level. The specified ones are expanded in an interceptor list where an "xxx*" entry is included in the list, matching the given prefix with the bean names (e.g. "global*" would match both "globalBean1" and "globalBean2", "*" all defined interceptors). The matching interceptors get applied according to their returned order value, if they implement the Ordered interface.
+   * </p>
+   * <p>&nbsp;&nbsp;&nbsp;&nbsp;
+   * Creates a JDK proxy when proxy interfaces are given, and a CGLIB proxy for the actual target class if not. Note that the latter will only work if the target class does not have final methods, as a dynamic subclass will be created at runtime.
+   * </p>
+   * <p>&nbsp;&nbsp;&nbsp;&nbsp;
+   * It's possible to cast a proxy obtained from this factory to Advised, or to obtain the ProxyFactoryBean reference and programmatically manipulate it. This won't work for existing prototype references, which are independent. However, it will work for prototypes subsequently obtained from the factory. Changes to interception will work immediately on singletons (including existing references). However, to change interfaces or target it's necessary to obtain a new instance from the factory. This means that singleton instances obtained from the factory do not have the same object identity. However, they do have the same interceptors and target, and changing any reference will change all objects.
+   * </p><br/>
+   *
+   * @author lico
+   * @version 0.1.1
+   * @since 0.0.1
+   */
+  return Class.forName( /** @lends org.atomunion.aop.framework.ProxyFactoryBean.prototype */ {
     name: "class org.atomunion.aop.framework.ProxyFactoryBean extends org.atomunion.aop.framework.AdvisedSupport",
 
     "private @Setter targetName": null,
@@ -23,6 +47,14 @@ define(function(require, exports, module) {
       }
     },
 
+    /** 
+     * @function
+     * @public
+     * @summary Return a proxy.
+     * @description Return a proxy.
+     *
+     * @return {js.lang.Object} 
+     */
     getObject: function() {
       this.initializeAdvisorChain();
       if (this.isSingleton() && this.singletonInstance) {
@@ -36,18 +68,50 @@ define(function(require, exports, module) {
       }
     },
 
+    /** 
+     * @function
+     * @public
+     * @summary Return the type of the proxy.
+     * @description Return the type of the proxy.
+     *
+     * @return {js.lang.Class} 
+     */
     getObjectType: function() {
       return this.getObject().getClass();
     },
 
+    /** 
+     * @function
+     * @public
+     * @summary Return a proxy.
+     * @description Return a proxy.
+     *
+     * @return {js.lang.Object} 
+     */
     getProxy: function() {
       return this.getObject();
     },
 
+    /** 
+     * @function
+     * @public
+     * @summary Set the name of the target bean.
+     * @description Set the name of the target bean.
+     *
+     * @param {js.lang.String} 
+     */
     setTargetName: function(targetName) {
       this.targetName = targetName;
     },
 
+    /** 
+     * @function
+     * @public
+     * @summary Is the object managed by this factory a singleton.
+     * @description Is the object managed by this factory a singleton? That is, will FactoryBean.getObject() always return the same object (a reference that can be cached)?
+     *
+     * @return {js.lang.Boolean} 
+     */
     isSingleton: function() {
       return this.singleton;
     },
@@ -148,11 +212,11 @@ define(function(require, exports, module) {
 
         for (var j = 0, len = list.length; j < len; j++) {
           var advice = list[j].getAdvice();
-          if (Object.isInstanceof(advice, org.atomunion.aop.advice.MethodBeforeAdvice)) {
+          if (Object.isInstanceof(advice, org.atomunion.aop.MethodBeforeAdvice)) {
             befores.push(advice.before);
-          } else if (Object.isInstanceof(advice, org.atomunion.aop.advice.ThrowsAdvice)) {
+          } else if (Object.isInstanceof(advice, org.atomunion.aop.ThrowsAdvice)) {
             afterThrowings.push(advice.afterThrowing);
-          } else if (Object.isInstanceof(advice, org.atomunion.aop.advice.AfterReturningAdvice)) {
+          } else if (Object.isInstanceof(advice, org.atomunion.aop.AfterReturningAdvice)) {
             afterReturnings.push(advice.afterReturning);
           }
         }
@@ -172,7 +236,7 @@ define(function(require, exports, module) {
                     this.newPrototypeMethod(method, befores, afterThrowings, afterReturnings),
                     method.getDeclaringClass,
                     method.getModifiers(),
-                    method.getAnnotations));
+                    method.getDeclaredAnnotations));
                   break;
                 }
               }

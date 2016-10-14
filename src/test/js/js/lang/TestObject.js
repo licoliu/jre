@@ -83,22 +83,22 @@ define(function(require, exports, module) {
 
     },
 
-    "@Test testIsObject": function() {
+    "@Test testIsNarrowObject": function() {
 
-      js.test.Assert.assertFalse("null", Object.isObject(null));
-      js.test.Assert.assertFalse("undefined", Object.isObject(undefined));
-      js.test.Assert.assertTrue("{}", Object.isObject({}));
-      js.test.Assert.assertFalse("[]", Object.isObject([]));
-      js.test.Assert.assertFalse("0", Object.isObject(0));
-      js.test.Assert.assertFalse("0.0", Object.isObject(0.0));
-      js.test.Assert.assertFalse("\"\"", Object.isObject(""));
-      js.test.Assert.assertFalse("-1", Object.isObject(-1));
-      js.test.Assert.assertFalse("new Date()", Object.isObject(new Date()));
-      js.test.Assert.assertTrue("new js.model.Dog()", Object.isObject(dog));
-      js.test.Assert.assertFalse("function(){}", Object.isObject(function() {}));
+      js.test.Assert.assertFalse("null", Object.isNarrowObject(null));
+      js.test.Assert.assertFalse("undefined", Object.isNarrowObject(undefined));
+      js.test.Assert.assertTrue("{}", Object.isNarrowObject({}));
+      js.test.Assert.assertFalse("[]", Object.isNarrowObject([]));
+      js.test.Assert.assertFalse("0", Object.isNarrowObject(0));
+      js.test.Assert.assertFalse("0.0", Object.isNarrowObject(0.0));
+      js.test.Assert.assertFalse("\"\"", Object.isNarrowObject(""));
+      js.test.Assert.assertFalse("-1", Object.isNarrowObject(-1));
+      js.test.Assert.assertFalse("new Date()", Object.isNarrowObject(new Date()));
+      js.test.Assert.assertTrue("new js.model.Dog()", Object.isNarrowObject(dog));
+      js.test.Assert.assertFalse("function(){}", Object.isNarrowObject(function() {}));
 
-      js.test.Assert.assertFalse("true:" + Object.isObject(true));
-      js.test.Assert.assertFalse("false:" + Object.isObject(false));
+      js.test.Assert.assertFalse("true:" + Object.isNarrowObject(true));
+      js.test.Assert.assertFalse("false:" + Object.isNarrowObject(false));
 
     },
 

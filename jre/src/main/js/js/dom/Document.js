@@ -6,11 +6,34 @@
  * Date: Feb 10, 2014
  */
 
-Class.forName({
+/** 
+ * @class js.dom.Document 
+ * @extends {js.lang.Object}
+ * @description 
+ *
+ * @author lico
+ * @version 0.1.1
+ * @since 0.0.1
+ */
+Class.forName( /** @lends js.dom.Document.prototype */ {
   name: "class js.dom.Document",
 
   Document: function() {},
 
+  /** 
+   * @name js.dom.Document.ready
+   * @function
+   * @public 
+   * @static 
+   * @summary Specify a function to execute when the DOM is fully loaded.
+   * @description 
+   * <p>
+   * The .ready() method offers a way to run JavaScript code as soon as the page's Document Object Model (DOM) becomes safe to manipulate. This will often be a good time to perform tasks that are needed before the user views or interacts with the page, for example to add event handlers and initialize plugins. When multiple functions are added via successive calls to this method, they run when the DOM is ready in the order in which they are added. 
+   * </p>
+   *
+   * @param {js.lang.Function} ready - the callback when the DOM is fully loaded.
+   * @param {js.lang.Object} scope - the callback's execution context
+   */
   "static ready": (function() {
 
     var isReady = false,
@@ -58,6 +81,16 @@ Class.forName({
     };
   })(),
 
+  /** 
+   * @name js.dom.Document.getDocument
+   * @function
+   * @public 
+   * @static 
+   * @summary get the document object
+   * @description 
+   *
+   * @return {js.lang.Object} 
+   */
   "static getDocument": function() {
     return document;
   }

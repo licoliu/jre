@@ -3,13 +3,13 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.TestCase");
   require("bootstrap!js.test.Assert");
 
-  require("bootstrap!org.atomunion.aspect.Resource");
-  require("test!org.atomunion.aspect.TestComponent");
+  require("bootstrap!org.atomunion.stereotype.Resource");
+  require("test!org.atomunion.stereotype.TestComponent");
 
   return Class.forName({
-    name: "class org.atomunion.aspect.TestResource",
+    name: "class org.atomunion.stereotype.TestResource",
 
-    "@Resource('org.atomunion.aspect.ComponentBean') private bean": null,
+    "@Resource('org.atomunion.stereotype.ComponentBean') private bean": null,
 
     TestResource: function() {},
 
@@ -19,7 +19,7 @@ define(function(require, exports, module) {
 
     "@Test public testResource": function() {
       js.test.Assert.assertTrue("", this.bean);
-      js.test.Assert.assertTrue("", this.bean.getClass() === org.atomunion.aspect.ComponentBean.$class);
+      js.test.Assert.assertTrue("", this.bean.getClass() === org.atomunion.stereotype.ComponentBean.$class);
     }
 
   });

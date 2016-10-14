@@ -5,10 +5,23 @@
  * 
  * Date: Feb 12, 2014
  */
-Class
-  .forName({
-    name: "class js.lang.UnsupportedOperationException extends js.lang.Exception",
-    "private name": "js.lang.UnsupportedOperationException", // 错误名
-    "private number": 108
-      // 错误号
-  });
+
+/**
+ * @class js.lang.UnsupportedOperationException 
+ * @extends {js.lang.Exception}
+ * @description 
+ * <p>&nbsp;&nbsp;&nbsp;&nbsp;
+ * Thrown to indicate that the requested operation is not supported.
+ * </p>
+ *
+ * @author lico
+ * @version 0.1.1
+ * @since 0.0.1
+ */
+Class.forName( /** @lends js.lang.UnsupportedOperationException.prototype */ {
+  name: "class js.lang.UnsupportedOperationException extends js.lang.Exception",
+
+  "private name": "js.lang.UnsupportedOperationException",
+
+  "private number": 108
+});

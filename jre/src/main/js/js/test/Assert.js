@@ -11,47 +11,60 @@ define(function(require, exports, module) {
 
   require("bootstrap!js.test.AssertionError");
   require("bootstrap!js.test.AssertionError");
-  /**
+
+  /** 
+   * @class js.test.Assert
+   * @extends {js.lang.Object}
+   * @description 
+   * <p>&nbsp;&nbsp;&nbsp;&nbsp;
    * A set of assertion methods useful for writing tests. Only failed assertions
    * are recorded. These methods can be used directly:
    * <code>Assert.assertEquals(...)</code>, however, they read better if they
    * are referenced through static import:<br/>
-   *
    * <pre>
    * $import(&quot;js.test.Assert&quot;);
    *    ...
    *    js.test.Assert.assertEquals(...);
    * </pre>
+   * </p><br/>
    *
-   * @see AssertionError
+   * @author lico
+   * @version 0.1.1
+   * @since 0.0.1
    */
   return Class
-    .forName({
+    .forName( /** @lends js.test.Assert.prototype */ {
       name: "public class js.test.Assert",
       /**
        * Protect constructor since it is a static only class
        */
       "protected Assert": function() {},
-      /**
-       * Fails a test with the given message.
+
+      /** 
+       * @name js.test.Assert.fail
+       * @function
+       * @public 
+       * @static
+       * @summary Fails a test with the given message.
+       * @description Fails a test with the given message.
        *
-       * @param message
-       *            the identifying message for the {@link AssertionError} (<code>null</code>
-       *            okay)
-       * @see AssertionError
+       * @param {js.lang.String} message - the identifying message for the {@link AssertionError} (<code>null</code> okay)
+       * @throws {js.test.AssertionError}
        */
       "static public void fail": function(message) {
         throw new js.test.AssertionError(message);
       },
-      /**
-       * Asserts that a condition is true. If it isn't it throws an
-       * {@link AssertionError} with the given message.
+
+      /** 
+       * @name js.test.Assert.assertTrue
+       * @function
+       * @public 
+       * @static
+       * @summary Asserts that a condition is true. If it isn't it throws an {@link AssertionError} with the given message.
+       * @description Asserts that a condition is true. If it isn't it throws an {@link AssertionError} with the given message.
        *
-       * @param message
-       *            the identifying message for the {@link AssertionError} (<code>null</code>
-       *            okay)
-       * @param condition
-       *            condition to be checked
+       * @param {js.lang.String} message - the identifying message for the {@link AssertionError} (<code>null</code> okay)
+       * @return {js.lang.Boolean} condition - condition to be checked
        */
       "static public void assertTrue": function(message, condition) {
         if (!condition) {
@@ -59,33 +72,36 @@ define(function(require, exports, module) {
         }
       },
 
-      /**
-       * Asserts that a condition is false. If it isn't it throws an
-       * {@link AssertionError} with the given message.
+      /** 
+       * @name js.test.Assert.assertFalse
+       * @function
+       * @public 
+       * @static
+       * @summary Asserts that a condition is false. If it isn't it throws an {@link AssertionError} with the given message.
+       * @description Asserts that a condition is false. If it isn't it throws an {@link AssertionError} with the given message.
        *
-       * @param message
-       *            the identifying message for the {@link AssertionError} (<code>null</code>
-       *            okay)
-       * @param condition
-       *            condition to be checked
+       * @param {js.lang.String} message - the identifying message for the {@link AssertionError} (<code>null</code> okay)
+       * @return {js.lang.Boolean} condition - condition to be checked
        */
       "static public void assertFalse": function(message, condition) {
         js.test.Assert.assertTrue(message, !condition);
       },
 
-      /**
-       * Asserts that two objects are equal. If they are not, an
+      /** 
+       * @name js.test.Assert.assertEquals
+       * @function
+       * @public 
+       * @static
+       * @summary Asserts that two objects are equal.
+       * @description 
+       * <p>Asserts that two objects are equal. If they are not, an
        * {@link AssertionError} is thrown with the given message. If
        * <code>expected</code> and <code>actual</code> are
-       * <code>null</code>, they are considered equal.
+       * <code>null</code>, they are considered equal.</p>
        *
-       * @param message
-       *            the identifying message for the {@link AssertionError} (<code>null</code>
-       *            okay)
-       * @param expected
-       *            expected value
-       * @param actual
-       *            actual value
+       * @param {js.lang.String} message - the identifying message for the {@link AssertionError} (<code>null</code> okay)
+       * @param {js.lang.Object} expected - expected value
+       * @param {js.lang.Object} actual - actual value
        */
       "static public void assertEquals": function(message, expected,
         actual) {
@@ -114,19 +130,21 @@ define(function(require, exports, module) {
         js.test.Assert.fail(formatted.toString());
       },
 
-      /**
-       * Asserts that two objects are <b>not</b> equals. If they are, an
+      /** 
+       * @name js.test.Assert.assertNotEquals
+       * @function
+       * @public 
+       * @static
+       * @summary Asserts that two objects are <b>not</b> equals.
+       * @description 
+       * <p>Asserts that two objects are <b>not</b> equals. If they are, an
        * {@link AssertionError} is thrown with the given message. If
        * <code>first</code> and <code>second</code> are
-       * <code>null</code>, they are considered equal.
+       * <code>null</code>, they are considered equal.</p>
        *
-       * @param message
-       *            the identifying message for the {@link AssertionError} (<code>null</code>
-       *            okay)
-       * @param first
-       *            first value to check
-       * @param second
-       *            the value to check against <code>first</code>
+       * @param {js.lang.String} message - the identifying message for the {@link AssertionError} (<code>null</code> okay)
+       * @param {js.lang.Object} first - first value to check
+       * @param {js.lang.Object} second - the value to check against <code>first</code>
        */
       "static public void assertNotEquals": function(message, expected,
         actual) {
@@ -143,7 +161,6 @@ define(function(require, exports, module) {
         }
 
         // TODO float类型判断
-
         var formatted = new js.lang.StringBuffer();
         formatted.append("Values should be different. ");
         if (!Object.isNull(message)) {
@@ -154,29 +171,31 @@ define(function(require, exports, module) {
         js.test.Assert.fail(formatted.toString());
       },
 
-      /**
-       * Asserts that an object isn't null. If it is an
-       * {@link AssertionError} is thrown with the given message.
+      /** 
+       * @name js.test.Assert.assertNotNull
+       * @function
+       * @public 
+       * @static
+       * @summary Asserts that an object isn't null. If it is an {@link AssertionError} is thrown with the given message.
+       * @description Asserts that an object isn't null. If it is an {@link AssertionError} is thrown with the given message.
        *
-       * @param message
-       *            the identifying message for the {@link AssertionError} (<code>null</code>
-       *            okay)
-       * @param object
-       *            Object to check or <code>null</code>
+       * @param {js.lang.String} message - the identifying message for the {@link AssertionError} (<code>null</code> okay)
+       * @param {js.lang.Object} object - Object to check or <code>null</code>
        */
       "static public void assertNotNull": function(message, object) {
         js.test.Assert.assertTrue(message, !Object.isNull(object));
       },
 
-      /**
-       * Asserts that an object is null. If it is not, an
-       * {@link AssertionError} is thrown with the given message.
+      /** 
+       * @name js.test.Assert.assertNull
+       * @function
+       * @public 
+       * @static
+       * @summary Asserts that an object is null. If it is not, an {@link AssertionError} is thrown with the given message.
+       * @description Asserts that an object is null. If it is not, an {@link AssertionError} is thrown with the given message.
        *
-       * @param message
-       *            the identifying message for the {@link AssertionError} (<code>null</code>
-       *            okay)
-       * @param object
-       *            Object to check or <code>null</code>
+       * @param {js.lang.String} message - the identifying message for the {@link AssertionError} (<code>null</code> okay)
+       * @param {js.lang.Object} object - Object to check or <code>null</code>
        */
       "static public void assertNull": function(message, object) {
         if (Object.isNull(object)) {
@@ -195,17 +214,17 @@ define(function(require, exports, module) {
         js.test.Assert.fail(formatted.toString());
       },
 
-      /**
-       * Asserts that two objects refer to the same object. If they are
-       * not, an {@link AssertionError} is thrown with the given message.
+      /** 
+       * @name js.test.Assert.assertSame
+       * @function
+       * @public 
+       * @static
+       * @summary Asserts that two objects refer to the same object. If they are not, an {@link AssertionError} is thrown with the given message.
+       * @description Asserts that two objects refer to the same object. If they are not, an {@link AssertionError} is thrown with the given message.
        *
-       * @param message
-       *            the identifying message for the {@link AssertionError} (<code>null</code>
-       *            okay)
-       * @param expected
-       *            the expected object
-       * @param actual
-       *            the object to compare to <code>expected</code>
+       * @param {js.lang.String} message - the identifying message for the {@link AssertionError} (<code>null</code> okay)
+       * @param {js.lang.Object} expected - the expected object
+       * @param {js.lang.Object} actual - the object to compare to <code>expected</code>
        */
       "static public void assertSame": function(message, expected,
         actual) {
@@ -223,18 +242,17 @@ define(function(require, exports, module) {
         js.test.Assert.fail(formatted.toString());
       },
 
-      /**
-       * Asserts that two objects do not refer to the same object. If they
-       * do refer to the same object, an {@link AssertionError} is thrown
-       * with the given message.
+      /** 
+       * @name js.test.Assert.assertNotSame
+       * @function
+       * @public 
+       * @static
+       * @summary Asserts that two objects do not refer to the same object.
+       * @description Asserts that two objects do not refer to the same object. If they do refer to the same object, an {@link AssertionError} is thrown with the given message.
        *
-       * @param message
-       *            the identifying message for the {@link AssertionError} (<code>null</code>
-       *            okay)
-       * @param unexpected
-       *            the object you don't expect
-       * @param actual
-       *            the object to compare to <code>unexpected</code>
+       * @param {js.lang.String} message - the identifying message for the {@link AssertionError} (<code>null</code> okay)
+       * @param {js.lang.Object} unexpected - the object you don't expect
+       * @param {js.lang.Object} actual - the object to compare to <code>unexpected</code>
        */
       "static public void assertNotSame": function(message, unexpected,
         actual) {
@@ -250,8 +268,14 @@ define(function(require, exports, module) {
         js.test.Assert.fail(formatted.toString());
       },
 
-      /**
-       * Asserts that <code>actual</code> satisfies the condition
+      /** 
+       * @name js.test.Assert.assertThat
+       * @function
+       * @public 
+       * @static
+       * @summary Asserts that actual satisfies the condition specified by matcher.
+       * @description 
+       * <p>Asserts that <code>actual</code> satisfies the condition
        * specified by <code>matcher</code>. If not, an
        * {@link AssertionError} is thrown with information about the
        * matcher and failing value. Example:
@@ -268,21 +292,13 @@ define(function(require, exports, module) {
        * the meaning of its type parameter <code>T</code>. This method
        * assumes that a matcher typed as <code>Matcher&lt;T&gt;</code>
        * can be meaningfully applied only to values that could be assigned
-       * to a variable of type <code>T</code>.
+       * to a variable of type <code>T</code>.</p>
        *
-       * @param <T>
-       *            the static type accepted by the matcher (this can flag
-       *            obvious compile-time problems such as
-       *            {@code assertThat(1, is("a"))}
-       * @param actual
-       *            the computed value being compared
-       * @param matcher
-       *            an expression, built of {@link Matcher}s, specifying
-       *            allowed values
-       * @see org.hamcrest.CoreMatchers
-       * @see org.hamcrest.MatcherAssert
+       * @param {js.lang.String} message - the identifying message for the {@link AssertionError} (<code>null</code> okay)
+       * @param {js.lang.Object} actual - the computed value being compared
+       * @param {js.lang.RegExp} matcher - an expression, built of {@link Matcher}s, specifying allowed values
        */
-      "public static <T> void assertThat": function(actual, matcher) {
+      "public static assertThat": function(message, actual, matcher) {
         // TODO 正则表达式
       }
     }).getClassConstructor();

@@ -30,7 +30,7 @@ define(function(require, exports, module) {
   require("test!org.atomunion.aop.framework.TestProxyFactoryBean");
   require("test!org.atomunion.util.TestPatternMatchUtils");
 
-  require("test!org.atomunion.aspect.TestAspect");
+  require("test!org.atomunion.stereotype.TestAspect");
 
 
   require("bootstrap!js.test.runner.JUnitCore");
@@ -55,7 +55,7 @@ define(function(require, exports, module) {
     js.util.TestGregorianCalendar.$class,
     org.atomunion.web.context.support.TestGenericWebApplicationContext.$class,
     org.atomunion.aop.framework.TestProxyFactoryBean.$class,
-    org.atomunion.util.TestPatternMatchUtils.$class, org.atomunion.aspect.TestAspect.$class
+    org.atomunion.util.TestPatternMatchUtils.$class, org.atomunion.stereotype.TestAspect.$class
   ]);
 
 });

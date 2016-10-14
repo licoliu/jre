@@ -3,13 +3,13 @@ define(function(require, exports, module) {
   require("bootstrap!js.test.TestCase");
   require("bootstrap!js.test.Assert");
 
-  require("bootstrap!org.atomunion.aspect.Dao");
+  require("bootstrap!org.atomunion.stereotype.Service");
   require("bootstrap!org.atomunion.beans.factory.support.AutowireCapableBeanFactory");
 
   Class.forName({
-    name: "@Component class org.atomunion.aspect.DaoBean",
+    name: "@Component class org.atomunion.stereotype.ServiceBean",
 
-    DaoBean: function() {},
+    ServiceBean: function() {},
 
     getName: function() {
       return this.getClass().getFullName();
@@ -17,9 +17,9 @@ define(function(require, exports, module) {
   });
 
   return Class.forName({
-    name: "class org.atomunion.aspect.TestDao",
+    name: "class org.atomunion.stereotype.TestService",
 
-    TestDao: function() {},
+    TestService: function() {},
 
     "@Before public setUp": function() {},
 
@@ -27,10 +27,9 @@ define(function(require, exports, module) {
 
     "@Test public testGetName": function() {
       var instance = org.atomunion.beans.factory.support.AutowireCapableBeanFactory.getInstance();
-      js.test.Assert.assertTrue("", instance.getBean("org.atomunion.aspect.DaoBean"));
+      js.test.Assert.assertTrue("", instance.getBean("org.atomunion.stereotype.ServiceBean"));
 
-      js.test.Assert.assertTrue("", "org.atomunion.aspect.DaoBean" === instance.getBean("org.atomunion.aspect.DaoBean").getName());
+      js.test.Assert.assertTrue("", "org.atomunion.stereotype.ServiceBean" === instance.getBean("org.atomunion.stereotype.ServiceBean").getName());
     }
-
   });
 });

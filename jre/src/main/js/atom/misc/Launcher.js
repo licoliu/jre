@@ -1,10 +1,13 @@
-/**
- * @namespace atom
+/** 
+ * @class atom.misc.Launcher
+ * @extends {js.lang.Object} 
+ * @description 
+ *
+ * @author lico
+ * @version 0.1.1
+ * @since 0.0.1
  */
-/**
- * @namespace atom.misc
- */
-Class.forName({
+Class.forName( /** @lends atom.misc.Launcher.prototype */ {
   name: "class atom.misc.Launcher extends Object",
   "private static launcher": null,
   "@Getter private loader": null,

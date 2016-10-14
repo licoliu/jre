@@ -34,11 +34,6 @@ define(function(require, exports, module) {
       js.test.Assert.assertTrue("类js.lang.Array中的remove方法测试不通过", this.getArray()[1] === "测试2");
     },
 
-    "@Test testPeek": function() {
-      var ele = this.getArray().peek();
-      js.test.Assert.assertTrue("类js.lang.Array中的peek方法测试不通过", ele === '测试2');
-    },
-
     "@Test testLast": function() {
       var ele = this.getArray().last();
       js.test.Assert.assertTrue("类js.lang.Array中的last方法测试不通过", ele === '测试2');

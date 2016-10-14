@@ -9,27 +9,151 @@ define(function(require, exports, module) {
 
   /**
    * @requires js.util.Iterator
-   * @requires js.util.KeySet
-   * @requires js.util.ValueList
+   * @requires js.util.Set
+   * @requires js.util.List
    */
   require("bootstrap!js.util.Iterator");
-  require("bootstrap!js.util.KeySet");
-  require("bootstrap!js.util.ValueList");
+  require("bootstrap!js.util.Set");
+  require("bootstrap!js.util.List");
+
+  Class.forName({
+    name: "class js.util.HashIterator extends js.util.Iterator",
+
+    hasNext: function() {
+      return this._cursor < this._element._hashArray.length;
+    },
+
+    next: function() {
+      try {
+        // TODO
+        var next = this._element._table[this._element._hashArray[this._cursor]];
+        this._lastRet = this._cursor++;
+        return next;
+      } catch (e) {
+        throw new js.lang.IndexOutOfBoundsException("Index: " + this._cursor + ", Size: " + this._element.size() + ",Message:" + e.getMessage());
+      }
+    },
+
+    remove: function() {
+      if (this._lastRet === -1)
+        throw new js.lang.IllegalStateException();
+      try {
+        var keys = this._element._hash;
+
+        Object.each(keys, function(i, v, o) {
+          if (v === this._element._hashArray[this._lastRet]) {
+            this._element.remove(i);
+            return false;
+          }
+        }, this);
+
+        if (this._lastRet < this._cursor)
+          this._cursor--;
+        this._lastRet = -1;
+      } catch (e) {
+        throw new js.lang.IndexOutOfBoundsException();
+      }
+    }
+  });
+
+  Class.forName({
+    name: "class js.util.KeyIterator extends js.util.HashIterator",
+
+    next: function() {
+      try {
+        var next = this._element._table[this._element._hashArray[this._cursor]];
+        this._lastRet = this._cursor++;
+        return next.getKey();
+      } catch (e) {
+        throw new js.lang.IndexOutOfBoundsException("Index: " + this._cursor + ", Size: " + this._element.size() + ",Message:" + e.getMessage());
+      }
+    }
+  });
+
+  Class.forName({
+    name: "class js.util.ValueIterator extends js.util.HashIterator",
+
+    next: function() {
+      try {
+        var next = this._element._table[this._element._hashArray[this._cursor]];
+        this._lastRet = this._cursor++;
+        return next.getValue();
+      } catch (e) {
+        throw new js.lang.IndexOutOfBoundsException("Index: " + this._cursor + ", Size: " + this._element.size() + ",Message:" + e.getMessage());
+      }
+    }
+  });
+
+  Class.forName({
+    name: "class js.util.KeySet extends js.util.Set",
+    "private _element": null,
+
+    KeySet: function(element) {
+      this._element = element;
+    },
+
+    iterator: function() {
+      return new js.util.KeyIterator(this._element);
+    },
+
+    size: function() {
+      return this._element.size();
+    }
+  });
+
+  Class.forName({
+    name: "class js.util.ValueList extends js.util.List",
+
+    "private _element": null,
+    ValueList: function(element) {
+      this._element = element;
+    },
+
+    iterator: function() {
+      return new js.util.ValueIterator(this._element);
+    },
+
+    size: function() {
+      return this._element.size();
+    },
+
+    "removeAt": function(index) {
+      this.rangeCheck();
+      return this._element._table.splice(index, 1);
+    },
+
+    "get": function(index) {
+      this.rangeCheck();
+      return this._element._table[index];
+    },
+
+    "subList": function(fromIndex, toIndex) {
+      return this._element._table.slice(fromIndex, toIndex);
+    },
+
+    "set": function(index, element) {
+      this.rangeCheck(index);
+      var oldValue = this._element._table[index];
+      this._element._table[index] = element;
+      return oldValue;
+    }
+  });
 
   /** 
    * @abstract
    * @class js.util.Map 
-   * @extends {Object}
+   * @extends {js.lang.Object}
    * @description 
-   * <p>&nbsp;&nbsp;&nbsp;&nbsp;This class provides a skeletal implementation of the Map interface, to minimize the effort required to implement this interface. To implement an unmodifiable map, the programmer needs only to extend this class and provide an implementation for the entrySet method, which returns a set-view of the map's mappings. Typically, the returned set will, in turn, be implemented atop AbstractSet. This set should not support the add or remove methods, and its iterator should not support the remove method.
+   * <p>&nbsp;&nbsp;&nbsp;&nbsp;
+   * This class provides a skeletal implementation of the Map interface, to minimize the effort required to implement this interface. To implement an unmodifiable map, the programmer needs only to extend this class and provide an implementation for the entrySet method, which returns a set-view of the map's mappings. Typically, the returned set will, in turn, be implemented atop AbstractSet. This set should not support the add or remove methods, and its iterator should not support the remove method.
    * </p><p>&nbsp;&nbsp;&nbsp;&nbsp;
    * To implement a modifiable map, the programmer must additionally override this class's put method (which otherwise throws an UnsupportedOperationException), and the iterator returned by entrySet().iterator() must additionally implement its remove method.
    * </p><p>&nbsp;&nbsp;&nbsp;&nbsp;
    * The programmer should generally provide a void (no argument) and map constructor, as per the recommendation in the Map interface specification.
    * </p><p>&nbsp;&nbsp;&nbsp;&nbsp;
    * The documentation for each non-abstract method in this class describes its implementation in detail. Each of these methods may be overridden if the map being implemented admits a more efficient implementation.
-   * </p><p>&nbsp;&nbsp;&nbsp;&nbsp;
-   * This class is a member of the Collections Framework.
+   * </p><p>
+   * This interface is a member of the jsrt Collections Framework.
    * </p><br/>
    *
    * @author lico
@@ -114,7 +238,7 @@ define(function(require, exports, module) {
        * Returns true if this map maps one or more keys to the specified value. More formally, returns true if and only if this map contains at least one mapping to a value v such that (value==null ? v==null : value.equals(v)). This operation will probably require time linear in the map size for most implementations of the Map interface.
        * This implementation iterates over entrySet() searching for an entry with the specified value. If such an entry is found, true is returned. If the iteration terminates without finding such an entry, false is returned. Note that this implementation requires linear time in the size of the map.
        * </p>
-       * @param {Object} value - value whose presence in this map is to be tested
+       * @param {js.lang.Object} value - value whose presence in this map is to be tested
        * @return {js.lang.Boolean} true if this map maps one or more keys to the specified value
        */
       containsValue: function(value) {
@@ -144,7 +268,7 @@ define(function(require, exports, module) {
        * This implementation iterates over entrySet() searching for an entry with the specified key. If such an entry is found, the entry's value is returned. If the iteration terminates without finding such an entry, null is returned. Note that this implementation requires linear time in the size of the map; many implementations will override this method.
        * </p>
        * @param {(js.lang.String|js.lang.Number)} key - the key whose associated value is to be returned
-       * @return {Object} the value to which the specified key is mapped, or null if this map contains no mapping for the key
+       * @return {js.lang.Object} the value to which the specified key is mapped, or null if this map contains no mapping for the key
        */
       "get": function(key) {
         var i = this.entrySet().iterator();
@@ -185,8 +309,8 @@ define(function(require, exports, module) {
        * Associates the specified value with the specified key in this map (optional operation). If the map previously contained a mapping for the key, the old value is replaced by the specified value. (A map m is said to contain a mapping for a key k if and only if m.containsKey(k) would return true.)
        * This implementation always throws an UnsupportedOperationException.</p>
        * @param {(js.lang.String|js.lang.Number)} key - key with which the specified value is to be associated
-       * @param {Object} value - value to be associated with the specified key
-       * @return {Object} the previous value associated with key, or null if there was no mapping for key. (A null return can also indicate that the map previously associated null with key, if the implementation supports null values.)
+       * @param {js.lang.Object} value - value to be associated with the specified key
+       * @return {js.lang.Object} the previous value associated with key, or null if there was no mapping for key. (A null return can also indicate that the map previously associated null with key, if the implementation supports null values.)
        * @throws {js.lang.UnsupportedOperationException} if the put operation is not supported by this map
        */
       put: function(key, value) {
@@ -232,7 +356,7 @@ define(function(require, exports, module) {
        * Note that this implementation throws an UnsupportedOperationException if the entrySet iterator does not support the remove method and this map contains a mapping for the specified key.
        * </p>
        * @param {(js.lang.String|js.lang.Number)} key - key whose mapping is to be removed from the map
-       * @return {Object} the previous value associated with key, or null if there was no mapping for key. 
+       * @return {js.lang.Object} the previous value associated with key, or null if there was no mapping for key. 
        */
       remove: function(key) {
         var i = entrySet().iterator(),
@@ -271,7 +395,7 @@ define(function(require, exports, module) {
       },
 
       /** 
-       * @name entrySet
+       * @name js.util.Map.prototype.entrySet
        * @function
        * @public
        * @abstract
@@ -327,7 +451,7 @@ define(function(require, exports, module) {
        * Compares the specified object with this map for equality. Returns true if the given object is also a map and the two maps represent the same mappings. More formally, two maps m1 and m2 represent the same mappings if m1.entrySet().equals(m2.entrySet()). This ensures that the equals method works properly across different implementations of the Map interface.
        * This implementation first checks if the specified object is this map; if so it returns true. Then, it checks if the specified object is a map whose size is identical to the size of this map; if not, it returns false. If so, it iterates over this map's entrySet collection, and checks that the specified map contains each mapping that this map contains. If the specified map fails to contain such a mapping, false is returned. If the iteration completes, true is returned.
        * </p>
-       * @param {Object} o - object to be compared for equality with this map
+       * @param {js.lang.Object} o - object to be compared for equality with this map
        * @return {js.lang.Boolean} true if the specified object is equal to this map
        */
       equals: function(o) {}
