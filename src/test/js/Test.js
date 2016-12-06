@@ -30,6 +30,14 @@ define(function(require, exports, module) {
   require("test!org.atomunion.aop.framework.TestProxyFactoryBean");
   require("test!org.atomunion.util.TestPatternMatchUtils");
 
+  require("test!org.atomunion.stereotype.TestComponent");
+  require("test!org.atomunion.stereotype.TestController");
+  require("test!org.atomunion.stereotype.TestService");
+  require("test!org.atomunion.stereotype.TestDao");
+
+  require("test!org.atomunion.stereotype.TestResource");
+  require("test!org.atomunion.stereotype.TestAutowire");
+
   require("test!org.atomunion.stereotype.TestAspect");
 
 
@@ -55,6 +63,16 @@ define(function(require, exports, module) {
     js.util.TestGregorianCalendar.$class,
     org.atomunion.web.context.support.TestGenericWebApplicationContext.$class,
     org.atomunion.aop.framework.TestProxyFactoryBean.$class,
+
+
+    org.atomunion.stereotype.TestComponent.$class,
+    org.atomunion.stereotype.TestController.$class,
+    org.atomunion.stereotype.TestService.$class,
+    org.atomunion.stereotype.TestDao.$class,
+
+    org.atomunion.stereotype.TestResource.$class,
+    org.atomunion.stereotype.TestAutowire.$class,
+
     org.atomunion.util.TestPatternMatchUtils.$class, org.atomunion.stereotype.TestAspect.$class
   ]);
 

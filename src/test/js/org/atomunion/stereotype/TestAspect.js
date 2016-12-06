@@ -10,15 +10,6 @@ define(function(require, exports, module) {
   require("test!org.atomunion.stereotype.TestResource");
   require("test!org.atomunion.stereotype.TestAutowire");
 
-
-  new org.atomunion.stereotype.TestComponent();
-  new org.atomunion.stereotype.TestController();
-  new org.atomunion.stereotype.TestService();
-  new org.atomunion.stereotype.TestDao();
-
-  new org.atomunion.stereotype.TestResource();
-  new org.atomunion.stereotype.TestAutowire();
-
   return Class.forName({
     name: "class org.atomunion.stereotype.TestAspect",
 

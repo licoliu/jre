@@ -556,6 +556,19 @@ Object
     getDeclaredAnnotations: function() {
       return this._annotations;
     },
+    getAnnotation: function(annotationClass) {
+      var annotations = this.getDeclaredAnnotations(),
+        annotation = null;
+      if (annotations) {
+        for (var i = 0, len = annotations.length; i < len; i++) {
+          annotation = annotations[i];
+          if (annotation.getClass() === annotationClass) {
+            return annotation;
+          }
+        }
+      }
+      return null;
+    },
     setAnnotations: function(annotation) {
       this._annotations = annotation;
     }
@@ -863,7 +876,8 @@ Object
   var doAnnotations = function(self, m) {
     var annotations = m.getDeclaredAnnotations(),
       annotation = null,
-      ans = [];
+      ans = [],
+      results = {};
     for (var i = 0, len = annotations.length; i < len; i++) {
       annotation = annotations[i];
       if (Object.isString(annotation)) {
@@ -874,7 +888,7 @@ Object
       }
 
       if (annotation && Object.isFunction(annotation.execute)) {
-        annotation.execute(self, m, Modifier, Attribute);
+        results[annotation.getClass().getFullName()] = annotation.execute(self, m, Modifier, Attribute);
         /*
         if (self == m) {
           // 类上的注解
@@ -914,6 +928,7 @@ Object
     if (ans.length > 0) {
       m.setAnnotations(ans);
     }
+    return results;
   };
 
   var empty = function() {};
@@ -1145,61 +1160,20 @@ Object
           // 2.2初始化继承父类属性
           // TODO protected以上的属性
           var each = function(j, v, o) {
-            var i = v.getName();
-            if (!classObj.hasField(i)) {
-              var value = v.getValue(),
-                modifiers = v.getModifiers(),
-                annotations = v.getDeclaredAnnotations(),
-                flag = false;
-
-              for (var l = 0, len = annotations.lenth; l < len; l++) {
-                if (annotations[l] instanceof org.atomunion.stereotype.Resource) {
-                  flag = true;
-                  break;
-                }
-              }
-
-              value = value && !flag ? value.clone() : value;
-              if (Object.USEECMA) {
-                Object.defineProperty(this, i, {
-                  value: value,
-                  writable: Modifier.isWritable(modifiers),
-                  enumerable: Modifier.isEnumerable(modifiers),
-                  configurable: Modifier.isConfigurable(modifiers)
-                });
-              } else {
-                this[i] = value;
-              }
-            }
-          };
-          var sc = classObj.getSuperClass(),
-            superClasses = [];
-          while (sc) {
-            superClasses.unshift(sc);
-            sc = sc.getSuperClass();
-          }
-          Object.each(superClasses, function(j, sc, o) {
-            var f = sc.getFields();
-            Object.each(f, each, this);
-            // sc.getConstructor().apply(this, arguments);
-          }, this);
-
-          // 3.初始化自身定义属性
-          Object.each(classObj.getFields(), function(j, v, o) {
             var i = v.getName(),
               value = v.getValue(),
               modifiers = v.getModifiers(),
-              annotations = v.getDeclaredAnnotations(),
-              flag = false;
+              annotation = null;
 
-            for (var l = 0, len = annotations.lenth; l < len; l++) {
-              if (annotations[l] instanceof org.atomunion.stereotype.Resource) {
-                flag = true;
-                break;
-              }
+            if (global.org &&
+              global.org.atomunion &&
+              global.org.atomunion.stereotype &&
+              global.org.atomunion.stereotype.Resource) {
+              annotation = v.getAnnotation(org.atomunion.stereotype.Resource.$class);
             }
 
-            value = value && !flag ? value.clone() : value;
+            value = value && !annotation ? value.clone() : value;
+
             if (Object.USEECMA) {
               Object.defineProperty(this, i, {
                 value: value,
@@ -1210,12 +1184,36 @@ Object
             } else {
               this[i] = value;
             }
+          };
+          var sc = classObj.getSuperClass(),
+            superClasses = [];
+          while (sc) {
+            superClasses.unshift(sc);
+            sc = sc.getSuperClass();
+          }
+          Object.each(superClasses, function(j, sc, o) {
+            var f = sc.getFields();
+            Object.each(f, function(t, v, a) {
+              var i = v.getName();
+              if (!classObj.hasField(i)) {
+                each.call(this, t, v, a);
+              }
+            }, this);
+            // sc.getConstructor().apply(this, arguments);
           }, this);
+
+          // 3.初始化自身定义属性
+          Object.each(classObj.getFields(), each, this);
 
           // 4.用户构造器,先调用父类构造器以及constructor2方法
           var constructor2 = classObj.getConstructor();
           if (constructor2) {
-            constructor2.apply(this, arguments);
+            var rs = doAnnotations(this, heap.get(classObj, "constructor2"));
+            if (rs["org.atomunion.stereotype.Resource"]) {
+              constructor2.apply(this, rs["org.atomunion.stereotype.Resource"]);
+            } else {
+              constructor2.apply(this, arguments);
+            }
           }
 
           // 5.设置$super对象
@@ -1269,7 +1267,7 @@ Object
 
     var packageName = fullName.split(".").slice(0, -1).join(".");
     if (typeof js !== 'undefined' && !Object.isNull(js) &&
-      !Object.isNull(js.lang) && !Object.isNull(js.lang.Package)) {
+      !Object.isNull(js.lang) && !Object.isNull(js.lang.Package) && js.lang.Package.loaded) {
       heap.set(this, "packages", new js.lang.Package(packageName, packages));
     }
 
@@ -1365,13 +1363,12 @@ Object
 
         switch (feature) {
           case FEATURE.CONSTRUCTOR:
-            if (name === "Object") {
-              heap.set(this, "constructor2", m.getValue());
-            } else {
+            if (name !== "Object") {
               // 将构造器代理，默认调用父类构造器
-              heap.set(this, "constructor2", proxy(m, this
+              m.setValue(proxy(m, this
                 .getSuperClass().getConstructor()));
             }
+            heap.set(this, "constructor2", m);
             break;
 
           case FEATURE.METHOD:
@@ -1395,8 +1392,10 @@ Object
 
     // 默认无参构造函数
     if (!heap.get(this, "constructor2")) {
-      heap.set(this, "constructor2", proxy(new Attribute(name, empty,
-        this, Modifier.publicBit + Modifier.proxyableBit, []), this.getSuperClass().getConstructor()));
+      var cs2 = new Attribute(name, empty,
+        this, Modifier.publicBit + Modifier.proxyableBit, []);
+      cs2.setValue(proxy(cs2, this.getSuperClass().getConstructor()));
+      heap.set(this, "constructor2", cs2);
     }
 
     fetch(alias, function(name, value) {
@@ -1428,7 +1427,7 @@ Object
     },
 
     getConstructor: function() {
-      return heap.get(this, "constructor2");
+      return heap.get(this, "constructor2").getValue();
     },
 
     getInitial: function() {
@@ -2280,6 +2279,7 @@ Object
       return temp;
     }
   });
+  js.lang.Package.loaded = true;
 })(this);
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
@@ -2825,7 +2825,11 @@ Class.forName( /** @lends js.lang.Function.prototype */ {
 
   alias: "js.lang.Function",
 
-  Function: function() {}
+  Function: function() {},
+
+  getName: function() {
+    return this.name || this.toString().match(/function\s*([^(]*)\(/)[1]
+  }
 });
 /*!
  * JSRT JavaScript Library 0.2.1
@@ -7251,7 +7255,117 @@ Class
  * @since 0.0.1
  */
 Class.forName( /** @lends js.lang.reflect.Constructor.prototype */ {
-  name: "class js.lang.reflect.Constructor extends Object"
+  name: "class js.lang.reflect.Constructor extends Object",
+
+  "@Setter private _declaringClass": null,
+  "@Setter private _name": null,
+  "@Setter private _modifiers": null,
+  "@Setter @Getter private _annotations": null,
+  "@Setter private _value": null,
+
+  Constructor: function(name, value, declaringClass, modifiers, annotations) {
+    this._name = name;
+    this._declaringClass = declaringClass;
+    this._modifiers = modifiers;
+    this._annotations = annotations;
+    this._value = value;
+  },
+
+  /** 
+   * @function
+   * @public 
+   * @summary Gets the constructor.
+   * @description 
+   * 
+   * @return {js.lang.Object} the value of the constructor
+   */
+  getValue: function() {
+    return this._value;
+  },
+
+  /** 
+   * @function
+   * @public 
+   * @summary Returns this element's annotation for the specified type if such an annotation is present, else null.
+   * @description 
+   *
+   * @param {js.lang.Class} annotationClass - the Class object corresponding to the annotation type
+   * @return {js.lang.Object} this element's annotation for the specified annotation type if present on this element, else null
+   */
+  getAnnotation: function(annotationClass) {
+    var annotations = this.getDeclaredAnnotations(),
+      annotation = null;
+    if (annotations) {
+      for (var i = 0, len = annotations.length; i < len; i++) {
+        annotation = annotations[i];
+        if (annotation.getClass() === annotationClass) {
+          return annotation;
+        }
+      }
+    }
+    return null;
+  },
+
+  /** 
+   * @function
+   * @public 
+   * @summary return itself
+   * @description 
+   *
+   * @return {js.lang.reflect.Constructor} itself
+   */
+  clone: function() {
+    return this;
+  },
+
+  /** 
+   * @function
+   * @public 
+   * @summary Returns all this element's annotations.
+   * @description 
+   *
+   * @return {js.lang.Array} 
+   */
+  getDeclaredAnnotations: function() {
+    return this._annotations;
+  },
+
+  /** 
+   * @function
+   * @public 
+   * @summary Returns the Class object representing the class or interface that declares the constructor represented by this constructor object.
+   * @description 
+   *
+   * @return {js.lang.Class} an object representing the declaring class of the underlying member
+   */
+  getDeclaringClass: function() {
+    return this._declaringClass;
+  },
+
+  /** 
+   * @function
+   * @public 
+   * @summary Returns the name of the constructor represented by this constructor object.
+   * @description 
+   *
+   * @return {js.lang.String} the simple name of the underlying member
+   */
+  getName: function() {
+    return this._name;
+  },
+
+  /** 
+   * @function
+   * @public 
+   * @summary Returns the modifiers for the constructor represented by this constructor object, as an integer.
+   * @description 
+   *
+   * @return {js.lang.Number} the modifiers for the underlying member
+   */
+  getModifiers: function() {
+    return this._modifiers;
+  }
+
 });
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com

@@ -83,4 +83,5 @@
       return temp;
     }
   });
+  js.lang.Package.loaded = true;
 })(this);

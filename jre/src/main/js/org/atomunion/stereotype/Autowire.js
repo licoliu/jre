@@ -7,7 +7,7 @@ define(function(require, exports, module) {
    * @extends {org.atomunion.stereotype.Resource}
    * @description 
    * <p>&nbsp;&nbsp;&nbsp;&nbsp;
-   * This is a field-level annotation.
+   * This is a field-level and method-level annotation.
    * </p><p>&nbsp;&nbsp;&nbsp;&nbsp;
    * Indicates that an annotated class is a "Autowire".
    * </p>
@@ -24,7 +24,7 @@ define(function(require, exports, module) {
     name: "@interface org.atomunion.stereotype.Autowire extends org.atomunion.stereotype.Repository",
 
     execute: function(self, field, Modifier, Attribute) {
-      this.$super.execute.apply(this, arguments);
+      return this.$super.execute.apply(this, arguments);
     }
   }).getClassConstructor();
 });

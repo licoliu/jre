@@ -30,5 +30,9 @@ Class.forName( /** @lends js.lang.Function.prototype */ {
 
   alias: "js.lang.Function",
 
-  Function: function() {}
+  Function: function() {},
+
+  getName: function() {
+    return this.name || this.toString().match(/function\s*([^(]*)\(/)[1]
+  }
 });
