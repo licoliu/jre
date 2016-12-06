@@ -943,14 +943,15 @@ Object
         len = 0,
         hp = null,
         _$class = null,
-        _value = null;
+        _value = null,
+        regSuffix = ")([(]*)([0-9A-z._,'\" \$]*)([)]*)";
 
       for (i = 0, len = this.heap.length; i < len; i++) {
         hp = this.heap[i];
         _$class = hp.key;
         _value = hp.value;
         if (_$class.isAnnotation()) {
-          var fullName = new RegExp("(^@" + _value.fullName + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
+          var fullName = new RegExp("(^@" + _value.fullName + regSuffix, 'g');
           results = fullName.exec(key);
           if (results) {
             return new _value.classConstructor(results[3]) || null;
@@ -963,8 +964,8 @@ Object
         _$class = hp.key;
         _value = hp.value;
         if (_$class.isAnnotation()) {
-          var alias = new RegExp("(^@" + _value.alias + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
-          var name = new RegExp("(^@" + _value.name + ")([('\"]*)([0-9A-z._\$]*)(['\")]*)", 'g');
+          var alias = new RegExp("(^@" + _value.alias + regSuffix, 'g');
+          var name = new RegExp("(^@" + _value.name + regSuffix, 'g');
           results = alias.exec(key) || name.exec(key);
           if (results) {
             return new _value.classConstructor(results[3]) || null;
