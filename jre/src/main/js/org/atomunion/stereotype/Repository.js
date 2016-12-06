@@ -18,6 +18,9 @@ define(function(require, exports, module) {
    * @version 0.1.1
    * @since 0.0.1
    */
+
+  var regx = /['\" ]?([^\"' ]*)['\" ]?/g;
+
   return Class.forName( /** @lends org.atomunion.stereotype.Repository.prototype */ {
     name: "@interface org.atomunion.stereotype.Repository",
 
@@ -25,7 +28,14 @@ define(function(require, exports, module) {
 
     Repository: function() {
       for (var i = 0, len = arguments.length; i < len; i++) {
-        this.beanNames.push(arguments[i]);
+        var beanNames = ("" + arguments[i]).replace(regx, "$1").split(","),
+          beanName = null;
+        for (var j = 0, length = beanNames.length; j < length; j++) {
+          beanName = beanNames[i].trim();
+          if (beanName) {
+            this.beanNames.push(beanName);
+          }
+        }
       }
     },
 
