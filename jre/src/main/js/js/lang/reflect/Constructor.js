@@ -133,3 +133,5 @@ Class.forName( /** @lends js.lang.reflect.Constructor.prototype */ {
   }
 
 });
+
+js.lang.reflect.Constructor.loaded = true;

@@ -1200,14 +1200,14 @@ Object
                 each.call(this, t, v, a);
               }
             }, this);
-            // sc.getConstructor().apply(this, arguments);
+            // sc.getConstructor().getValue().apply(this, arguments);
           }, this);
 
           // 3.初始化自身定义属性
           Object.each(classObj.getFields(), each, this);
 
           // 4.用户构造器,先调用父类构造器以及constructor2方法
-          var constructor2 = classObj.getConstructor();
+          var constructor2 = classObj.getConstructor().getValue();
           if (constructor2) {
             var rs = doAnnotations(this, heap.get(classObj, "constructor2"));
             if (rs["org.atomunion.stereotype.Resource"]) {
@@ -1364,12 +1364,22 @@ Object
 
         switch (feature) {
           case FEATURE.CONSTRUCTOR:
+            if (typeof js !== 'undefined' && !Object.isNull(js) &&
+              !Object.isNull(js.lang) && !Object.isNull(js.lang.reflect) &&
+              !Object.isNull(js.lang.reflect.Constructor) &&
+              js.lang.reflect.Constructor.loaded) {
+              m = new js.lang.reflect.Constructor(m.getName(), m.getValue(),
+                this, m.getModifiers(), m.getDeclaredAnnotations());
+            }
+
             if (name !== "Object") {
               // 将构造器代理，默认调用父类构造器
               m.setValue(proxy(m, this
-                .getSuperClass().getConstructor()));
+                .getSuperClass().getConstructor().getValue()));
             }
+
             heap.set(this, "constructor2", m);
+
             break;
 
           case FEATURE.METHOD:
@@ -1395,7 +1405,7 @@ Object
     if (!heap.get(this, "constructor2")) {
       var cs2 = new Attribute(name, empty,
         this, Modifier.publicBit + Modifier.proxyableBit, []);
-      cs2.setValue(proxy(cs2, this.getSuperClass().getConstructor()));
+      cs2.setValue(proxy(cs2, this.getSuperClass().getConstructor().getValue()));
       heap.set(this, "constructor2", cs2);
     }
 
@@ -1428,7 +1438,7 @@ Object
     },
 
     getConstructor: function() {
-      return heap.get(this, "constructor2").getValue();
+      return heap.get(this, "constructor2");
     },
 
     getInitial: function() {
