@@ -14,7 +14,7 @@
   "artifact": "jre",
   "license": "MIT",
   "debug": false,
-  "version": "1.5.2",
+  "version": "1.5.3",
   "jre": {
     "name": "jsvm",
     "uglify": "jsvm.min",
@@ -111,7 +111,9 @@
       "port": 8421,
       "user": "root",
       "nohup": true
-    }
+    },
+    "prod": {}
   },
-  "repositoryManager": "bower"
+  "repositoryManager": "bower",
+  "loglevel": "error"
 }

@@ -1633,6 +1633,19 @@ Object
      * @memberof js.lang.Class.prototype
      * @function
      * @public 
+     * @summary Returns the alias name of the entity (class, interface, array class, primitive type, or void) represented by this Class object, as a String. 
+     * @description 
+     *
+     * @return {js.lang.String} the alias name of the class or interface represented by this object.
+     */
+    getAlias: function() {
+      return heap.get(this, "alias");
+    },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
      * @summaryReturns the full name of the entity (class, interface, array class, primitive type, or void) represented by this Class object, as a String. 
      * @description 
      *
