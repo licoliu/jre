@@ -2,12 +2,12 @@
   "group": "js",
   "artifact": "jre",
   "name": "jre",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "title": "jre",
   "description": "关于javascript的继承框架，类定义，类加载器，集合框架，反射机制，注解，AOP, 单元测试框架，常用包等。",
   "license": "MIT",
   "private": false,
-  "debug": false,
+  "debug": true,
   "skin": "default",
   "define": "cmd",
   "keywords": "JSRT, JRE, Node.js, Gulp, API Document, JsDoc, Open Source",
@@ -53,7 +53,7 @@
     "name": "atomunion",
     "url": "https://github.com/atomunion"
   },
-  "target": "prod",
+  "target": "local",
   "jre": {
     "name": "jsvm",
     "uglify": "jsvm.min",
@@ -108,5 +108,5 @@
     ]
   },
   "site": {},
-  "loglevel": "error"
+  "loglevel": "debug"
 }

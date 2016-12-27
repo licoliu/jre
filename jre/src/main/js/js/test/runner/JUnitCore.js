@@ -67,7 +67,7 @@ define(function(require, exports, module) {
 
       for (var i = 0, len = classes.length; i < len; i++) {
         var klass = classes[i];
-        var methods = klass.getMethods();
+        var methods = klass.getDeclaredMethods();
         var testcaseName = klass.getFullName();
         var bean = context.getBean(testcaseName);
 

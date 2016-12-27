@@ -3,7 +3,7 @@ define(function(require, exports, module) {
   return Class.forName({
     name: "class js.model.Animal extends Object",
     "@Getter @Setter private age": 0,
-    "private name": 0,
+    "private name": "",
     Animal: function(name) {
       this.name = name;
     },

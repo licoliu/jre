@@ -906,7 +906,7 @@ Object
 
             if (m.getDeclaredAnnotations().indexOf("@Getter") != -1) {
               var getName = "get" + name;
-              if (!self.hasMethod(getName)) {
+              if (!self.hasDeclaredField(getName)) {
                 self.addMethod(new Attribute(getName, function() {
                   return this[m.getName()];
                 }, self, modifier, []));
@@ -914,7 +914,7 @@ Object
             }
             if (m.getDeclaredAnnotations().indexOf("@Setter") != -1) {
               var setName = "set" + name;
-              if (!self.hasMethod(setName)) {
+              if (!self.hasDeclaredField(setName)) {
                 self.addMethod(new Attribute(setName, function(value) {
                   this[m.getName()] = value;
                 }, self, modifier, []));
@@ -1193,10 +1193,10 @@ Object
             sc = sc.getSuperClass();
           }
           Object.each(superClasses, function(j, sc, o) {
-            var f = sc.getFields();
+            var f = sc.getDeclaredFields();
             Object.each(f, function(t, v, a) {
               var i = v.getName();
-              if (!classObj.hasField(i)) {
+              if (!classObj.hasDeclaredField(i)) {
                 each.call(this, t, v, a);
               }
             }, this);
@@ -1204,7 +1204,7 @@ Object
           }, this);
 
           // 3.初始化自身定义属性
-          Object.each(classObj.getFields(), each, this);
+          Object.each(classObj.getDeclaredFields(), each, this);
 
           // 4.用户构造器,先调用父类构造器以及constructor2方法
           var constructor2 = classObj.getConstructor().getValue();
@@ -1334,7 +1334,7 @@ Object
 
           // TODO 拷贝js.lang.Object.$class中的toString方法
           if (Object.USEECMA) {
-            var m = Object.$class.getMethod("toString"),
+            var m = Object.$class.getDeclaredMethod("toString"),
               modifiers = m.getModifiers();
             Object
               .defineProperty(
@@ -1347,7 +1347,7 @@ Object
                 });
           } else {
             classConstructor.prototype.toString = Object.$class
-              .getMethod("toString").getValue();
+              .getDeclaredMethod("toString").getValue();
           }
         }
       }
@@ -1385,7 +1385,7 @@ Object
           case FEATURE.METHOD:
             // 确保toString为原生
             if (isKernel && m.getName() === "toString") {
-              this.getMethods().push(m);
+              this.getDeclaredMethods().push(m);
               return true;
             }
             this.addMethod(m);
@@ -1474,7 +1474,11 @@ Object
      * @return {js.lang.reflect.Field} the Field object for the specified field in this class
      */
     getDeclaredField: function(name) {
-      return this.getField(name);
+      var v = heap.get(this, "fields", name);
+      if (Object.isDefined(v)) {
+        return v;
+      }
+      throw new js.lang.NoSuchFieldException();
     },
 
     /** 
@@ -1496,7 +1500,7 @@ Object
      * @return {js.lang.Array} the array of Field objects representing all the declared fields of this class
      */
     getDeclaredFields: function() {
-      return this.getFields();
+      return heap.get(this, "fields");
     },
 
     /** 
@@ -1509,8 +1513,24 @@ Object
      * @param {js.lang.String} name - the name of the field 
      * @return {js.lang.Boolean} true if this class has the field with the specified name.
      */
+    hasDeclaredField: function(name) {
+      var field = heap.get(this, "fields", name);
+      return Object.isDefined(field);
+    },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Wither this class has the public field with the specified name or not.
+     * @description 
+     *
+     * @param {js.lang.String} name - the name of the field 
+     * @return {js.lang.Boolean} true if this class has the field with the specified name.
+     */
     hasField: function(name) {
-      return Object.isDefined(heap.get(this, "fields", name));
+      var field = heap.get(this, "fields", name);
+      return Object.isDefined(field) && Modifier.isPublic(field.getModifiers());
     },
 
     /** 
@@ -1525,7 +1545,7 @@ Object
      */
     getField: function(name) {
       var v = heap.get(this, "fields", name);
-      if (Object.isDefined(v)) {
+      if (Object.isDefined(v) && Modifier.isPublic(v.getModifiers())) {
         return v;
       }
       throw new js.lang.NoSuchFieldException();
@@ -1541,7 +1561,17 @@ Object
      * @return {js.lang.Array} the array of Field objects representing the public fields
      */
     getFields: function() {
-      return heap.get(this, "fields");
+      var result = [];
+
+      var fields = heap.get(this, "fields");
+      for (var i = 0, len = fields.length; i < len; i++) {
+        var field = fields[i];
+        if (Modifier.isPublic(field.getModifiers())) {
+          result.push(field);
+        }
+      }
+
+      return result;
     },
 
     /** 
@@ -1555,7 +1585,38 @@ Object
      * @return {js.lang.reflect.Method} the Method object for the method of this class matching the specified name and parameters
      */
     getDeclaredMethod: function(name) {
-      return this.getMethod(name);
+      var v = heap.get(this, "methods", name);
+      if (Object.isDefined(v)) {
+        return v;
+      }
+      throw new js.lang.NoSuchMethodException();
+    },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary 
+     * @description Returns a Method object that reflects the specified declared method of the class/super-classes or interface/super-interfaces represented by this Class object. The name parameter is a String that specifies the simple name of the desired method, and the parameterTypes parameter is an array of Class objects that identify the method's formal parameter types, in declared order. If more than one method with the same parameter types is declared in a class, and one of these methods has a return type that is more specific than any of the others, that method is returned; otherwise one of the methods is chosen arbitrarily. If the name is "<init>"or "<clinit>" a NoSuchMethodException is raised. If this Class object represents an array type, then this method does not find the clone() method.
+     *
+     * @param {js.lang.String} name - the name of the method
+     * @return {js.lang.reflect.Method} the Method object for the method of this class matching the specified name and parameters
+     */
+    getHeldMethod: function(name) {
+      if (name !== 'clone') {
+        var cls = this,
+          hasSuper = true;
+
+        while (cls && cls != Object.$class) {
+          try {
+            return cls.getDeclaredMethod(name);
+          } catch (e) {
+            cls = cls.getSuperClass();
+          }
+        }
+      }
+
+      throw new js.lang.NoSuchMethodException();
     },
 
     /** 
@@ -1568,7 +1629,7 @@ Object
      * @return {js.lang.Array} the array of Method objects representing all the declared methods of this class
      */
     getDeclaredMethods: function() {
-      return this.getMethods();
+      return heap.get(this, "methods");
     },
 
     /** 
@@ -1581,8 +1642,24 @@ Object
      * @param {js.lang.String} name - the name of the method 
      * @return {js.lang.Boolean} true if this class has the method with the specified name.
      */
+    hasDeclaredMethod: function(name) {
+      var method = heap.get(this, "methods", name);
+      return Object.isDefined(method);
+    },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Wither this class has the public method with the specified name or not.
+     * @description 
+     *
+     * @param {js.lang.String} name - the name of the method 
+     * @return {js.lang.Boolean} true if this class has the method with the specified name.
+     */
     hasMethod: function(name) {
-      return Object.isDefined(heap.get(this, "methods", name));
+      var method = heap.get(this, "methods", name);
+      return Object.isDefined(method) && Modifier.isPublic(method.getModifiers());
     },
 
     /** 
@@ -1596,9 +1673,11 @@ Object
      * @return {js.lang.reflect.Method} the Method object that matches the specified name and parameterTypes
      */
     getMethod: function(name) {
-      var v = heap.get(this, "methods", name);
-      if (Object.isDefined(v)) {
-        return v;
+      if (name !== 'clone') {
+        var v = heap.get(this, "methods", name);
+        if (Object.isDefined(v) && Modifier.isPublic(v.getModifiers())) {
+          return v;
+        }
       }
       throw new js.lang.NoSuchMethodException();
     },
@@ -1613,7 +1692,17 @@ Object
      * @return {js.lang.Array} the array of Method objects representing the public methods of this class
      */
     getMethods: function() {
-      return heap.get(this, "methods");
+      var result = [];
+
+      var methods = heap.get(this, "methods");
+      for (var i = 0, len = methods.length; i < len; i++) {
+        var method = methods[i];
+        if (Modifier.isPublic(method.getModifiers())) {
+          result.push(method);
+        }
+      }
+
+      return result;
     },
 
     /** 
@@ -1691,7 +1780,7 @@ Object
      * @return {js.lang.Array} annotations present on this element
      */
     getAnnotations: function() {
-      return heap.get(this, "annotations");
+      return this.getDeclaredAnnotations();
     },
 
     /** 
@@ -1768,7 +1857,7 @@ Object
             this.getClassConstructor().prototype[n] = m.getValue();
           }
         }
-        this.getMethods().push(m);
+        this.getDeclaredMethods().push(m);
 
         if (n === "initial") {
           heap.set(this, "initial", m.getValue());
@@ -1815,7 +1904,7 @@ Object
             this.getClassConstructor()[f.getName()] = f.getValue();
           }
         }
-        this.getFields().push(f);
+        this.getDeclaredFields().push(f);
       }
     },
 

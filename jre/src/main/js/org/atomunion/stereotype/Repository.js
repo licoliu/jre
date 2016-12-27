@@ -43,6 +43,7 @@ define(function(require, exports, module) {
       var context = org.atomunion.beans.factory.support.AutowireCapableBeanFactory.getInstance();
       var beans = [];
 
+      // 判断注解是在构造器上还是在属性上
       var flag = field.getName() === field.getDeclaringClass().getName(),
         name = field.getDeclaringClass().getFullName();
 
@@ -51,6 +52,8 @@ define(function(require, exports, module) {
         if (flag) {
           if (bn === "$scope") {
             beans.push(context.getBean(name + "." + bn));
+          } else {
+            beans.push(context.getBean(bn));
           }
         } else {
           field.setValue(context.getBean(bn));

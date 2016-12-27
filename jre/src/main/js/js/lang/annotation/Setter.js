@@ -48,7 +48,7 @@ Class.forName({
         // var modifier = 1 + 256 + 32;
 
         var setName = "set" + name;
-        if (!self.hasMethod(setName)) {
+        if (!self.hasDeclaredField(setName)) {
           self.addMethod(new Attribute(setName, function(value) {
             this[field.getName()] = value;
           }, self, modifier, []));

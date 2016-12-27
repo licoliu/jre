@@ -4,10 +4,21 @@ define(function(require, exports, module) {
 
   return Class.forName({
     name: "public class js.model.Dog extends js.model.Animal",
-    "@Getter @Setter private color": "black",
+    "@Getter @Setter public color": "black",
     "@Getter @Setter private word": "汪汪",
+
     "public Dog": function(name, word) {
       this.word = word;
+
+      console.log("js.model.Dog constructor")
+    },
+
+    initial: function() {
+      console.log("js.model.Dog initial")
+    },
+
+    "private play": function() {
+      js.lang.System.out.println("i am playing very happy.")
     },
     say: function() {
       this.$super.say();

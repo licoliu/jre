@@ -234,9 +234,9 @@ define(function(require, exports, module) {
                 if (pointcut.matches(method, targetClass)) {
                   targetClass.addMethod(new js.lang.reflect.Method(method.getName(),
                     this.newPrototypeMethod(method, befores, afterThrowings, afterReturnings),
-                    method.getDeclaringClass,
+                    method.getDeclaringClass(),
                     method.getModifiers(),
-                    method.getDeclaredAnnotations));
+                    method.getDeclaredAnnotations()));
                   break;
                 }
               }

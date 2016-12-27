@@ -48,7 +48,7 @@ Class.forName( /** @lends js.lang.annotation.Getter.prototype */ {
         // var modifier = 1 + 256 + 32;
 
         var getName = "get" + name;
-        if (!self.hasMethod(getName)) {
+        if (!self.hasDeclaredField(getName)) {
           self.addMethod(new Attribute(getName, function() {
             return this[field.getName()];
           }, self, modifier, []));

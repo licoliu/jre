@@ -43,7 +43,7 @@ Class.forName( /** @lends js.lang.Error.prototype */ {
 
   'static init': function() {
     var methods = {},
-      __methods = js.lang.Throwable.$class.getMethods(),
+      __methods = js.lang.Throwable.$class.getDeclaredMethods(),
       __length = __methods.length,
       __index = 0;
     for (; __index < __length; __index++) {

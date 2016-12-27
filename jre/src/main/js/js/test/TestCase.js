@@ -79,7 +79,7 @@ define(function(require, exports, module) {
       }
     },
     injectMethods: function() {
-      var methods = this.$class.getMethods();
+      var methods = this.$class.getDeclaredMethods();
       Object.each(methods, function(j, v, o) {
 
         var annotations = v.getDeclaredAnnotations(),

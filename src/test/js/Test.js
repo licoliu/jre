@@ -8,7 +8,7 @@ define(function(require, exports, module) {
   require("test!js.lang.TestStringBuffer");
   require("test!js.lang.TestArray");
 
-  require("test!js.lang.reflect.TestClass");
+  require("test!js.lang.TestClass");
   require("test!js.lang.reflect.TestField");
   require("test!js.lang.reflect.TestMethod");
 
@@ -49,7 +49,7 @@ define(function(require, exports, module) {
     js.lang.TestOOP.$class,
     js.lang.TestStringBuffer.$class,
     js.lang.TestArray.$class,
-    js.lang.reflect.TestClass.$class,
+    js.lang.TestClass.$class,
     js.lang.reflect.TestField.$class,
     js.lang.reflect.TestMethod.$class,
     js.text.TestDateFormat.$class,

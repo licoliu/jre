@@ -25,8 +25,8 @@
   "overrides": {},
   "group": "js",
   "artifact": "jre",
-  "debug": false,
-  "version": "1.5.3",
+  "debug": true,
+  "version": "1.5.4",
   "jre": {
     "name": "jsvm",
     "uglify": "jsvm.min",
@@ -80,7 +80,7 @@
       "./jre/src/main/js/js/lang/AsynchronousCallException.js"
     ]
   },
-  "target": "prod",
+  "target": "local",
   "organization": {
     "name": "atomunion",
     "url": "https://github.com/atomunion"
@@ -127,5 +127,5 @@
     "prod": {}
   },
   "repositoryManager": "bower",
-  "loglevel": "error"
+  "loglevel": "debug"
 }
