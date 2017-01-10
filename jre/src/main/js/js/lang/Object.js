@@ -28,19 +28,7 @@
 
     alias: "js.lang.Object",
 
-    Object: function() {
-      var _hashCode = (currentTimeMillis() + Math.random()).toString(16);
-      if (Object.USEECMA) {
-        Object.defineProperty(this, "_hashCode", {
-          value: _hashCode,
-          writable: false,
-          enumerable: false,
-          configurable: false
-        });
-      } else {
-        this._hashCode = _hashCode;
-      }
-    },
+    Object: function() {},
 
     /** 
      * @name js.lang.Object.prototype.getClass
@@ -199,7 +187,7 @@
         b = this.$class ? this.$class.newInstance() : {};
         for (var a in this) {
           if (a === "_hashCode") {
-            b[a] = currentTimeMillis().toString(16);
+            b[a] = (currentTimeMillis() + Math.random()).toString(16);
             continue;
           }
           if (this.hasOwnProperty(a)) {

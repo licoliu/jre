@@ -672,9 +672,9 @@ Object
      *
      * 提供三种模式
      * 1.系统默认
-     * 		属性默认为writable,enumerable,non-configurable,non-proxyable
-     * 		方法默认为writable,proxyable,non-enumerable,non-configurable, 如果final方法则为non-writable,non-enumerable,non-configurable,non-proxyable
-     * 		构造器默认为proxyable,non-writable,non-enumerable,non-configurable
+     *    属性默认为writable,enumerable,non-configurable,non-proxyable
+     *    方法默认为writable,proxyable,non-enumerable,non-configurable, 如果final方法则为non-writable,non-enumerable,non-configurable,non-proxyable
+     *    构造器默认为proxyable,non-writable,non-enumerable,non-configurable
      * 2.手动设置writable，enumerable，configurable，proxyable
      * 3.手动设置non-writable，non-enumerable，non-configurable，non-proxyable
      */
@@ -1156,6 +1156,18 @@ Object
             });
           } else {
             this.$class = classObj;
+          }
+
+          var _hashCode = (new Date().getTime() + Math.random()).toString(16);
+          if (Object.USEECMA) {
+            Object.defineProperty(this, "_hashCode", {
+              value: _hashCode,
+              writable: false,
+              enumerable: false,
+              configurable: false
+            });
+          } else {
+            this._hashCode = _hashCode;
           }
 
           // 2.2初始化继承父类属性
@@ -1926,7 +1938,14 @@ Object
      * @return {js.lang.Object} a newly allocated instance of the class represented by this object.
      */
     newInstance: function() {
-      return new(heap.get(this, "classConstructor"))();
+      var cc = heap.get(this, "classConstructor"),
+        instance = new cc();
+
+      if (arguments.length > 0) {
+        instance.apply(instance, arguments);
+      }
+
+      return instance;
     },
 
     /** 
@@ -2076,19 +2095,7 @@ Object
 
     alias: "js.lang.Object",
 
-    Object: function() {
-      var _hashCode = (currentTimeMillis() + Math.random()).toString(16);
-      if (Object.USEECMA) {
-        Object.defineProperty(this, "_hashCode", {
-          value: _hashCode,
-          writable: false,
-          enumerable: false,
-          configurable: false
-        });
-      } else {
-        this._hashCode = _hashCode;
-      }
-    },
+    Object: function() {},
 
     /** 
      * @name js.lang.Object.prototype.getClass
@@ -2247,7 +2254,7 @@ Object
         b = this.$class ? this.$class.newInstance() : {};
         for (var a in this) {
           if (a === "_hashCode") {
-            b[a] = currentTimeMillis().toString(16);
+            b[a] = (currentTimeMillis() + Math.random()).toString(16);
             continue;
           }
           if (this.hasOwnProperty(a)) {

@@ -245,7 +245,7 @@ define(function(require, exports, module) {
         }
       }
 
-      this.singletonInstance = context.getBean(this.targetName);
+      this.singletonInstance = context.getBean(this.targetName, !this.isSingleton());
 
       return this.singletonInstance;
     }

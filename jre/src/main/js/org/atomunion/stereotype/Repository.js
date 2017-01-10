@@ -50,11 +50,7 @@ define(function(require, exports, module) {
       for (var i = 0, len = this.beanNames.length; i < len; i++) {
         var bn = this.beanNames[i];
         if (flag) {
-          if (bn === "$scope") {
-            beans.push(context.getBean(name + "." + bn));
-          } else {
-            beans.push(context.getBean(bn));
-          }
+          beans.push(context.getBean(bn));
         } else {
           field.setValue(context.getBean(bn));
           break;
