@@ -76,9 +76,37 @@ define(function(require, exports, module) {
     "@Test testGetHeldMethod": function() {
       js.test.Assert.assertTrue("getHeldMethod('sayError')", !!this.getDogClass().getHeldMethod("sayError"));
 
-      js.test.Assert.assertTrue("getHeldMethod('play')", !!this.getDogClass().getHeldMethod("play"));
-
       js.test.Assert.assertTrue("getHeldMethod('getName')", !!this.getDogClass().getHeldMethod("getName"));
+
+      try {
+        this.getDogClass().getHeldMethod("play")
+        js.test.Assert.assertTrue("getHeldMethod('play')", false);
+      } catch (e) {
+        js.test.Assert.assertTrue("getHeldMethod('play')", !!e);
+      }
+    },
+
+    "@Test testGetHeldDeclaredMethod": function() {
+      js.test.Assert.assertTrue("getHeldDeclaredMethod('sayError')", !!this.getDogClass().getHeldDeclaredMethod("sayError"));
+
+      js.test.Assert.assertTrue("getHeldDeclaredMethod('getName')", !!this.getDogClass().getHeldDeclaredMethod("getName"));
+
+      js.test.Assert.assertTrue("getHeldDeclaredMethod('play')", !!this.getDogClass().getHeldDeclaredMethod("play"));
+    },
+
+    "@Test testGetHeldMethods": function() {
+      var methods = this.getDogClass().getHeldMethods();
+      for (var i = 0, len = methods.length; i < len; i++) {
+        js.lang.System.out.println(methods[i].getName());
+      }
+    },
+
+    "@Test testGetHeldDeclaredMethods": function() {
+      var methods = this.getDogClass().getHeldDeclaredMethods();
+
+      for (var i = 0, len = methods.length; i < len; i++) {
+        js.lang.System.out.println(methods[i].getName());
+      }
     },
 
     "@Test testGetDeclaredMethod": function() {

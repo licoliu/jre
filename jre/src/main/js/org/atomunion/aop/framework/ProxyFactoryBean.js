@@ -156,9 +156,9 @@ define(function(require, exports, module) {
         var result = null;
         try {
           result = (!Object.isEmpty(f) && Object.isFunction(f)) ? f.apply(this, args) : f;
-          if (result && result.$promise && Object.isFunction(result.$promise.error)) {
+          if (result && result.$promise && Object.isFunction(result.$promise.then)) {
             var scope = this;
-            result.$promise.error(function(response) {
+            result.$promise.then(function(response) {
               if (!Object.isEmpty(afterThrowings)) {
                 for (var ti = 0, length2 = afterThrowings.length; ti < length2; ti++) {
                   var afterThrowing = afterThrowings[ti];
@@ -222,7 +222,7 @@ define(function(require, exports, module) {
         }
 
         if (!Object.isEmpty(befores) || !Object.isEmpty(afterThrowings) || !Object.isEmpty(afterReturnings)) {
-          var methods = targetClass.getDeclaredMethods();
+          var methods = targetClass.getHeldMethods();
           for (var i = 0, length1 = methods.length; i < length1; i++) {
             var method = methods[i],
               modifiers = method.getModifiers(),

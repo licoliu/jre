@@ -1597,10 +1597,43 @@ Object
      * @return {js.lang.reflect.Method} the Method object for the method of this class matching the specified name and parameters
      */
     getDeclaredMethod: function(name) {
+      if (!name || !Object.isString(name)) {
+        throw new js.lang.IllegalArgumentException();
+      }
       var v = heap.get(this, "methods", name);
       if (Object.isDefined(v)) {
         return v;
       }
+      throw new js.lang.NoSuchMethodException();
+    },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Returns a Method object that reflects the specified public member method of the class/super-classes or interface/super-interfaces represented by this Class object.
+     * @description 
+     *
+     * @param {js.lang.String} name - the name of the method
+     * @return {js.lang.reflect.Method} the Method object that matches the specified name and parameterTypes
+     */
+    getHeldMethod: function(name) {
+      if (!name || !Object.isString(name)) {
+        throw new js.lang.IllegalArgumentException();
+      }
+      if (name !== 'clone') {
+        var cls = this,
+          hasSuper = true;
+
+        while (cls && cls != Object.$class) {
+          try {
+            return cls.getMethod(name);
+          } catch (e) {
+            cls = cls.getSuperClass();
+          }
+        }
+      }
+
       throw new js.lang.NoSuchMethodException();
     },
 
@@ -1614,7 +1647,10 @@ Object
      * @param {js.lang.String} name - the name of the method
      * @return {js.lang.reflect.Method} the Method object for the method of this class matching the specified name and parameters
      */
-    getHeldMethod: function(name) {
+    getHeldDeclaredMethod: function(name) {
+      if (!name || !Object.isString(name)) {
+        throw new js.lang.IllegalArgumentException();
+      }
       if (name !== 'clone') {
         var cls = this,
           hasSuper = true;
@@ -1642,6 +1678,84 @@ Object
      */
     getDeclaredMethods: function() {
       return heap.get(this, "methods");
+    },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Returns an array containing Method objects reflecting all the declared methods of the class/super-classes or interface/super-interfaces represented by this Class object, including public, protected, default (package) access, and private methods, but excluding inherited methods.
+     * @description 
+     *
+     * @return {js.lang.Array} the array of Method objects representing all the declared methods of this class
+     */
+    getHeldDeclaredMethods: function() {
+      var cls = this,
+        methods = [],
+        ms = null,
+        m1 = null,
+        m2 = null,
+        flag = false;
+
+      while (cls && cls != Object.$class) {
+        ms = cls.getDeclaredMethods();
+        for (var i = 0, len1 = ms.length; i < len1; i++) {
+          m1 = ms[i];
+          flag = false;
+          for (var j = 0, len2 = methods.length; j < len2; j++) {
+            m2 = methods[j];
+
+            if (m1.getName() === m2.getName()) {
+              flag = true;
+              break;
+            }
+          }
+          if (!flag) {
+            methods.unshift(m1);
+          }
+        }
+        cls = cls.getSuperClass();
+      }
+      return methods;
+    },
+
+    /** 
+     * @memberof js.lang.Class.prototype
+     * @function
+     * @public 
+     * @summary Returns an array containing Method objects reflecting all the public methods of the class or interface represented by this Class object, including those declared by the class/super-classes or interface/super-interfaces and those inherited from superclasses and superinterfaces.
+     * @description 
+     *
+     * @return {js.lang.Array} the array of Method objects representing the public methods of this class
+     */
+    getHeldMethods: function() {
+      var cls = this,
+        methods = [],
+        ms = null,
+        m1 = null,
+        m2 = null,
+        flag = false;
+
+      while (cls && cls != Object.$class) {
+        ms = cls.getMethods();
+        for (var i = 0, len1 = ms.length; i < len1; i++) {
+          m1 = ms[i];
+          flag = false;
+          for (var j = 0, len2 = methods.length; j < len2; j++) {
+            m2 = methods[j];
+
+            if (m1.getName() === m2.getName()) {
+              flag = true;
+              break;
+            }
+          }
+          if (!flag) {
+            methods.unshift(m1);
+          }
+        }
+        cls = cls.getSuperClass();
+      }
+      return methods;
     },
 
     /** 
