@@ -153,17 +153,30 @@ define(function(require, exports, module) {
           }
         }
 
-        var result = null;
+        var result = null,
+          flag = false,
+          scope = this;
         try {
-          result = (!Object.isEmpty(f) && Object.isFunction(f)) ? f.apply(this, args) : f;
-          if (result && result.$promise && Object.isFunction(result.$promise.then)) {
-            var scope = this;
-            result.$promise.then(function(response) {
+          result = (!Object.isEmpty(f) && Object.isFunction(f)) ? f.apply(scope, args) : f;
+          flag = result && result.$promise && Object.isFunction(result.$promise.then);
+          if (flag) {
+            result.$promise.then(function() {
+              if (!Object.isEmpty(afterReturnings)) {
+                for (var ai = 0, length3 = afterReturnings.length; ai < length3; ai++) {
+                  var afterReturning = afterReturnings[ai];
+                  if (Object.isFunction(afterReturning)) {
+                    afterReturning.call(scope, result, method, args, scope);
+                  }
+                }
+              }
+            }, function(response) {
               if (!Object.isEmpty(afterThrowings)) {
                 for (var ti = 0, length2 = afterThrowings.length; ti < length2; ti++) {
                   var afterThrowing = afterThrowings[ti];
                   if (Object.isFunction(afterThrowing)) {
-                    afterThrowing.call(scope, method, args, scope, new js.lang.AsynchronousCallException("asynchronous " + method.getName() + " call error", method.getDeclaringClass().getFullName(), null, response), result);
+                    afterThrowing.call(scope, method, args, scope,
+                      new js.lang.AsynchronousCallException("asynchronous " + method.getName() + " call error", method.getDeclaringClass().getFullName(), null, response),
+                      result);
                   }
                 }
               }
@@ -177,18 +190,18 @@ define(function(require, exports, module) {
             for (var ti = 0, length2 = afterThrowings.length; ti < length2; ti++) {
               var afterThrowing = afterThrowings[ti];
               if (Object.isFunction(afterThrowing)) {
-                afterThrowing.call(this, method, args, this, e);
+                afterThrowing.call(scope, method, args, scope, e);
               }
             }
           }
         }
 
         // after
-        if (!Object.isEmpty(afterReturnings)) {
+        if (!flag && !Object.isEmpty(afterReturnings)) {
           for (var ai = 0, length3 = afterReturnings.length; ai < length3; ai++) {
             var afterReturning = afterReturnings[ai];
             if (Object.isFunction(afterReturning)) {
-              afterReturning.call(this, result, method, args, this);
+              afterReturning.call(scope, result, method, args, scope);
             }
           }
         }
@@ -206,40 +219,39 @@ define(function(require, exports, module) {
 
       var list = this.getAdvisors();
       if (list.length > 0) {
-        var afterReturnings = [],
-          befores = [],
-          afterThrowings = [];
+        var afterReturnings = null,
+          befores = null,
+          afterThrowings = null,
+          methods = targetClass.getHeldMethods();
+        for (var i = 0, length1 = methods.length; i < length1; i++) {
+          var method = methods[i],
+            modifiers = method.getModifiers(),
+            isProxyable = js.lang.reflect.Modifier.isProxyable(modifiers);
 
-        for (var j = 0, len = list.length; j < len; j++) {
-          var advice = list[j].getAdvice();
-          if (Object.isInstanceof(advice, org.atomunion.aop.MethodBeforeAdvice)) {
-            befores.push(advice.before);
-          } else if (Object.isInstanceof(advice, org.atomunion.aop.ThrowsAdvice)) {
-            afterThrowings.push(advice.afterThrowing);
-          } else if (Object.isInstanceof(advice, org.atomunion.aop.AfterReturningAdvice)) {
-            afterReturnings.push(advice.afterReturning);
-          }
-        }
-
-        if (!Object.isEmpty(befores) || !Object.isEmpty(afterThrowings) || !Object.isEmpty(afterReturnings)) {
-          var methods = targetClass.getHeldMethods();
-          for (var i = 0, length1 = methods.length; i < length1; i++) {
-            var method = methods[i],
-              modifiers = method.getModifiers(),
-              isProxyable = js.lang.reflect.Modifier.isProxyable(modifiers);
-
-            if (isProxyable) {
-              for (var l = 0, length2 = list.length; l < length2; l++) {
-                var pointcut = list[l].getPointcut();
-                if (pointcut.matches(method, targetClass)) {
-                  targetClass.addMethod(new js.lang.reflect.Method(method.getName(),
-                    this.newPrototypeMethod(method, befores, afterThrowings, afterReturnings),
-                    method.getDeclaringClass(),
-                    method.getModifiers(),
-                    method.getDeclaredAnnotations()));
-                  break;
+          if (isProxyable) {
+            afterReturnings = [];
+            befores = [];
+            afterThrowings = [];
+            for (var l = 0, length2 = list.length; l < length2; l++) {
+              var pointcut = list[l].getPointcut();
+              if (pointcut.matches(method, targetClass)) {
+                var advice = list[l].getAdvice();
+                if (Object.isInstanceof(advice, org.atomunion.aop.MethodBeforeAdvice)) {
+                  befores.push(advice.before);
+                } else if (Object.isInstanceof(advice, org.atomunion.aop.ThrowsAdvice)) {
+                  afterThrowings.push(advice.afterThrowing);
+                } else if (Object.isInstanceof(advice, org.atomunion.aop.AfterReturningAdvice)) {
+                  afterReturnings.push(advice.afterReturning);
                 }
               }
+            }
+            if (!Object.isEmpty(befores) || !Object.isEmpty(afterThrowings) || !Object.isEmpty(afterReturnings)) {
+              targetClass.addMethod(new js.lang.reflect.Method(
+                method.getName(),
+                this.newPrototypeMethod(method, befores, afterThrowings, afterReturnings),
+                method.getDeclaringClass(),
+                method.getModifiers(),
+                method.getDeclaredAnnotations()));
             }
           }
         }
