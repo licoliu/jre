@@ -2,7 +2,7 @@
   "group": "js",
   "artifact": "jre",
   "name": "jre",
-  "version": "1.5.7",
+  "version": "1.5.8",
   "title": "jre",
   "description": "关于javascript的继承框架，类定义，类加载器，集合框架，反射机制，注解，AOP, 单元测试框架，常用包等。",
   "license": "MIT",

@@ -154,33 +154,34 @@ define(function(require, exports, module) {
         }
 
         var result = null,
-          flag = false,
           scope = this;
         try {
           result = (!Object.isEmpty(f) && Object.isFunction(f)) ? f.apply(scope, args) : f;
-          flag = result && result.$promise && Object.isFunction(result.$promise.then);
-          if (flag) {
-            result.$promise.then(function() {
-              if (!Object.isEmpty(afterReturnings)) {
-                for (var ai = 0, length3 = afterReturnings.length; ai < length3; ai++) {
-                  var afterReturning = afterReturnings[ai];
-                  if (Object.isFunction(afterReturning)) {
-                    afterReturning.call(scope, result, method, args, scope);
+          if (result && result.$promise && Object.isFunction(result.$promise.then)) {
+            result.$promise.then(
+              /*function() {
+                  if (!Object.isEmpty(afterReturnings)) {
+                    for (var ai = 0, length3 = afterReturnings.length; ai < length3; ai++) {
+                      var afterReturning = afterReturnings[ai];
+                      if (Object.isFunction(afterReturning)) {
+                        afterReturning.call(scope, result, method, args, scope);
+                      }
+                    }
+                  }
+                }*/
+              null,
+              function(response) {
+                if (!Object.isEmpty(afterThrowings)) {
+                  for (var ti = 0, length2 = afterThrowings.length; ti < length2; ti++) {
+                    var afterThrowing = afterThrowings[ti];
+                    if (Object.isFunction(afterThrowing)) {
+                      afterThrowing.call(scope, method, args, scope,
+                        new js.lang.AsynchronousCallException("asynchronous " + method.getName() + " call error", method.getDeclaringClass().getFullName(), null, response),
+                        result);
+                    }
                   }
                 }
-              }
-            }, function(response) {
-              if (!Object.isEmpty(afterThrowings)) {
-                for (var ti = 0, length2 = afterThrowings.length; ti < length2; ti++) {
-                  var afterThrowing = afterThrowings[ti];
-                  if (Object.isFunction(afterThrowing)) {
-                    afterThrowing.call(scope, method, args, scope,
-                      new js.lang.AsynchronousCallException("asynchronous " + method.getName() + " call error", method.getDeclaringClass().getFullName(), null, response),
-                      result);
-                  }
-                }
-              }
-            });
+              });
           }
         } catch (e) {
           if (Object.isEmpty(afterThrowings)) {
@@ -197,7 +198,7 @@ define(function(require, exports, module) {
         }
 
         // after
-        if (!flag && !Object.isEmpty(afterReturnings)) {
+        if (!Object.isEmpty(afterReturnings)) {
           for (var ai = 0, length3 = afterReturnings.length; ai < length3; ai++) {
             var afterReturning = afterReturnings[ai];
             if (Object.isFunction(afterReturning)) {
