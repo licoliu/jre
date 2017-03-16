@@ -34,11 +34,12 @@ Class.forName( /** @lends js.lang.Error.prototype */ {
   "private name": "js.lang.Error", // 错误名
   "private number": 1,
 
-  Error: function(message, fileName, lineNumber, stack) {
+  Error: function(message, fileName, lineNumber, stack, description) {
     this.message = message;
     this.fileName = fileName;
     this.stack = stack;
     this.lineNumber = lineNumber;
+    this.description = description;
   },
 
   'static init': function() {

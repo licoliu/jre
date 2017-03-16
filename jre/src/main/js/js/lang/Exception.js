@@ -25,11 +25,12 @@ Class.forName( /** @lends js.lang.Exception.prototype */ {
 
   "private number": 0, // 错误号
 
-  Exception: function(message, fileName, lineNumber, stack) {
+  Exception: function(message, fileName, lineNumber, stack, description) {
     this.message = message;
     this.fileName = fileName;
     this.stack = stack;
     this.lineNumber = lineNumber;
+    this.description = description;
   }
 
 });

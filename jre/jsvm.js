@@ -4145,11 +4145,12 @@ Class.forName( /** @lends js.lang.Throwable.prototype */ {
    */
   "private stack": null, // 错误发生时的调用堆栈 FF Only 属性
 
-  Throwable: function(message, fileName, lineNumber, stack) {
+  Throwable: function(message, fileName, lineNumber, stack, description) {
     this.message = message;
     this.fileName = fileName;
     this.stack = stack;
     this.lineNumber = lineNumber;
+    this.description = description;
   },
 
   /** 
@@ -4295,11 +4296,12 @@ Class.forName( /** @lends js.lang.Exception.prototype */ {
 
   "private number": 0, // 错误号
 
-  Exception: function(message, fileName, lineNumber, stack) {
+  Exception: function(message, fileName, lineNumber, stack, description) {
     this.message = message;
     this.fileName = fileName;
     this.stack = stack;
     this.lineNumber = lineNumber;
+    this.description = description;
   }
 
 });
@@ -4339,11 +4341,12 @@ Class.forName( /** @lends js.lang.Error.prototype */ {
   "private name": "js.lang.Error", // 错误名
   "private number": 1,
 
-  Error: function(message, fileName, lineNumber, stack) {
+  Error: function(message, fileName, lineNumber, stack, description) {
     this.message = message;
     this.fileName = fileName;
     this.stack = stack;
     this.lineNumber = lineNumber;
+    this.description = description;
   },
 
   'static init': function() {

@@ -176,7 +176,11 @@ define(function(require, exports, module) {
                     var afterThrowing = afterThrowings[ti];
                     if (Object.isFunction(afterThrowing)) {
                       afterThrowing.call(scope, method, args, scope,
-                        new js.lang.AsynchronousCallException("asynchronous " + method.getName() + " call error", method.getDeclaringClass().getFullName(), null, response),
+                        new js.lang.AsynchronousCallException("asynchronous " + method.getName() + " call error, server response is \"" + response.statusText + " - " + response.status + "\".",
+                          method.getDeclaringClass().getFullName(),
+                          null,
+                          response.data,
+                          response),
                         result);
                     }
                   }

@@ -76,11 +76,12 @@ Class.forName( /** @lends js.lang.Throwable.prototype */ {
    */
   "private stack": null, // 错误发生时的调用堆栈 FF Only 属性
 
-  Throwable: function(message, fileName, lineNumber, stack) {
+  Throwable: function(message, fileName, lineNumber, stack, description) {
     this.message = message;
     this.fileName = fileName;
     this.stack = stack;
     this.lineNumber = lineNumber;
+    this.description = description;
   },
 
   /** 
