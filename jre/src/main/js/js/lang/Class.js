@@ -123,7 +123,7 @@
               if (!d[k]) {
                 d[k] = {};
               }
-              if (USEECMA) {
+              if (USEECMA && typeof d[k][i] === "undefined") {
                 Object.defineProperty(d[k], i, {
                   value: m ? s[i][m] : s[i],
                   writable: writable,
@@ -134,7 +134,7 @@
                 d[k][i] = m ? s[i][m] : s[i];
               }
             } else {
-              if (USEECMA) {
+              if (USEECMA && typeof d[i] === "undefined") {
                 Object.defineProperty(d, i, {
                   value: m ? (s[i] ? s[i][m] : null) : s[i],
                   writable: writable,
@@ -158,7 +158,7 @@
                 if (!d[j][k]) {
                   d[j][k] = {};
                 }
-                if (USEECMA) {
+                if (USEECMA && typeof d[j][k][t] === "undefined") {
                   Object.defineProperty(d[j][k], t, {
                     value: m ? s[t][m] : s[t],
                     writable: writable,
@@ -169,7 +169,7 @@
                   d[j][k][t] = m ? s[t][m] : s[t];
                 }
               } else {
-                if (USEECMA) {
+                if (USEECMA && typeof d[j][t] === "undefined") {
                   Object.defineProperty(d[j], t, {
                     value: m ? (s[t] ? s[t][m] : null) : s[t],
                     writable: writable,
