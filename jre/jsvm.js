@@ -186,14 +186,22 @@
       }
     };
     return function(d, s, k, m, pros) {
-      if (typeof d === 'undefined' || d === null || typeof s === 'undefined' || s === null || typeof d === "number" || typeof s === "number" || typeof d === "string" || typeof s === "string" || typeof d === "boolean" || typeof s === "boolean") {
+      if (typeof d === 'undefined' || d === null || typeof d === "number" || typeof d === "string" || typeof d === "boolean" ||
+        typeof s === 'undefined' || s === null || typeof s === "number" || typeof s === "string" || typeof s === "boolean") {
         return d;
       }
       if (Object.prototype.toString.apply(s) !== "[object Array]") {
         copy(d, s, k, m, pros);
       } else {
         for (var j = 0, len = s.length; j < len; j++) {
-          copy(d, s[j], k, m, pros);
+          if (typeof s[j] === 'undefined' || s[j] === null || typeof s[j] === "number" || typeof s[j] === "string" || typeof s[j] === "boolean") {
+            d[j] = s[j];
+          } else {
+            if (!d[j]) {
+              d[j] = {};
+            }
+            copy(d[j], s[j], k, m, pros);
+          }
         }
       }
       return d;
