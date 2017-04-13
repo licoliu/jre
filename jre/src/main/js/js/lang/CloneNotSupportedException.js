@@ -31,5 +31,5 @@ Class.forName( /** @lends js.lang.CloneNotSupportedException.prototype */ {
   name: "class js.lang.CloneNotSupportedException extends js.lang.Exception",
   "private name": "js.lang.CloneNotSupportedException", // 错误名
   "private number": 109
-    // 错误号
+  // 错误号
 });

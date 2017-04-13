@@ -4394,7 +4394,7 @@ Class.forName( /** @lends js.lang.IllegalArgumentException.prototype */ {
   name: "class js.lang.IllegalArgumentException extends js.lang.Exception",
   "private name": "js.lang.IllegalArgumentException", // 错误名
   "private number": 102
-    // 错误号
+  // 错误号
 });
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
@@ -4422,7 +4422,7 @@ Class.forName( /** @lends js.lang.ClassNotFoundException.prototype */ {
   name: "class js.lang.ClassNotFoundException extends js.lang.Exception",
   "private name": "js.lang.ClassNotFoundException", // 错误名
   "private number": 100
-    // 错误号
+  // 错误号
 });
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
@@ -7475,7 +7475,7 @@ Class
     name: "class js.lang.reflect.InvocationTargetException extends js.lang.Exception",
     "private name": "InvocationTargetException", // 错误名
     "private number": 100
-      // 错误号
+    // 错误号
   });
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
@@ -8338,7 +8338,7 @@ Class.forName( /** @lends js.lang.CloneNotSupportedException.prototype */ {
   name: "class js.lang.CloneNotSupportedException extends js.lang.Exception",
   "private name": "js.lang.CloneNotSupportedException", // 错误名
   "private number": 109
-    // 错误号
+  // 错误号
 });
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com
@@ -8389,7 +8389,7 @@ Class.forName( /** @lends js.lang.IllegalStateException.prototype */ {
   name: "class js.lang.IllegalStateException extends js.lang.Exception",
   "private name": "js.lang.IllegalStateException", // 错误名
   "private number": 103
-    // 错误号
+  // 错误号
 });
 /*
  * ! JSRT JavaScript Library 0.1.1 lico.atom@gmail.com

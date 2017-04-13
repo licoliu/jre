@@ -48,6 +48,31 @@ define(function(require, exports, module) {
       //2014-12-31 23:59:59 999 2014123123235959999星期三365515下午1111
       js.lang.System.out.println(format1.format(1420041599999));
       js.lang.System.out.println(format2.format(1420041599999));
+    },
+
+    "@Test testParse": function() {
+      var format1 = new js.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS");
+      var format2 = new js.text.SimpleDateFormat("yMdkHmsSEDFwWahK");
+
+      // Thu Oct 16 2014 18:00:21 GMT+0800 (CST)
+      js.lang.System.out.println(format1.parse("2014-10-16 18:00:21 420"));
+      js.lang.System.out.println(format2.parse("201410161818021420星期四2893423下午66"));
+
+      //2014-01-01 00:00:00 00   201411240000星期三1111上午120 1388505600000
+      js.lang.System.out.println(format1.parse("2014-01-01 00:00:00 00"));
+      js.lang.System.out.println(format2.parse("201411240000星期三1111上午120"));
+
+      //2014-02-28 23:59:59 999 201422823235959999星期五59495下午1111 1393603199999
+      js.lang.System.out.println(format1.parse("2014-02-28 23:59:59 999"));
+      js.lang.System.out.println(format2.parse("201422823235959999星期五59495下午1111"));
+
+      //2014-03-01 00:00:00 00 201431240000星期六60191上午120 1393603200000
+      js.lang.System.out.println(format1.parse("2014-03-01 00:00:00 00"));
+      js.lang.System.out.println(format2.parse("201431240000星期六60191上午120"));
+
+      //2014-12-31 23:59:59 999 2014123123235959999星期三365515下午1111 1420041599999
+      js.lang.System.out.println(format1.parse("2014-12-31 23:59:59 999"));
+      js.lang.System.out.println(format2.parse("2014123123235959999星期三365515下午1111"));
     }
   }).getClassConstructor();
 });

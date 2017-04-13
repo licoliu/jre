@@ -22,5 +22,5 @@ Class.forName( /** @lends js.lang.IllegalStateException.prototype */ {
   name: "class js.lang.IllegalStateException extends js.lang.Exception",
   "private name": "js.lang.IllegalStateException", // 错误名
   "private number": 103
-    // 错误号
+  // 错误号
 });

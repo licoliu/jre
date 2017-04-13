@@ -340,7 +340,7 @@ define(function(require, exports, module) {
               if (count !== 2)
                 current = value;
               else
-              // count == 2
+                // count == 2
                 current = value % 100;
               break;
 
@@ -511,7 +511,186 @@ define(function(require, exports, module) {
      * @param {js.lang.String} source - A String whose beginning should be parsed.
      * @return {js.util.Date} A Date parsed from the string.
      */
-    'parse': function(source) {},
+    'parse': function(source) {
+      var Calendar = js.util.Calendar;
+      // TODO
+      // Convert input date to time field list
+      this.calendar.clear();
+
+      var useDateFormatSymbols = this.isUseDateFormatSymbols();
+      var index = 0;
+
+      var patternCalendarMap = js.text.SimpleDateFormat.PATTERN_INDEX_TO_CALENDAR_FIELD;
+
+      for (var i = 0; i < this.compiledPattern.length; i++) {
+        var tag = this.compiledPattern[i];
+
+        if (Object.isInstanceof(tag, js.text.FieldPosition)) {
+          var field = tag.getField();
+          // var value = this.calendar.get(patternCalendarMap[field]);
+          var current = null,
+            count = tag.getEndIndex() - tag.getBeginIndex();
+
+          var value = source.substr(index, count);
+
+          switch (field) {
+
+            case js.text.DateFormatSymbols.PATTERN_ERA: // 'G'
+              break;
+
+            case js.text.DateFormatSymbols.PATTERN_YEAR: // 'y'
+              if (count !== 2)
+                current = value;
+              else
+                // count == 2
+                current = value % 100;
+              break;
+
+            case js.text.DateFormatSymbols.PATTERN_MONTH: // 'M'
+              if (useDateFormatSymbols) {
+                var months;
+                if (count >= 4) {
+                  months = this.dateFormatSymbols.getMonths();
+                  current = months.indexOf(value);
+                } else if (count === 3) {
+                  months = this.dateFormatSymbols.getShortMonths();
+                  current = months.indexOf(value);
+                }
+              } else {
+                if (count < 3) {
+                  current = null;
+                }
+              }
+              if (Object.isNull(current)) {
+                current = parseInt(value) - 1;
+              }
+              break;
+
+            case js.text.DateFormatSymbols.PATTERN_DAY_OF_WEEK: // 'E'
+              if (useDateFormatSymbols) {
+                var weekdays;
+                if (count >= 4) {
+                  weekdays = this.dateFormatSymbols.getWeekdays();
+                  current = weekdays.indexOf(value);
+                } else { // count < 4, use abbreviated form
+                  // if exists
+                  weekdays = this.dateFormatSymbols
+                    .getShortWeekdays();
+                  current = weekdays.indexOf(value);
+                }
+              }
+
+              if (Object.isNull(current)) {
+                current = parseInt(value);
+              }
+
+              break;
+
+            case js.text.DateFormatSymbols.PATTERN_AM_PM: // 'a'
+              if (useDateFormatSymbols) {
+                var ampm = this.dateFormatSymbols.getAmPmStrings();
+                current = ampm.indexOf(value);
+              } else {
+                current = value === "PM" ? 1 : 0;
+              }
+              break;
+            case js.text.DateFormatSymbols.PATTERN_HOUR_OF_DAY1: // 'k'
+              // 1-based.
+              // eg,
+              // 23:59
+              // +
+              // 1 hour =>> 24:59
+
+              current = parseInt(value);
+
+              if (current == 24)
+                current = 0;
+
+              break;
+
+            case js.text.DateFormatSymbols.PATTERN_HOUR1: // 'h'
+              // 1-based.
+              // eg,
+              // 11PM
+              // + 1
+              // hour
+              // =>> 12 AM
+
+              current = parseInt(value);
+
+              if (current == 12)
+                current = 0;
+              break;
+
+            case js.text.DateFormatSymbols.PATTERN_MINUTE: //
+              // 'm'
+
+            case js.text.DateFormatSymbols.PATTERN_SECOND: //
+              // 's'
+
+            case js.text.DateFormatSymbols.PATTERN_HOUR_OF_DAY0:
+              // 'H' 0-based. eg, 23:59 + 1 hour =>> 00:59
+            case js.text.DateFormatSymbols.PATTERN_DAY_OF_MONTH: // 'd'
+
+            case js.text.DateFormatSymbols.PATTERN_WEEK_OF_YEAR:
+              // // 'w'
+
+              current = parseInt(value);
+
+              break;
+
+            case js.text.DateFormatSymbols.PATTERN_MILLISECOND: //
+              // 'S'
+
+            case js.text.DateFormatSymbols.PATTERN_DAY_OF_YEAR: //
+              // 'D'
+              current = parseInt(value);
+
+              break;
+              /*
+               * case PATTERN_ZONE_NAME: // 'z'
+               *
+               * break;
+               *
+               * case PATTERN_ZONE_VALUE: // 'Z' ("-/+hhmm" form)
+               *
+               * break;
+               *
+               * case PATTERN_ISO_ZONE: // 'X'
+               *
+               * break;
+               */
+            default:
+
+              // case
+              // js.text.DateFormatSymbols.PATTERN_DAY_OF_WEEK_IN_MONTH:
+              // // 'F'
+
+              // case
+              // js.text.DateFormatSymbols.PATTERN_WEEK_OF_MONTH:
+              // // 'W'
+
+              // case js.text.DateFormatSymbols.PATTERN_HOUR0: //
+              // 'K' eg, 11PM + 1 hour =>>
+              // 0 AM
+
+              // case
+              // js.text.DateFormatSymbols.PATTERN_ISO_DAY_OF_WEEK:
+              // // 'u' pseudo
+              // field, Monday = 1, ..., Sunday = 7
+
+              current = parseInt(value);
+              break;
+          } // switch (patternCharIndex)
+
+          this.calendar.set(patternCalendarMap[field], current);
+          index += count;
+        } else {
+          index += tag.length;
+        }
+      }
+      return this.calendar.getTime();
+    },
 
     "private boolean isUseDateFormatSymbols": function() {
       if (this.useDateFormatSymbols) {

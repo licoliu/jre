@@ -24,5 +24,5 @@ Class.forName( /** @lends js.lang.ClassNotFoundException.prototype */ {
   name: "class js.lang.ClassNotFoundException extends js.lang.Exception",
   "private name": "js.lang.ClassNotFoundException", // 错误名
   "private number": 100
-    // 错误号
+  // 错误号
 });

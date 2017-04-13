@@ -26,6 +26,6 @@ define(function(require, exports, module) {
     name: "class js.util.NoSuchElementException extends js.lang.Exception",
     "private name": "js.util.NoSuchElementException", // 错误名
     "private number": 801
-      // 错误号
+    // 错误号
   }).getClassConstructor();
 });
