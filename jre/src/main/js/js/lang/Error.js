@@ -50,7 +50,11 @@ Class.forName( /** @lends js.lang.Error.prototype */ {
     for (; __index < __length; __index++) {
       methods[__methods[__index]._name] = __methods[__index]._value;
     }
-    Object.extend(Error.prototype, methods);
+    Object.extend(Error.prototype, methods, null, null, {
+      writable: false,
+      enumerable: false,
+      configurable: false
+    });
   }
 });
 

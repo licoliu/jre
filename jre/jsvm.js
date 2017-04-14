@@ -112,7 +112,11 @@
 
   var extend = (function() {
     var copy = function(d, s, k, m, pros) {
-      pros = pros || {};
+      pros = pros || {
+        writable: true,
+        enumerable: true,
+        configurable: true
+      };
       var writable = !!pros.writable,
         enumerable = !!pros.enumerable,
         configurable = !!pros.configurable;
@@ -203,6 +207,8 @@
             copy(d[j], s[j], k, m, pros);
           }
         }
+
+        d.splice(j, d.length - j);
       }
       return d;
     };
@@ -4365,7 +4371,11 @@ Class.forName( /** @lends js.lang.Error.prototype */ {
     for (; __index < __length; __index++) {
       methods[__methods[__index]._name] = __methods[__index]._value;
     }
-    Object.extend(Error.prototype, methods);
+    Object.extend(Error.prototype, methods, null, null, {
+      writable: false,
+      enumerable: false,
+      configurable: false
+    });
   }
 });
 
