@@ -20,7 +20,7 @@ define(function(require, exports, module) {
    */
   return Class.forName( /** @lends org.atomunion.stereotype.Component.prototype */ {
     name: "@interface org.atomunion.stereotype.Component",
-    execute: function(self, field, Modifier, Attribute) {
+    execute: function(self, field) {
       var context = org.atomunion.beans.factory.support.AutowireCapableBeanFactory.getInstance();
       context.registerSingleton(self.getFullName(), self.newInstance());
     }

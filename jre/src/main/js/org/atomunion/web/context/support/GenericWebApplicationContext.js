@@ -68,15 +68,33 @@
        * @param {js.lang.Boolean} forceNew - force to create a new bean instance
        * @return {js.lang.Object} an instance of the bean
        */
-      "getBean": function(name, forceNew) {
+      "getBean": function(name, forceNew, ctx) {
         var type = this.getType(name);
 
         if (!type) {
           return null;
         }
 
+        var parameters = [],
+          cc2 = type.getConstructor(),
+          annotation = cc2.getAnnotation(org.atomunion.stereotype.Resource.$class);
+
+        if (annotation && Object.isFunction(annotation.execute)) {
+          parameters = annotation.execute(self, cc2);
+
+          if (ctx) {
+            var beanName = null;
+            for (var i = 0, len = annotation.beanNames.length; i < len; i++) {
+              beanName = annotation.beanNames[i];
+              if (ctx[beanName]) {
+                parameters[i] = ctx[beanName];
+              }
+            }
+          }
+        }
+
         if (forceNew) {
-          return type.newInstance();
+          return type.newInstance.apply(type, parameters);
         }
 
         var context = org.atomunion.beans.factory.support.AutowireCapableBeanFactory.getInstance();
@@ -86,7 +104,7 @@
         } else if (this.beans.containsKey(name)) {
           return this.beans.get(name);
         } else {
-          var bean = type.newInstance();
+          var bean = type.newInstance.apply(type, parameters);
           this.beans.put(name, bean);
           return bean;
         }

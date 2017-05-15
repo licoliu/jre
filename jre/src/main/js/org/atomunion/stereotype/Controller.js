@@ -24,7 +24,7 @@ define(function(require, exports, module) {
   return Class.forName( /** @lends org.atomunion.stereotype.Controller.prototype */ {
     name: "@interface org.atomunion.stereotype.Controller extends org.atomunion.stereotype.Component",
 
-    execute: function(self, field, Modifier, Attribute) {
+    execute: function(self, field) {
       this.$super.execute.apply(this.$super, arguments);
     }
   }).getClassConstructor();

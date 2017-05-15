@@ -39,7 +39,7 @@ define(function(require, exports, module) {
       }
     },
 
-    execute: function(self, field, Modifier, Attribute) {
+    execute: function(self, field) {
       var context = org.atomunion.beans.factory.support.AutowireCapableBeanFactory.getInstance();
       var beans = [];
 

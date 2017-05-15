@@ -27,7 +27,7 @@ define(function(require, exports, module) {
   return Class.forName( /** @lends org.atomunion.stereotype.Dao.prototype */ {
     name: "@interface org.atomunion.stereotype.Dao extends org.atomunion.stereotype.Component",
 
-    execute: function(self, field, Modifier, Attribute) {
+    execute: function(self, field) {
       this.$super.execute.apply(this.$super, arguments);
     }
   }).getClassConstructor();

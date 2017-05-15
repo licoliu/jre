@@ -55,7 +55,7 @@ define(function(require, exports, module) {
      *
      * @return {js.lang.Object} 
      */
-    getObject: function() {
+    getObject: function(ctx) {
       this.initializeAdvisorChain();
       if (this.isSingleton() && this.singletonInstance) {
         return this.getSingletonInstance();
@@ -64,7 +64,7 @@ define(function(require, exports, module) {
           console.warn("Using non-singleton proxies with singleton targets is often undesirable. " +
             "Enable prototype proxies by setting the 'targetName' property.");
         }
-        return this.newPrototypeInstance();
+        return this.newPrototypeInstance(ctx);
       }
     },
 
@@ -214,7 +214,7 @@ define(function(require, exports, module) {
       };
     },
 
-    "private newPrototypeInstance": function() {
+    "private newPrototypeInstance": function(ctx) {
       var context = org.atomunion.web.context.support.GenericWebApplicationContext.getInstance();
       var targetClass = context.getType(this.targetName);
 
@@ -262,7 +262,7 @@ define(function(require, exports, module) {
         }
       }
 
-      this.singletonInstance = context.getBean(this.targetName, !this.isSingleton());
+      this.singletonInstance = context.getBean(this.targetName, !this.isSingleton(), ctx);
 
       return this.singletonInstance;
     }

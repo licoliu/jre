@@ -23,7 +23,7 @@ define(function(require, exports, module) {
   return Class.forName( /** @lends org.atomunion.stereotype.Autowire.prototype */ {
     name: "@interface org.atomunion.stereotype.Autowire extends org.atomunion.stereotype.Repository",
 
-    execute: function(self, field, Modifier, Attribute) {
+    execute: function(self, field) {
       return this.$super.execute.apply(this, arguments);
     }
   }).getClassConstructor();

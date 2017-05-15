@@ -890,8 +890,7 @@ Object
   var doAnnotations = function(self, m) {
     var annotations = m.getDeclaredAnnotations(),
       annotation = null,
-      ans = [],
-      results = {};
+      ans = [];
     for (var i = 0, len = annotations.length; i < len; i++) {
       annotation = annotations[i];
       if (Object.isString(annotation)) {
@@ -902,47 +901,12 @@ Object
       }
 
       if (annotation && Object.isFunction(annotation.execute)) {
-        results[annotation.getClass().getFullName()] = annotation.execute(self, m, Modifier, Attribute);
-        /*
-        if (self == m) {
-          // 类上的注解
-        } else if (Object.isFunction(m.getValue())) {
-          // 方法上的注解
-        } else {
-          // 属性上的注解
-          if (m.getName() && m.getName().length > 1 && m.getName().length != "_") {
-            var name = m.getName().indexOf("_") === 0 ? m.getName()
-              .substring(1) : m.getName();
-            name = name.charAt(0).toUpperCase() + name.substring(1);
-
-            var modifier = Modifier.publicBit + Modifier.writableBit + Modifier.proxyableBit;
-            //(((m.getModifiers() & 8) != 0) ? 8 : 0) + 1;
-
-            if (m.getDeclaredAnnotations().indexOf("@Getter") != -1) {
-              var getName = "get" + name;
-              if (!self.hasDeclaredField(getName)) {
-                self.addMethod(new Attribute(getName, function() {
-                  return this[m.getName()];
-                }, self, modifier, []));
-              }
-            }
-            if (m.getDeclaredAnnotations().indexOf("@Setter") != -1) {
-              var setName = "set" + name;
-              if (!self.hasDeclaredField(setName)) {
-                self.addMethod(new Attribute(setName, function(value) {
-                  this[m.getName()] = value;
-                }, self, modifier, []));
-              }
-            }
-          }
-        }
-        */
+        annotation.execute(self, m, Modifier, Attribute);
       }
     }
     if (ans.length > 0) {
       m.setAnnotations(ans);
     }
-    return results;
   };
 
   var empty = function() {};
@@ -1235,12 +1199,7 @@ Object
           // 4.用户构造器,先调用父类构造器以及constructor2方法
           var constructor2 = classObj.getConstructor().getValue();
           if (constructor2) {
-            var rs = doAnnotations(this, heap.get(classObj, "constructor2"));
-            if (rs["org.atomunion.stereotype.Resource"]) {
-              constructor2.apply(this, rs["org.atomunion.stereotype.Resource"]);
-            } else {
-              constructor2.apply(this, arguments);
-            }
+            constructor2.apply(this, arguments);
           }
 
           // 5.设置$super对象
@@ -2067,13 +2026,10 @@ Object
      */
     newInstance: function() {
       var cc = heap.get(this, "classConstructor"),
-        instance = new cc();
+        parameters = arguments;
 
-      if (arguments.length > 0) {
-        instance.apply(instance, arguments);
-      }
-
-      return instance;
+      Array.prototype.splice.call(parameters, 0, 0, null);
+      return new(Function.prototype.bind.apply(cc, parameters));
     },
 
     /** 
