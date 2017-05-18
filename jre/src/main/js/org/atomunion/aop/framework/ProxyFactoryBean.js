@@ -154,38 +154,34 @@ define(function(require, exports, module) {
         }
 
         var result = null,
-          scope = this;
+          scope = this,
+          promise = null;
         try {
           result = (!Object.isEmpty(f) && Object.isFunction(f)) ? f.apply(scope, args) : f;
-          if (result && result.$promise && Object.isFunction(result.$promise.then)) {
-            result.$promise.then(
-              /*function() {
-                  if (!Object.isEmpty(afterReturnings)) {
-                    for (var ai = 0, length3 = afterReturnings.length; ai < length3; ai++) {
-                      var afterReturning = afterReturnings[ai];
-                      if (Object.isFunction(afterReturning)) {
-                        afterReturning.call(scope, result, method, args, scope);
+          if (result) {
+            promise = result.$promise || result;
+            if (Object.isFunction(promise.then)) {
+              promise.then(
+                null,
+                function(response) {
+                  if (response && !Object.isEmpty(afterThrowings)) {
+                    for (var ti = 0, length2 = afterThrowings.length; ti < length2; ti++) {
+                      var afterThrowing = afterThrowings[ti];
+                      if (Object.isFunction(afterThrowing)) {
+                        afterThrowing.call(scope, method, args, scope,
+                          new js.lang.AsynchronousCallException("asynchronous " + method.getName() + " call error, server response is \"" + response.statusText + " - " + response.status + "\".",
+                            method.getDeclaringClass().getFullName(),
+                            null,
+                            response.data,
+                            response),
+                          result);
                       }
                     }
+                  } else {
+                    result.$resolved = true;
                   }
-                }*/
-              null,
-              function(response) {
-                if (!Object.isEmpty(afterThrowings)) {
-                  for (var ti = 0, length2 = afterThrowings.length; ti < length2; ti++) {
-                    var afterThrowing = afterThrowings[ti];
-                    if (Object.isFunction(afterThrowing)) {
-                      afterThrowing.call(scope, method, args, scope,
-                        new js.lang.AsynchronousCallException("asynchronous " + method.getName() + " call error, server response is \"" + response.statusText + " - " + response.status + "\".",
-                          method.getDeclaringClass().getFullName(),
-                          null,
-                          response.data,
-                          response),
-                        result);
-                    }
-                  }
-                }
-              });
+                });
+            }
           }
         } catch (e) {
           if (Object.isEmpty(afterThrowings)) {
