@@ -267,11 +267,11 @@ define(function(require, exports, module) {
           minutes = 0,
           seconds = 0,
           milliseconds = 0,
-          zone = new Date(),
+          zone = new Date(0),
           offset = zone
           .getTimezoneOffset() * 60 * 1000;
 
-        var truncMonth = new Date();
+        var truncMonth = new Date(0);
         truncMonth.setFullYear(year);
         truncMonth.setMonth(month);
         truncMonth.setDate(day);
@@ -330,7 +330,7 @@ define(function(require, exports, module) {
             month = 12 + month % 12;
           }
 
-          truncMonth = new Date();
+          truncMonth = new Date(0);
           truncMonth.setFullYear(year);
           truncMonth.setMonth(month);
           truncMonth.setDate(day);
@@ -404,7 +404,7 @@ define(function(require, exports, module) {
           milliseconds = this.internalGet(Calendar.MILLISECOND);
         }
 
-        var timeDate = new Date();
+        var timeDate = new Date(0);
 
         timeDate.setFullYear(year);
         timeDate.setMonth(month);
@@ -441,7 +441,7 @@ define(function(require, exports, module) {
           milliseconds = date
           .getMilliseconds();
 
-        var truncYear = new Date();
+        var truncYear = new Date(0);
         truncYear.setFullYear(year);
         truncYear.setMonth(0);
         truncYear.setDate(1);
@@ -521,7 +521,7 @@ define(function(require, exports, module) {
             this.set(Calendar.YEAR, 1 - year);
           }
 
-          truncYear = new Date();
+          truncYear = new Date(0);
           truncYear.setFullYear(year);
           truncYear.setMonth(this.internalGet(Calendar.MONTH));
           truncYear.setDate(this.internalGet(Calendar.DAY_OF_MONTH));
@@ -545,7 +545,7 @@ define(function(require, exports, module) {
             month = 12 + month % 12;
           }
 
-          truncYear = new Date();
+          truncYear = new Date(0);
           truncYear.setFullYear(year);
           truncYear.setMonth(month);
           truncYear.setDate(this.internalGet(Calendar.DAY_OF_MONTH));

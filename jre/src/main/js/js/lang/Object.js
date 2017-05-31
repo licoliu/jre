@@ -171,7 +171,7 @@
       } else if (this instanceof Function || this instanceof RegExp || this instanceof Error || this instanceof EvalError || this instanceof RangeError || this instanceof ReferenceError || this instanceof SyntaxError || this instanceof TypeError || this instanceof URIError) {
         return this;
       } else if (this instanceof Date) {
-        b = new Date();
+        b = new Date(0);
         b.setTime(this.getTime());
         return b;
       } else if (Object.isNumber(this) || Object.isString(this) || Object.isBoolean(this)) {

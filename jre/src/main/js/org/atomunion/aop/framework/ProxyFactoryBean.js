@@ -164,7 +164,7 @@ define(function(require, exports, module) {
               promise.then(
                 null,
                 function(response) {
-                  if (response && !Object.isEmpty(afterThrowings)) {
+                  if (response && response.status > 0 && !Object.isEmpty(afterThrowings)) {
                     for (var ti = 0, length2 = afterThrowings.length; ti < length2; ti++) {
                       var afterThrowing = afterThrowings[ti];
                       if (Object.isFunction(afterThrowing)) {
