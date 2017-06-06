@@ -351,7 +351,7 @@ Object
          * @return {js.lang.Boolean} A Boolean indicating whether or not the specified object is a number.
          */
         isNumber: function(v) {
-          return typeof v === "number" && isFinite(v);
+          return (typeof v === "number" && isFinite(v)) || v instanceof Number;
         },
 
         /** 
@@ -366,7 +366,7 @@ Object
          * @return {js.lang.Boolean} A Boolean indicating whether or not the specified object is a string.
          */
         isString: function(v) {
-          return typeof v === "string";
+          return typeof v === "string" || v instanceof String;
         },
 
         /** 
@@ -381,7 +381,7 @@ Object
          * @return {js.lang.Boolean} A Boolean indicating whether or not the specified object is a Boolean object.
          */
         isBoolean: function(v) {
-          return typeof v === "boolean";
+          return typeof v === "boolean" || v instanceof Boolean;
         },
 
         /** 
@@ -2995,6 +2995,10 @@ Class.forName( /** @lends js.lang.Boolean.prototype */ {
    */
   "equals": function(obj) {
     return Object.isBoolean(obj) && this == obj;
+  },
+
+  booleanValue: function() {
+    return this.primitiveValue || this.valueOf();
   }
 });
 /*!
@@ -3125,7 +3129,11 @@ Class.forName( /** @lends js.lang.Number.prototype */ {
    * @param {js.lang.Number} precision - Optional. An integer specifying the number of significant digits.
    * @return {js.lang.Boolean} A string representing a Number object in fixed-point or exponential notation rounded to precision significant digits.
    */
-  toPrecision: Number.prototype.toPrecision
+  toPrecision: Number.prototype.toPrecision,
+
+  numberValue: function() {
+    return this.primitiveValue || this.valueOf();
+  }
 
 });
 /*!
@@ -3438,7 +3446,11 @@ Class.forName( /** @lends js.lang.String.prototype */ {
    *
    * @return {js.lang.String} A new string representing the calling string converted to upper case.
    */
-  toUpperCase: String.prototype.toUpperCase
+  toUpperCase: String.prototype.toUpperCase,
+
+  stringValue: function() {
+    return this.primitiveValue || this.valueOf();
+  }
 
 });
 /*

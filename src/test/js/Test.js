@@ -5,6 +5,10 @@ define(function(require, exports, module) {
   require("test!js.lang.TestObject");
   require("test!js.lang.TestOOP");
 
+  require("test!js.lang.TestNumber");
+  require("test!js.lang.TestBoolean");
+  require("test!js.lang.TestString");
+
   require("test!js.lang.TestStringBuffer");
   require("test!js.lang.TestArray");
 
@@ -47,6 +51,9 @@ define(function(require, exports, module) {
     js.test.TestTestCase.$class,
     js.lang.TestObject.$class,
     js.lang.TestOOP.$class,
+    js.lang.TestNumber.$class,
+    js.lang.TestBoolean.$class,
+    js.lang.TestString.$class,
     js.lang.TestStringBuffer.$class,
     js.lang.TestArray.$class,
     js.lang.TestClass.$class,

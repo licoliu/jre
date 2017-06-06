@@ -276,6 +276,10 @@ Class.forName( /** @lends js.lang.String.prototype */ {
    *
    * @return {js.lang.String} A new string representing the calling string converted to upper case.
    */
-  toUpperCase: String.prototype.toUpperCase
+  toUpperCase: String.prototype.toUpperCase,
+
+  stringValue: function() {
+    return this.primitiveValue || this.valueOf();
+  }
 
 });

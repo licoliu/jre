@@ -351,7 +351,7 @@ Object
          * @return {js.lang.Boolean} A Boolean indicating whether or not the specified object is a number.
          */
         isNumber: function(v) {
-          return typeof v === "number" && isFinite(v);
+          return (typeof v === "number" && isFinite(v)) || v instanceof Number;
         },
 
         /** 
@@ -366,7 +366,7 @@ Object
          * @return {js.lang.Boolean} A Boolean indicating whether or not the specified object is a string.
          */
         isString: function(v) {
-          return typeof v === "string";
+          return typeof v === "string" || v instanceof String;
         },
 
         /** 
@@ -381,7 +381,7 @@ Object
          * @return {js.lang.Boolean} A Boolean indicating whether or not the specified object is a Boolean object.
          */
         isBoolean: function(v) {
-          return typeof v === "boolean";
+          return typeof v === "boolean" || v instanceof Boolean;
         },
 
         /** 

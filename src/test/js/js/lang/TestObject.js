@@ -13,22 +13,21 @@ define(function(require, exports, module) {
     "@Setter @Getter private obj": dog,
 
     "@Test testIsNull": function() {
-
       js.test.Assert.assertTrue("null", Object.isNull(null));
       js.test.Assert.assertTrue("undefined", Object.isNull(undefined));
       js.test.Assert.assertFalse("{}:", Object.isNull({}));
       js.test.Assert.assertFalse("[]:", Object.isNull([]));
       js.test.Assert.assertFalse("0", Object.isNull(0));
       js.test.Assert.assertFalse("0.0", Object.isNull(0.0));
-      js.test.Assert.assertFalse("\"\"", Object.isNull(""));
       js.test.Assert.assertFalse("-1", Object.isNull(-1));
+      js.test.Assert.assertFalse("\"\"", Object.isNull(""));
       js.test.Assert.assertFalse("new Date()", Object.isNull(new Date()));
       js.test.Assert.assertFalse("new js.model.Dog()", Object.isNull(dog));
       js.test.Assert.assertFalse("function(){}", Object.isNull(function() {}));
-
       js.test.Assert.assertFalse("true", Object.isNull(true));
       js.test.Assert.assertFalse("false", Object.isNull(false));
     },
+
     "@Test testIsEmpty": function() {
       js.test.Assert.assertTrue("null", Object.isEmpty(null));
       js.test.Assert.assertTrue("undefined", Object.isEmpty(undefined));
@@ -36,12 +35,11 @@ define(function(require, exports, module) {
       js.test.Assert.assertTrue("[]", Object.isEmpty([]));
       js.test.Assert.assertFalse("0", Object.isEmpty(0));
       js.test.Assert.assertFalse("0.0", Object.isEmpty(0.0));
-      js.test.Assert.assertTrue("\"\"", Object.isEmpty(""));
       js.test.Assert.assertFalse("-1", Object.isEmpty(-1));
+      js.test.Assert.assertTrue("\"\"", Object.isEmpty(""));
       js.test.Assert.assertFalse("new Date()", Object.isEmpty(new Date()));
       js.test.Assert.assertFalse("new js.model.Dog()", Object.isEmpty(dog));
       js.test.Assert.assertFalse("function(){}", Object.isEmpty(function() {}));
-
       js.test.Assert.assertFalse("true", Object.isEmpty(true));
       js.test.Assert.assertFalse("false", Object.isEmpty(false));
     },
@@ -54,12 +52,11 @@ define(function(require, exports, module) {
       js.test.Assert.assertTrue("[]", Object.isArray([]));
       js.test.Assert.assertFalse("0", Object.isArray(0));
       js.test.Assert.assertFalse("0.0", Object.isArray(0.0));
-      js.test.Assert.assertFalse("\"\"", Object.isArray(""));
       js.test.Assert.assertFalse("-1", Object.isArray(-1));
+      js.test.Assert.assertFalse("\"\"", Object.isArray(""));
       js.test.Assert.assertFalse("new Date()", Object.isArray(new Date()));
       js.test.Assert.assertFalse("new js.model.Dog()", Object.isArray(dog));
       js.test.Assert.assertFalse("function(){}", Object.isArray(function() {}));
-
       js.test.Assert.assertFalse("true", Object.isArray(true));
       js.test.Assert.assertFalse("false", Object.isArray(false));
     },
@@ -72,12 +69,11 @@ define(function(require, exports, module) {
       js.test.Assert.assertFalse("[]", Object.isDate([]));
       js.test.Assert.assertFalse("0", Object.isDate(0));
       js.test.Assert.assertFalse("0.0", Object.isDate(0.0));
-      js.test.Assert.assertFalse("\"\"", Object.isDate(""));
       js.test.Assert.assertFalse("-1", Object.isDate(-1));
+      js.test.Assert.assertFalse("\"\"", Object.isDate(""));
       js.test.Assert.assertTrue("new Date()", Object.isDate(new Date()));
       js.test.Assert.assertFalse("new js.model.Dog()", Object.isDate(dog));
       js.test.Assert.assertFalse("function(){}", Object.isDate(function() {}));
-
       js.test.Assert.assertFalse("true", Object.isDate(true));
       js.test.Assert.assertFalse("false", Object.isDate(false));
 
@@ -91,12 +87,11 @@ define(function(require, exports, module) {
       js.test.Assert.assertFalse("[]", Object.isNarrowObject([]));
       js.test.Assert.assertFalse("0", Object.isNarrowObject(0));
       js.test.Assert.assertFalse("0.0", Object.isNarrowObject(0.0));
-      js.test.Assert.assertFalse("\"\"", Object.isNarrowObject(""));
       js.test.Assert.assertFalse("-1", Object.isNarrowObject(-1));
+      js.test.Assert.assertFalse("\"\"", Object.isNarrowObject(""));
       js.test.Assert.assertFalse("new Date()", Object.isNarrowObject(new Date()));
       js.test.Assert.assertTrue("new js.model.Dog()", Object.isNarrowObject(dog));
       js.test.Assert.assertFalse("function(){}", Object.isNarrowObject(function() {}));
-
       js.test.Assert.assertFalse("true:" + Object.isNarrowObject(true));
       js.test.Assert.assertFalse("false:" + Object.isNarrowObject(false));
 
@@ -110,12 +105,11 @@ define(function(require, exports, module) {
       js.test.Assert.assertFalse("[]", Object.isFunction([]));
       js.test.Assert.assertFalse("0", Object.isFunction(0));
       js.test.Assert.assertFalse("0.0", Object.isFunction(0.0));
-      js.test.Assert.assertFalse("\"\"", Object.isFunction(""));
       js.test.Assert.assertFalse("-1", Object.isFunction(-1));
+      js.test.Assert.assertFalse("\"\"", Object.isFunction(""));
       js.test.Assert.assertFalse("new Date()", Object.isFunction(new Date()));
       js.test.Assert.assertFalse("new js.model.Dog()", Object.isFunction(dog));
       js.test.Assert.assertTrue("function(){}", Object.isFunction(function() {}));
-
       js.test.Assert.assertFalse("true", Object.isFunction(true));
       js.test.Assert.assertFalse("false", Object.isFunction(false));
     },
@@ -128,12 +122,13 @@ define(function(require, exports, module) {
       js.test.Assert.assertFalse("[]", Object.isNumber([]));
       js.test.Assert.assertTrue("0", Object.isNumber(0));
       js.test.Assert.assertTrue("0.0", Object.isNumber(0.0));
-      js.test.Assert.assertFalse("\"\"", Object.isNumber(""));
+      js.test.Assert.assertTrue("new Number(0)", Object.isNumber(new Number(0)));
+      js.test.Assert.assertTrue("new Number(0.0)", Object.isNumber(new Number(0.0)));
       js.test.Assert.assertTrue("-1", Object.isNumber(-1));
+      js.test.Assert.assertFalse("\"\"", Object.isNumber(""));
       js.test.Assert.assertFalse("new Date()", Object.isNumber(new Date()));
       js.test.Assert.assertFalse("new js.model.Dog()", Object.isNumber(dog));
       js.test.Assert.assertFalse("function(){}", Object.isNumber(function() {}));
-
       js.test.Assert.assertFalse("true", Object.isNumber(true));
       js.test.Assert.assertFalse("false", Object.isNumber(false));
 
@@ -147,12 +142,12 @@ define(function(require, exports, module) {
       js.test.Assert.assertFalse("[]", Object.isString([]));
       js.test.Assert.assertFalse("0", Object.isString(0));
       js.test.Assert.assertFalse("0.0", Object.isString(0.0));
-      js.test.Assert.assertTrue("\"\"", Object.isString(""));
       js.test.Assert.assertFalse("-1", Object.isString(-1));
+      js.test.Assert.assertTrue("\"\"", Object.isString(""));
+      js.test.Assert.assertTrue("new String('')", Object.isString(new String('')));
       js.test.Assert.assertFalse("new Date()", Object.isString(new Date()));
       js.test.Assert.assertFalse("new js.model.Dog()", Object.isString(dog));
       js.test.Assert.assertFalse("function(){}", Object.isString(function() {}));
-
       js.test.Assert.assertFalse("true", Object.isString(true));
       js.test.Assert.assertFalse("false", Object.isString(false));
 
@@ -173,7 +168,8 @@ define(function(require, exports, module) {
       js.test.Assert.assertFalse("function(){}", Object.isBoolean(function() {}));
       js.test.Assert.assertTrue("true", Object.isBoolean(true));
       js.test.Assert.assertTrue("false", Object.isBoolean(false));
-
+      js.test.Assert.assertTrue("new Boolean(true)", Object.isBoolean(new Boolean(true)));
+      js.test.Assert.assertTrue("new Boolean(false)", Object.isBoolean(new Boolean(false)));
     },
 
     "@Test testIsDefined": function() {
@@ -184,8 +180,8 @@ define(function(require, exports, module) {
       js.test.Assert.assertTrue("[]", Object.isDefined([]));
       js.test.Assert.assertTrue("0", Object.isDefined(0));
       js.test.Assert.assertTrue("0.0", Object.isDefined(0.0));
-      js.test.Assert.assertTrue("\"\"", Object.isDefined(""));
       js.test.Assert.assertTrue("-1", Object.isDefined(-1));
+      js.test.Assert.assertTrue("\"\"", Object.isDefined(""));
       js.test.Assert.assertTrue("new Date()", Object.isDefined(new Date()));
       js.test.Assert.assertTrue("new js.model.Dog()", Object.isDefined(dog));
       js.test.Assert.assertTrue("function(){}", Object.isDefined(function() {}));

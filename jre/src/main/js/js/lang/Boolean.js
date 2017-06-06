@@ -45,5 +45,9 @@ Class.forName( /** @lends js.lang.Boolean.prototype */ {
    */
   "equals": function(obj) {
     return Object.isBoolean(obj) && this == obj;
+  },
+
+  booleanValue: function() {
+    return this.primitiveValue || this.valueOf();
   }
 });

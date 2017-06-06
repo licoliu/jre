@@ -88,6 +88,10 @@ Class.forName( /** @lends js.lang.Number.prototype */ {
    * @param {js.lang.Number} precision - Optional. An integer specifying the number of significant digits.
    * @return {js.lang.Boolean} A string representing a Number object in fixed-point or exponential notation rounded to precision significant digits.
    */
-  toPrecision: Number.prototype.toPrecision
+  toPrecision: Number.prototype.toPrecision,
+
+  numberValue: function() {
+    return this.primitiveValue || this.valueOf();
+  }
 
 });
