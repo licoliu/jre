@@ -21,5 +21,11 @@
 Class.forName( /** @lends js.lang.AsynchronousCallException.prototype */ {
   name: "class js.lang.AsynchronousCallException extends js.lang.Exception",
   "private name": "js.lang.AsynchronousCallException", // 错误名
-  "private number": 500 // 错误号
+  "private number": 500, // 错误号
+
+  "toString": function() {
+    var name = this.getClass().getFullName(),
+      desc = this.description;
+    return (desc && desc.status) ? name + ": " + desc.statusText + "-" + desc.status : name;
+  }
 });

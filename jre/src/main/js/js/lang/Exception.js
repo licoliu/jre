@@ -31,6 +31,11 @@ Class.forName( /** @lends js.lang.Exception.prototype */ {
     this.stack = stack;
     this.lineNumber = lineNumber;
     this.description = description;
+  },
+
+  "toString": function() {
+    var name = this.getClass().getFullName();
+    return this.message ? name + ": " + this.message : name;
   }
 
 });

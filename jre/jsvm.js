@@ -4284,6 +4284,11 @@ Class.forName( /** @lends js.lang.Exception.prototype */ {
     this.stack = stack;
     this.lineNumber = lineNumber;
     this.description = description;
+  },
+
+  "toString": function() {
+    var name = this.getClass().getFullName();
+    return this.message ? name + ": " + this.message : name;
   }
 
 });
@@ -8749,5 +8754,11 @@ Class.forName( /** @lends js.lang.StringBuffer.prototype */ {
 Class.forName( /** @lends js.lang.AsynchronousCallException.prototype */ {
   name: "class js.lang.AsynchronousCallException extends js.lang.Exception",
   "private name": "js.lang.AsynchronousCallException", // 错误名
-  "private number": 500 // 错误号
+  "private number": 500, // 错误号
+
+  "toString": function() {
+    var name = this.getClass().getFullName(),
+      desc = this.description;
+    return (desc && desc.status) ? name + ": " + desc.statusText + "-" + desc.status : name;
+  }
 });
