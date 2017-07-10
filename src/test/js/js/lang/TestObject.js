@@ -197,6 +197,114 @@ define(function(require, exports, module) {
       js.test.Assert.assertNotSame("克隆前后  assertSame ", this.getObj(), c);
     },
 
+    "@Test testExtend": function() {
+      var a1 = {
+          name: 'a1'
+        },
+        b1 = {
+          name: 'b1'
+        };
+      var a2 = {
+          name: "a2",
+          children: [{
+            name: "ac2"
+          }]
+        },
+        b2 = {
+          name: "b2",
+          children: [{
+            name: "bc2"
+          }]
+        };
+      var a3 = {
+          name: "a3",
+          children: [{
+            name: "ac3"
+          }, {
+            name: "ac33"
+          }]
+        },
+        b3 = {
+          name: "b3",
+          children: [{
+            name: "bc3"
+          }]
+        };
+      var a4 = {
+          name: "a4",
+          children: [{
+            name: "ac4"
+          }]
+        },
+        b4 = {
+          name: "b4",
+          children: [{
+            name: "bc4"
+          }, {
+            name: "bc44"
+          }]
+        };
+      var a5 = {
+          name: "a5",
+          children: [{
+            id: 1,
+            name: "ac5"
+          }]
+        },
+        b5 = {
+          name: "b5",
+          children: [{
+            id: 1,
+            name: "bc5"
+          }, {
+            id: 2,
+            name: "bc55"
+          }]
+        };
+      var a6 = {
+          name: "a6",
+          children: [{
+            id: 1,
+            name: "ac6"
+          }]
+        },
+        b6 = {
+          name: "b6",
+          children: [{
+            id: 1,
+            name: "bc6"
+          }, {
+            id: 2,
+            name: "bc66"
+          }]
+        };
+
+      Object.extend(a1, b1);
+      js.test.Assert.assertTrue("Object.extend测试不通过", a1.name === 'b1');
+
+      Object.extend(a2, b2);
+      js.test.Assert.assertTrue("Object.extend测试不通过", a2.children[0].name === 'bc2');
+
+      Object.extend(a3, b3);
+      js.test.Assert.assertTrue("Object.extend测试不通过", a3.children.length === 1);
+
+      Object.extend(a4, b4);
+      js.test.Assert.assertTrue("Object.extend测试不通过", a4.children.length == 2);
+      js.test.Assert.assertTrue("Object.extend测试不通过", a4.children[0].hashCode() !== b4.children[0].hashCode());
+
+      Object.extend(a5, b5, "children", "children", {
+        comparator: true
+      });
+      js.test.Assert.assertTrue("Object.extend测试不通过", a5.children[0].hashCode() === b5.children[0].hashCode());
+
+      Object.extend(a6, b6, "children", "children", {
+        comparator: function(d, s) {
+          return d.id == s.id;
+        }
+      });
+      js.test.Assert.assertTrue("Object.extend测试不通过", a6.children[0].hashCode() !== b6.children[0].hashCode());
+    },
+
     "@Test testEach": function() {
       js.lang.System.out.println("被遍历的对象:" + this.getObj().toString());
       Object.each(this.getObj(), function(i, o, a) {

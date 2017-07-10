@@ -111,105 +111,140 @@
   var USEECMA = !!Object.defineProperties;
 
   var extend = (function() {
-    var copy = function(d, s, k, m, pros) {
-      pros = pros || {
-        writable: true,
-        enumerable: true,
-        configurable: true
-      };
+    var copyObject = function(d, s, pros) {
+      if (d == s) {
+        return;
+      }
+
       var writable = !!pros.writable,
         enumerable = !!pros.enumerable,
         configurable = !!pros.configurable;
-      if (Object.prototype.toString.apply(d) !== "[object Array]") {
-        for (var i in s) {
-          if (s.hasOwnProperty(i)) {
-            if (k) {
-              if (!d[k]) {
-                d[k] = {};
-              }
-              if (USEECMA && typeof d[k][i] === "undefined") {
-                Object.defineProperty(d[k], i, {
-                  value: m ? s[i][m] : s[i],
-                  writable: writable,
-                  enumerable: enumerable,
-                  configurable: configurable
-                });
-              } else {
-                d[k][i] = m ? s[i][m] : s[i];
-              }
+
+      for (var i in s) {
+        if (s.hasOwnProperty(i) &&
+          (!pros.includes || pros.includes.test(i)) &&
+          (!pros.excludes || !pros.excludes.test(i))) {
+
+          var value = s[i] ? s[i] : null;
+
+          if (typeof value === 'undefined' || value === null ||
+            typeof value === 'number' || typeof value === 'string' || typeof value === 'boolean' ||
+            value instanceof Number || value instanceof String || value instanceof Boolean ||
+            typeof value === 'function' || value instanceof Function ||
+            value instanceof RegExp ||
+            value instanceof Date ||
+            value instanceof Error ||
+            value instanceof EvalError || value instanceof RangeError || value instanceof ReferenceError || value instanceof SyntaxError || value instanceof TypeError || value instanceof URIError) {
+
+            if (USEECMA && typeof d[i] === "undefined") {
+              Object.defineProperty(d, i, {
+                value: value,
+                writable: writable,
+                enumerable: enumerable,
+                configurable: configurable
+              });
             } else {
-              if (USEECMA && typeof d[i] === "undefined") {
-                Object.defineProperty(d, i, {
-                  value: m ? (s[i] ? s[i][m] : null) : s[i],
-                  writable: writable,
-                  enumerable: enumerable,
-                  configurable: configurable
-                });
-              } else {
-                d[i] = m ? (s[i] ? s[i][m] : null) : s[i];
-              }
+              d[i] = value;
             }
-          }
-        }
-      } else {
-        for (var j = 0, len = d.length; j < len; j++) {
-          for (var t in s) {
-            if (s.hasOwnProperty(t)) {
-              if (!d[j]) {
-                d[j] = {};
-              }
-              if (k) {
-                if (!d[j][k]) {
-                  d[j][k] = {};
-                }
-                if (USEECMA && typeof d[j][k][t] === "undefined") {
-                  Object.defineProperty(d[j][k], t, {
-                    value: m ? s[t][m] : s[t],
-                    writable: writable,
-                    enumerable: enumerable,
-                    configurable: configurable
-                  });
-                } else {
-                  d[j][k][t] = m ? s[t][m] : s[t];
-                }
-              } else {
-                if (USEECMA && typeof d[j][t] === "undefined") {
-                  Object.defineProperty(d[j], t, {
-                    value: m ? (s[t] ? s[t][m] : null) : s[t],
-                    writable: writable,
-                    enumerable: enumerable,
-                    configurable: configurable
-                  });
-                } else {
-                  d[j][t] = m ? (s[t] ? s[t][m] : null) : s[t];
-                }
-              }
-            }
+          } else {
+            extend(d, s, i, i, pros);
           }
         }
       }
     };
-    return function(d, s, k, m, pros) {
-      if (typeof d === 'undefined' || d === null || typeof d === "number" || typeof d === "string" || typeof d === "boolean" ||
-        typeof s === 'undefined' || s === null || typeof s === "number" || typeof s === "string" || typeof s === "boolean") {
-        return d;
+
+    var copy = function(d, s, k, m, pros) {
+
+      var dd = d,
+        ss = s;
+
+      if (d.hasOwnProperty(k)) {
+        dd = d[k];
+      } else if (k || k === 0) {
+        dd = null;
       }
-      if (Object.prototype.toString.apply(s) !== "[object Array]") {
-        copy(d, s, k, m, pros);
-      } else {
-        for (var j = 0, len = s.length; j < len; j++) {
-          if (typeof s[j] === 'undefined' || s[j] === null || typeof s[j] === "number" || typeof s[j] === "string" || typeof s[j] === "boolean") {
-            d[j] = s[j];
-          } else {
-            if (!d[j]) {
-              d[j] = {};
+
+      if (s.hasOwnProperty(m)) {
+        ss = s[m];
+      } else if (m || m === 0) {
+        ss = null;
+      }
+
+      if (!dd) {
+        d[k] = ss;
+        dd = ss;
+      }
+
+      if (Object.prototype.toString.apply(ss) !== "[object Array]") {
+        if (dd == ss) {
+          return;
+        } else {
+          if (pros.comparator) {
+            var comparatorResult = false;
+
+            if (pros.comparator == true && typeof dd.equals === 'function') {
+              comparatorResult = dd.equals(ss);
+            } else if (typeof pros.comparator === 'function') {
+              comparatorResult = pros.comparator.call(dd, dd, ss)
             }
-            copy(d[j], s[j], k, m, pros);
+
+            if (comparatorResult) {
+              copyObject(dd, ss, pros);
+            } else {
+              if (k || k === 0) {
+                d[k] = ss;
+              } else {
+                d = ss;
+                if (global.js && global.js.lang && global.js.lang.IllegalStateException) {
+                  throw new js.lang.IllegalStateException("errors occour when extend objects with a comparator.");
+                } else {
+                  throw Error("errors occour when extend objects with a comparator.");
+                }
+              }
+            }
+          } else {
+            copyObject(dd, ss, pros);
+          }
+        }
+      } else {
+        if (Object.prototype.toString.apply(dd) !== "[object Array]") {
+          if (global.js && global.js.lang && global.js.lang.IllegalStateException) {
+            throw new js.lang.IllegalStateException("errors occour because of extend a different data structor from another.");
+          } else {
+            throw Error("errors occour because of extend a different data structor from another.");
           }
         }
 
-        d.splice(j, d.length - j);
+        for (var j = 0, len = ss.length; j < len; j++) {
+          if (!dd[j]) {
+            dd[j] = ss[j];
+          } else if (typeof ss[j] === 'undefined' || ss[j] === null || typeof ss[j] === "number" || typeof ss[j] === "string" || typeof ss[j] === "boolean") {
+            dd[j] = ss[j];
+          } else {
+            copy(dd, ss, j, j, pros);
+          }
+        }
+
+        dd.splice(j, dd.length - j);
       }
+    };
+
+    return function(d, s, k, m, pros) {
+      if (typeof d === 'undefined' || d === null || typeof d === "number" || typeof d === "string" || typeof d === "boolean" ||
+        typeof s === 'undefined' || s === null || typeof s === "number" || typeof s === "string" || typeof s === "boolean" ||
+        d == s || (typeof d.equals === 'function' && d.equals(s))) {
+        return d;
+      }
+
+      pros = pros || {
+        writable: true,
+        enumerable: true,
+        configurable: true,
+        comparator: false
+      };
+
+      copy(d, s, k, m, pros);
+
       return d;
     };
   })();

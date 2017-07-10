@@ -6,6 +6,7 @@
 
     require("bootstrap!org.atomunion.beans.factory.support.AutowireCapableBeanFactory");
 
+    require("bootstrap!org.atomunion.stereotype.Resource");
     /** 
      * @class org.atomunion.web.context.support.GenericWebApplicationContext
      * @extends {org.atomunion.beans.factory.BeanFactory}
