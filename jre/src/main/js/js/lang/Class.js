@@ -125,7 +125,7 @@
           (!pros.includes || pros.includes.test(i)) &&
           (!pros.excludes || !pros.excludes.test(i))) {
 
-          var value = s[i] ? s[i] : null;
+          var value = s[i];
 
           if (typeof value === 'undefined' || value === null ||
             typeof value === 'number' || typeof value === 'string' || typeof value === 'boolean' ||
