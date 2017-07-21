@@ -1,29 +1,34 @@
-Class.forName({
-  name: "class org.atomunion.logger.ConsoleLogger extends org.atomunion.logger.Logger",
+define(function(require, exports, module) {
 
-  "ConsoleLogger": function(name) {
-    this.name = name;
-    this.out = new js.io.Console(console);
-  },
+  require("bootstrap!org.atomunion.logger.Logger");
 
-  "debug": function(message) {
-    return this.out.debug(message);
-  },
+  Class.forName({
+    name: "class org.atomunion.logger.ConsoleLogger extends org.atomunion.logger.Logger",
 
-  "info": function(message) {
-    return this.out.info(message);
-  },
+    "ConsoleLogger": function(name) {
+      this.name = name;
+      this.out = new js.io.Console(console);
+    },
 
-  "warn": function(message) {
-    return this.out.warn(message);
-  },
+    "debug": function(message) {
+      return this.out.debug(message);
+    },
 
-  "error": function(message) {
-    return this.out.error(message);
-  },
+    "info": function(message) {
+      return this.out.info(message);
+    },
 
-  "fatal": function(message) {
-    return this.error(message);
-  }
+    "warn": function(message) {
+      return this.out.warn(message);
+    },
 
+    "error": function(message) {
+      return this.out.error(message);
+    },
+
+    "fatal": function(message) {
+      return this.error(message);
+    }
+
+  });
 });
