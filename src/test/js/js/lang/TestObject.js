@@ -279,6 +279,17 @@ define(function(require, exports, module) {
           }]
         };
 
+      var a7 = [1, 2],
+        b7 = [2, 3, 4];
+      a7.count = 2;
+      b7.count = 3;
+
+      var a8 = [1, 2, 3],
+        b8 = [2, 3];
+      a8.count = 3;
+      b8.count = 2;
+
+
       Object.extend(a1, b1);
       js.test.Assert.assertTrue("Object.extend测试不通过", a1.name === 'b1');
 
@@ -303,6 +314,16 @@ define(function(require, exports, module) {
         }
       });
       js.test.Assert.assertTrue("Object.extend测试不通过", a6.children[0].hashCode() !== b6.children[0].hashCode());
+
+      Object.extend(a7, b7);
+      js.test.Assert.assertTrue("Object.extend测试不通过", a7.count === 3);
+      js.test.Assert.assertTrue("Object.extend测试不通过", a7.length === 3);
+      js.test.Assert.assertTrue("Object.extend测试不通过", a7[0] === 2 && a7[1] === 3 && a7[2] === 4);
+
+      Object.extend(a8, b8);
+      js.test.Assert.assertTrue("Object.extend测试不通过", a8.count === 2);
+      js.test.Assert.assertTrue("Object.extend测试不通过", a8.length === 2);
+      js.test.Assert.assertTrue("Object.extend测试不通过", a8[0] === 2 && a8[1] === 3);
     },
 
     "@Test testEach": function() {

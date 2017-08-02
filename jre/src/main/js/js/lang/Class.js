@@ -215,17 +215,23 @@
           }
         }
 
-        for (var j = 0, len = ss.length; j < len; j++) {
-          if (!dd[j]) {
-            dd[j] = ss[j];
-          } else if (typeof ss[j] === 'undefined' || ss[j] === null || typeof ss[j] === "number" || typeof ss[j] === "string" || typeof ss[j] === "boolean") {
-            dd[j] = ss[j];
-          } else {
-            copy(dd, ss, j, j, pros);
+        for (var j in ss) {
+          if (ss.hasOwnProperty(j) &&
+            (!pros.includes || pros.includes.test(j)) &&
+            (!pros.excludes || !pros.excludes.test(j))) {
+            if (!dd[j]) {
+              dd[j] = ss[j];
+            } else if (typeof ss[j] === 'undefined' || ss[j] === null || typeof ss[j] === "number" || typeof ss[j] === "string" || typeof ss[j] === "boolean") {
+              dd[j] = ss[j];
+            } else {
+              copy(dd, ss, j, j, pros);
+            }
           }
         }
 
-        dd.splice(j, dd.length - j);
+        if (dd.length > ss.length) {
+          dd.splice(ss.length, dd.length - ss.length);
+        }
       }
     };
 
