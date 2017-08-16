@@ -24,9 +24,9 @@ define(function(require, exports, module) {
     /**
      * @name org.atomunion.aop.framework.AdvisedSupport.prototype.advisors
      * @property {js.lang.Array}
-     * @private
+     * @protected
      */
-    "private advisors": [],
+    "protected advisors": [],
 
     /** 
      * @function

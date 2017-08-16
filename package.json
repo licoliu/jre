@@ -14,7 +14,7 @@
   "artifact": "jre",
   "license": "MIT",
   "debug": true,
-  "version": "1.5.24",
+  "version": "1.5.25",
   "jre": {
     "name": "jsvm",
     "uglify": "jsvm.min",

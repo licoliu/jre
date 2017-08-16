@@ -24,7 +24,7 @@ define(function(require, exports, module) {
   return Class.forName( /** @lends org.atomunion.stereotype.Repository.prototype */ {
     name: "@interface org.atomunion.stereotype.Repository",
 
-    "private beanNames": [],
+    "protected beanNames": [],
 
     Repository: function() {
       for (var i = 0, len = arguments.length; i < len; i++) {

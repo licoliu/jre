@@ -4,6 +4,9 @@ define(function(require, exports, module) {
     name: "class js.model.Animal extends Object",
     "@Getter @Setter private age": 0,
     "private name": "",
+
+    "public static final TYPE": "type",
+
     Animal: function(name) {
       this.name = name;
     },

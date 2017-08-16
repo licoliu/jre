@@ -167,6 +167,14 @@ define(function(require, exports, module) {
     "@Test testIsAnnotation": function() {
       js.test.Assert.assertTrue("类js.lang.Class中的isAnnotation方法测试不通过", !this.getDogClass().isAnnotation());
       js.test.Assert.assertTrue("类js.lang.Class中的isAnnotation方法测试不通过", js.model.Bean.$class.isAnnotation());
+    },
+
+    "@Test testExtendField": function() {
+      var dog = new js.model.Dog();
+      js.test.Assert.assertTrue("私有属性继承测试不通过", dog.getAge() === 0);
+
+      js.test.Assert.assertTrue("静态属性继承测试不通过", dog.TYPE === "type");
+      js.test.Assert.assertTrue("静态方法继承测试不通过", js.model.Dog.TYPE === "type");
     }
   }).getClassConstructor();
 });

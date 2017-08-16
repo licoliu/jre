@@ -1071,6 +1071,33 @@ Object
 
   var heap = new CodeHeap();
 
+  var defineProperty = function(j, v, o) {
+    var i = v.getName(),
+      value = v.getValue(),
+      modifiers = v.getModifiers(),
+      annotation = null;
+
+    if (global.org &&
+      global.org.atomunion &&
+      global.org.atomunion.stereotype &&
+      global.org.atomunion.stereotype.Resource) {
+      annotation = v.getAnnotation(org.atomunion.stereotype.Resource.$class);
+    }
+
+    value = value && !annotation ? value.clone() : value;
+
+    if (Object.USEECMA) {
+      Object.defineProperty(this, i, {
+        value: value,
+        writable: Modifier.isWritable(modifiers),
+        enumerable: Modifier.isEnumerable(modifiers),
+        configurable: Modifier.isConfigurable(modifiers)
+      });
+    } else {
+      this[i] = value;
+    }
+  };
+
   /** 
    * @class js.lang.Class
    * @extends {js.lang.Object}
@@ -1165,7 +1192,6 @@ Object
         classConstructor = function() {
           // 原始构造器
           // 1.设置class对象和hashCode值
-
           if (Object.USEECMA) {
             Object.defineProperty(this, "$class", {
               value: classObj,
@@ -1190,33 +1216,6 @@ Object
           }
 
           // 2.2初始化继承父类属性
-          // TODO protected以上的属性
-          var each = function(j, v, o) {
-            var i = v.getName(),
-              value = v.getValue(),
-              modifiers = v.getModifiers(),
-              annotation = null;
-
-            if (global.org &&
-              global.org.atomunion &&
-              global.org.atomunion.stereotype &&
-              global.org.atomunion.stereotype.Resource) {
-              annotation = v.getAnnotation(org.atomunion.stereotype.Resource.$class);
-            }
-
-            value = value && !annotation ? value.clone() : value;
-
-            if (Object.USEECMA) {
-              Object.defineProperty(this, i, {
-                value: value,
-                writable: Modifier.isWritable(modifiers),
-                enumerable: Modifier.isEnumerable(modifiers),
-                configurable: Modifier.isConfigurable(modifiers)
-              });
-            } else {
-              this[i] = value;
-            }
-          };
           var sc = classObj.getSuperClass(),
             superClasses = [];
           while (sc) {
@@ -1226,16 +1225,20 @@ Object
           Object.each(superClasses, function(j, sc, o) {
             var f = sc.getDeclaredFields();
             Object.each(f, function(t, v, a) {
-              var i = v.getName();
+              var i = v.getName(),
+                _modifiers = v.getModifiers();
               if (!classObj.hasDeclaredField(i)) {
-                each.call(this, t, v, a);
+                // protected以上的属性，非静态属性
+                if (!Modifier.isStatic(_modifiers) /* && !Modifier.isPrivate(_modifiers) */ ) {
+                  defineProperty.call(this, t, v, a);
+                }
               }
             }, this);
             // sc.getConstructor().getValue().apply(this, arguments);
           }, this);
 
           // 3.初始化自身定义属性
-          Object.each(classObj.getDeclaredFields(), each, this);
+          Object.each(classObj.getDeclaredFields(), defineProperty, this);
 
           // 4.用户构造器,先调用父类构造器以及constructor2方法
           var constructor2 = classObj.getConstructor().getValue();
@@ -1332,6 +1335,36 @@ Object
       } else {
         classConstructor.$super = $super;
       }
+
+      var sc = superClass,
+        superClasses = [];
+      while (sc) {
+        superClasses.unshift(sc);
+        sc = sc.getSuperClass();
+      }
+      Object.each(superClasses, function(j, sc, o) {
+        Object.each(sc.getDeclaredFields(), function(t, v, a) {
+          var i = v.getName(),
+            _modifiers = v.getModifiers();
+          if (!classObj.hasDeclaredField(i)) {
+            // protected以上的属性，静态属性
+            if (Modifier.isStatic(_modifiers) && !Modifier.isPrivate(_modifiers)) {
+              defineProperty.call(classConstructor, t, v, a);
+            }
+          }
+        }, this);
+
+        Object.each(sc.getDeclaredMethods(), function(t, v, a) {
+          var i = v.getName(),
+            _modifiers = v.getModifiers();
+          if (!classObj.hasDeclaredMethod(i)) {
+            // protected以上的方法，静态属性
+            if (Modifier.isStatic(_modifiers) && !Modifier.isPrivate(_modifiers)) {
+              defineProperty.call(classConstructor, t, v, a);
+            }
+          }
+        }, this);
+      }, this);
 
       // TODO 判断父类是否final
       if (!isKernel) {
