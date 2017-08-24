@@ -1364,7 +1364,7 @@ Object
           var i = v.getName(),
             _modifiers = v.getModifiers();
           if (!classObj.hasDeclaredMethod(i)) {
-            // protected以上的方法，静态属性
+            // protected以上的方法，静态方法
             if (Modifier.isStatic(_modifiers) && !Modifier.isPrivate(_modifiers)) {
               defineProperty.call(classConstructor, t, v, a);
             }

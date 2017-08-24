@@ -1364,7 +1364,7 @@ Object
           var i = v.getName(),
             _modifiers = v.getModifiers();
           if (!classObj.hasDeclaredMethod(i)) {
-            // protected以上的方法，静态属性
+            // protected以上的方法，静态方法
             if (Modifier.isStatic(_modifiers) && !Modifier.isPrivate(_modifiers)) {
               defineProperty.call(classConstructor, t, v, a);
             }
@@ -7951,12 +7951,45 @@ Class.forName( /** @lends js.lang.reflect.Method.prototype */ {
   /** 
    * @function
    * @public 
+   * @summary Gets the method.
+   * @description 
+   * 
+   * @return {js.lang.Function} the value of the methd
+   */
+  getValue: function() {
+    return this._value;
+  },
+
+  /** 
+   * @function
+   * @public 
+   * @summary Returns this element's annotation for the specified type if such an annotation is present, else null.
+   * @description 
+   *
+   * @param {js.lang.Class} annotationClass - the Class object corresponding to the annotation type
+   * @return {js.lang.Object} this element's annotation for the specified annotation type if present on this element, else null
+   */
+  getAnnotation: function(annotationClass) {
+    var annotations = this.getDeclaredAnnotations(),
+      annotation = null;
+    if (annotations) {
+      for (var i = 0, len = annotations.length; i < len; i++) {
+        annotation = annotations[i];
+        if (annotation.getClass() === annotationClass) {
+          return annotation;
+        }
+      }
+    }
+    return null;
+  },
+
+  /** 
+   * @function
+   * @public 
    * @summary return itself
    * @description 
    *
- * @return {    js.lang.reflect.Method
-  }
-  itself
+   * @return { js.lang.reflect.Method } - itself
    */
   clone: function() {
     return this;
