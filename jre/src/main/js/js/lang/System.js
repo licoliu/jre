@@ -284,7 +284,7 @@ Class.forName( /** @lends js.lang.System.prototype */ {
    * <li>version - project version</li>
    * <li>loglevel - project log level</li>
    * <li>target - project runtime target</li>
-   * <li>servletpath - project servlet path</li>
+   * <li>servletPath - project servlet path</li>
    * <li>skin - project skin name</li>
    * <li>immediately - if execute main class immediately or not</li>
    * </ul>

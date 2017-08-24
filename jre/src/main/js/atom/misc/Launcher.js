@@ -144,8 +144,18 @@ Class.forName({
     return loader;
   },
 
-  "public getRelative": function() {
-    return js.lang.System.getProperty("atom.root.dirs");
+  "public getRelative": function(type) {
+    switch (type) {
+      case atom.misc.Launcher.CSSClassLoader.EXT:
+        return js.lang.System.getProperty("css.ext.dirs");
+      case atom.misc.Launcher.CSSClassLoader.SKIN:
+        return js.lang.System.getProperty("css.skin.path");
+      case atom.misc.Launcher.CSSClassLoader.BOOTSTRAP:
+        return js.lang.System.getProperty("css.bootstrap.dirs");
+      case atom.misc.Launcher.CSSClassLoader.APP:
+      default:
+        return js.lang.System.getProperty("css.class.path");
+    }
   },
 
   "getSkin": function() {
@@ -195,23 +205,7 @@ Class.forName({
         src += "?" + querys.join("&");
       }
 
-      switch (type) {
-        case atom.misc.Launcher.CSSClassLoader.EXT:
-          relative = '/lib/';
-          break;
-        case atom.misc.Launcher.CSSClassLoader.SKIN:
-          relative = (debug ? '/src/main/skin/' : "/classes/skin/") + this.getSkin() + "/css/";
-          break;
-        case atom.misc.Launcher.CSSClassLoader.BOOTSTRAP:
-          relative = "";
-          break;
-        case atom.misc.Launcher.CSSClassLoader.APP:
-        default:
-          relative = (debug ? '/src/main/css/' : "/classes/css/");
-          break;
-      }
-
-      classes[url] = this.getRelative() + relative + src;
+      classes[url] = this.getRelative(type) + src;
     }
     return classes;
   },
@@ -267,11 +261,9 @@ Class.forName({
     this.parent = parent;
   },
 
-
   "public getRelative": function() {
     return js.lang.System.getProperty("js.class.path");
   },
-
 
   "public static getAppClassLoader": function(cl) {
     var loader = atom.misc.Launcher.AppClassLoader.appClassLoader;
@@ -297,6 +289,7 @@ Class.forName({
     }
   }
 });
+
 (function(global) {
   global.$import = function(name, classloader, async, callback) {
     if (Object.isNull(classloader)) {
@@ -406,13 +399,17 @@ Class.forName({
     version = null,
     isDebug = false,
     scripts = document.getElementsByTagName("script"),
-    path = null,
     mainClass = null,
     skin = null,
     loglevel = null,
     target = null,
     immediately = true,
-    servletpath = null;
+    servletPath = null,
+    rps = ["classes"],
+    bps = ["jre", "classes"],
+    eps = ["lib"],
+    aps = ["classes"],
+    tps = ["src", "test", "js"];
 
   for (var i = 0, len = scripts.length; i < len; i++) {
     var script = scripts[i],
@@ -428,20 +425,6 @@ Class.forName({
       ll = script.getAttribute("loglevel");
 
     if (jsvm && jsvm === 'true') {
-      if (sp) {
-        sp = sp.trim();
-
-        if (!"/".equals(sp)) {
-          if (sp.indexOf("/") === 0) {
-            sp = sp.substring(1);
-          }
-          if (sp.lastIndexOf("/") === sp.length - 1) {
-            sp = sp.substring(0, sp.length - 1);
-          }
-          root.push(sp);
-        }
-        servletpath = sp;
-      }
 
       if (hasDebug && debug.toLowerCase() !== 'false') {
         isDebug = true;
@@ -458,44 +441,95 @@ Class.forName({
       version = v;
       target = t || 'local';
       loglevel = ll || 'error';
+
+      rps = isDebug ? ["src", "main"] : ["classes"];
+      bps = ["jre"].concat(rps);
+      eps = ["lib"];
+      aps = rps.slice();
+      tps = ["src", "test", "js"];
+
+      if (sp) {
+        sp = sp.trim();
+
+        if (!"/".equals(sp)) {
+          if (sp.indexOf("/") === 0) {
+            sp = sp.substring(1);
+          }
+          if (sp.lastIndexOf("/") === sp.length - 1) {
+            sp = sp.substring(0, sp.length - 1);
+          }
+
+          var sps = [],
+            _sps = sp.split("/");
+          for (var i = 0, len = _sps.length; i < len; i++) {
+            var _sp = _sps[i].trim();
+            if (!_sp || "." == _sp) {
+              continue;
+            } else if (".." == _sp) {
+              rps.shift();
+              bps.shift();
+              eps.shift();
+              aps.shift();
+              tps.shift();
+            } else {
+              rps.unshift(_sp);
+              bps.unshift(_sp);
+              eps.unshift(_sp);
+              aps.unshift(_sp);
+              tps.unshift(_sp);
+            }
+
+            sps.push(_sp);
+          }
+
+          sp = sps.join("/");
+          root.push(sp);
+        }
+        servletPath = sp;
+      }
       break;
     }
   }
 
-  path = root.join("/");
-
   var loader = atom.misc.Launcher.getLauncher().getLoader();
 
-  var refPath = isDebug ? '/src/main/' : "/classes/";
+  var getUrl = function(urls) {
+    var _url = (urls || []).join("/").replace(/\/{2,}/g, "/");
 
-  var bootstrapPath = path + "/jre" + refPath;
-  var extPath = path + '/lib/';
-  var appPath = path + refPath;
-  var testPath = path + '/src/test/js/';
+    if (_url.charAt(0) !== '/') {
+      _url = "/" + _url;
+    }
 
-  js.lang.System.setProperty("atom.root.dirs", path);
+    if (_url.slice(-1) !== '/') {
+      _url += '/';
+    }
 
-  js.lang.System.setProperty("atom.bootstrap.class.path", bootstrapPath + 'js/');
-  js.lang.System.setProperty("js.ext.dirs", extPath);
-  js.lang.System.setProperty("js.class.path", appPath + 'js/');
+    return _url;
+  };
 
-  js.lang.System.setProperty("js.test.dirs", testPath);
+  js.lang.System.setProperty("atom.root.dirs", getUrl(root));
 
-  js.lang.System.setProperty("css.bootstrap.dirs", bootstrapPath + 'css/');
-  js.lang.System.setProperty("css.ext.dirs", extPath);
-  js.lang.System.setProperty("css.class.path", appPath + 'css/');
-  js.lang.System.setProperty("css.skin.path", appPath + 'skin/');
+  js.lang.System.setProperty("atom.bootstrap.class.path", getUrl(bps.concat(["js"])));
+  js.lang.System.setProperty("js.ext.dirs", getUrl(eps));
+  js.lang.System.setProperty("js.class.path", getUrl(aps.concat(["js"])));
 
-  js.lang.System.setProperty("template.bootstrap.dirs", bootstrapPath + 'template/');
-  js.lang.System.setProperty("template.ext.dirs", extPath);
-  js.lang.System.setProperty("template.class.path", appPath + 'template/');
+  js.lang.System.setProperty("js.test.dirs", getUrl(tps));
+
+  js.lang.System.setProperty("css.bootstrap.dirs", getUrl(bps.concat(["css"])));
+  js.lang.System.setProperty("css.ext.dirs", getUrl(eps));
+  js.lang.System.setProperty("css.class.path", getUrl(aps.concat(["css"])));
+  js.lang.System.setProperty("css.skin.path", getUrl(aps.concat(["skin", "css"])));
+
+  js.lang.System.setProperty("template.bootstrap.dirs", getUrl(bps.concat(["template"])));
+  js.lang.System.setProperty("template.ext.dirs", getUrl(eps));
+  js.lang.System.setProperty("template.class.path", getUrl(aps.concat(["template"])));
 
   js.lang.System.setProperty("main", mainClass);
   js.lang.System.setProperty("debug", isDebug);
   js.lang.System.setProperty("version", version);
   js.lang.System.setProperty("loglevel", loglevel);
   js.lang.System.setProperty("target", target);
-  js.lang.System.setProperty("servletpath", servletpath);
+  js.lang.System.setProperty("servletPath", servletPath);
   js.lang.System.setProperty("skin", skin);
   js.lang.System.setProperty("immediately", immediately);
 

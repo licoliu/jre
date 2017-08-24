@@ -20,6 +20,11 @@ define(function(require, exports, module) {
       console.log("i am a animal");
       return "i am a animal";
     },
+
+    "static getType": function() {
+      return js.model.Animal.TYPE;
+    },
+
     "static say": function() {
       js.lang.System.out.println("static say: i am animal");
     }

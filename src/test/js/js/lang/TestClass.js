@@ -169,12 +169,21 @@ define(function(require, exports, module) {
       js.test.Assert.assertTrue("类js.lang.Class中的isAnnotation方法测试不通过", js.model.Bean.$class.isAnnotation());
     },
 
+    "@Test testStatic": function() {
+      var animal = new js.model.Animal();
+
+      js.test.Assert.assertTrue("静态属性测试不通过", !animal.TYPE);
+      js.test.Assert.assertTrue("静态方法测试不通过", !animal.getType);
+      js.test.Assert.assertTrue("静态属性测试不通过", js.model.Animal.TYPE === "type");
+      js.test.Assert.assertTrue("静态方法测试不通过", js.model.Animal.getType() === 'type');
+    },
+
     "@Test testExtendField": function() {
       var dog = new js.model.Dog();
       js.test.Assert.assertTrue("私有属性继承测试不通过", dog.getAge() === 0);
 
-      js.test.Assert.assertTrue("静态属性继承测试不通过", dog.TYPE === "type");
-      js.test.Assert.assertTrue("静态方法继承测试不通过", js.model.Dog.TYPE === "type");
+      js.test.Assert.assertTrue("静态属性继承测试不通过", js.model.Dog.TYPE === "type");
+      js.test.Assert.assertTrue("静态方法继承测试不通过", js.model.Dog.getType() === 'type');
     }
   }).getClassConstructor();
 });

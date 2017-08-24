@@ -1238,7 +1238,13 @@ Object
           }, this);
 
           // 3.初始化自身定义属性
-          Object.each(classObj.getDeclaredFields(), defineProperty, this);
+          Object.each(classObj.getDeclaredFields(), function(t, v, a) {
+            var _modifiers = v.getModifiers();
+            // protected以上的属性，非静态属性
+            if (!Modifier.isStatic(_modifiers) /* && !Modifier.isPrivate(_modifiers) */ ) {
+              defineProperty.call(this, t, v, a);
+            }
+          }, this);
 
           // 4.用户构造器,先调用父类构造器以及constructor2方法
           var constructor2 = classObj.getConstructor().getValue();
@@ -1451,8 +1457,6 @@ Object
             break;
 
           case FEATURE.FIELD:
-            this.addField(m);
-            break;
           default:
             this.addField(m);
             break;
